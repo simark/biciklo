@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+
+<script type="text/javascript">
+  
+  function RechargerListeMembres() {
+    $.getJSON('/api/membres', null, function (data) {
+      // TODO(marchi): update the content of the page with that
+    });
+  }
+
+  $(document).ready(function () {
+    RechargerListeMembres();
+    AfficherInfo("ALLO!");
+  });
+</script>
+
+{% endblock %}
+{% block content %}
+
+
+
+{% endblock %}

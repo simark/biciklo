@@ -5,13 +5,13 @@ from pymongo import json_util
 import json
 from flask import Flask
 from flask import request
-
+from flask import render_template
 import db
 from data import Membre
 
 app = Flask(__name__)
 
-@app.route('/membres', methods=['GET'])
+@app.route('/api/membres', methods=['GET'])
 def GetMembres():
   membres = db.DBConnection().membres.find()
 
@@ -23,7 +23,7 @@ def GetMembres():
   return json.dumps(ret, default=json_util.default)
 
 
-@app.route('/membres', methods=['POST'])
+@app.route('/api/membres', methods=['POST'])
 def PostMembres():
   membre = Membre()
 
@@ -53,6 +53,10 @@ def PostMembres():
 
   return json.dumps(result) + '\n'
 
+@app.route('/membres', methods=['GET'])
+def ListeMembres():
+  print os.getcwd()
+  return render_template('membres.html', var="lol")
 
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
@@ -67,5 +71,6 @@ def ObtenirProchainNumeroDeMembre():
 if __name__ == '__main__':
   if 'BICIKLO_DEBUG' in os.environ:
     app.debug = True
+
   app.run()
 
