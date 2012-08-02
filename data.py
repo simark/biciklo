@@ -4,4 +4,5 @@ class Membre():
     self.prenom = ""
     self.nom = ""
     self.courriel = ""
+    self.numero = ""
 
