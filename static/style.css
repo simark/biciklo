@@ -1,0 +1,37 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #c9c9c9;
+}
+
+#menu {
+  width: 170px;
+  text-align: center;
+}
+
+#logo {
+  margin: auto 0;
+  background-color: #2c2c2c;
+  padding: 10px 0;
+}
+
+#menu ul {
+  padding: 0;
+  margin: 0;
+  width: 170px;
+}
+
+.menu-item {
+  width: 150px;
+  padding: 10px;
+  margin: 0px;
+  border-bottom: 1px #4c4c4c solid;
+  border-top: 1px #3c3c3c solid;
+  list-style-type: none;
+  background-color: #2c2c2c;
+  color: #d2d2d2;
+  font-family: 'Source Sans Pro', sans-serif;
+  text-align: center;
+}

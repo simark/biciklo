@@ -3,11 +3,22 @@
   <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery-ui/1.8.21/jquery-ui.min.js"></script>
+    <link href="/static/style.css" rel="stylesheet" type="text/css" />
     <title>{% block title %}Inventaire Biciklo{% endblock %}</title>
     {% block head_extra %}
     {% endblock %}
   </head>
   <body>
+    <div id="container">
+      <div id="menu">
+        <img src="/static/logo.png" id="logo" />
+        <ul>
+          <li class="menu-item">Liste des membres</li>
+          <li class="menu-item">Liste des membres</li>
+          <li class="menu-item">Liste des membres</li>
+          <li class="menu-item">Liste des membres</li>
+        </ul>
+      </div>
     {% block content %}
 
     {% endblock %}
