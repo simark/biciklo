@@ -12,9 +12,12 @@ body {
 }
 
 #logo {
-  margin: auto 0;
+  background-image: url('/static/logo.png');
   background-color: #2c2c2c;
-  padding: 10px;
+  background-repeat: no-repeat;
+  background-position: center top;
+  min-height: 70px;
+  width: 190px;
 }
 
 #menu ul {
@@ -34,4 +37,9 @@ body {
   color: #dddddd;
   font-family: 'Source Sans Pro', sans-serif;
   text-align: center;
+}
+
+.menu-item a {
+  color: #dddddd;
+  text-decoration: none;
 }
