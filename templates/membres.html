@@ -2,10 +2,36 @@
 {% block head_extra %}
 
 <script type="text/javascript">
-  
+ 
+  function RemplirTableauMembres(json_data) {
+    tableau = $('#membres');
+    
+    alternance = true;
+
+    for (i in json_data) {
+      membre = json_data[i];
+      
+      to_add = "<tr>";
+
+      to_add += "<td>" + membre.numero + "</td>";
+      to_add += "<td>" + membre.prenom + "</td>";
+      to_add += "<td>" + membre.nom + "</td>";
+      to_add += "<td>" + membre.provenance + "</td>";
+
+      to_add += "</tr>";
+
+      tableau.append(to_add);
+    }
+  }
+
+  function ViderTableauMembres() {
+    
+  }
+
   function RechargerListeMembres() {
     $.getJSON('/api/membres', null, function (data) {
-      // TODO(marchi): update the content of the page with that
+      ViderTableauMembres();
+      RemplirTableauMembres(data);
     });
   }
 
@@ -17,7 +43,15 @@
 
 {% endblock %}
 {% block content %}
+  <h1>Liste des membres</h1>
 
-
+  <table id="membres">
+  <tr>
+    <th>#</th>
+    <th>Prénom</th>
+    <th>Nom</th>
+    <th>Provenance</th>
+  </tr>
+  </table>
 
 {% endblock %}

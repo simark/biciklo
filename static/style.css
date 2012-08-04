@@ -4,11 +4,14 @@ body {
   padding: 0;
   margin: 0;
   background-color: #c9c9c9;
+  width: 100%;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 
 #menu {
   width: 190px;
   text-align: center;
+  float: left;
 }
 
 #logo {
@@ -53,3 +56,16 @@ body {
 #menu ul li a:active {
   background-color: #AFD879;
 }
+
+#content {
+  float: left;
+  padding-left: 20px;
+}
+
+h1 {
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: bold;
+  text-shadow: 0 0 10px #666;
+  font-variant: small-caps;
+}
+
