@@ -7,20 +7,32 @@
     tableau = $('#membres');
     
     alternance = true;
-    membres = new Array();
+    
+    colonnes = []
 
+    membres = new Array();
+    $('#membres th').each(function(i) {
+      colonnes.push($(this).attr('data-column'));
+    });
+    
     for (i in json_data) {
       
       infos = json_data[i];
       membre = new Array();
 
-      membre.push(infos.numero);
-      membre.push(infos.prenom);
-      membre.push(infos.nom);
-      membre.push(infos.provenance);
+      for (col in colonnes) {
+        colname = colonnes[col];
+
+        if (colname in infos) {
+          membre.push(infos[colname]);
+        } else {
+          membre.push('?');
+        }
+      }
 
       membres.push(membre);
     }
+    
     $('#membres').dataTable({
       'aaData': membres,
       'bJQueryUI': true,
@@ -54,10 +66,11 @@
   <table id="membres">
     <thead>
        <tr>
-         <th>#</th>
-         <th>Prénom</th>
-         <th>Nom</th>
-         <th>Provenance</th>
+         <th data-column="numero">#</th>
+         <th data-column="prenom">Prénom</th>
+         <th data-column="nom">Nom</th>
+         <th data-column="dateecheance">Echeance</th>
+         <th data-column="provenance">Provenance</th>
       </tr>
     </thead>
     <tbody>
