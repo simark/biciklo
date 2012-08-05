@@ -23,6 +23,8 @@
     }
     $('#membres').dataTable({
       'aaData': membres,
+      'bJQueryUI': true,
+      'bLengthChange': false,
     });
   }
 
@@ -38,13 +40,17 @@
 
   $(document).ready(function () {
     RechargerListeMembres();
+
+    $('input[type="button"]').button();
   });
 </script>
 
 {% endblock %}
 {% block content %}
   <h1>Liste des membres</h1>
-
+  
+  <input type="button" value="Nouveau membre" />
+  <br /></br />
   <table id="membres">
     <thead>
        <tr>
@@ -57,5 +63,4 @@
     <tbody>
     </tbody>
   </table>
-
 {% endblock %}

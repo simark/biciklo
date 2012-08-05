@@ -58,8 +58,9 @@ body {
 }
 
 #content {
-  float: left;
-  padding-left: 20px;
+  /*float: left;*/
+  overflow:hidden;
+  padding: 0 20px;
 }
 
 h1 {
@@ -69,3 +70,6 @@ h1 {
   font-variant: small-caps;
 }
 
+#membres tbody tr td {
+  text-align: center;
+}
