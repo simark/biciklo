@@ -7,21 +7,23 @@
     tableau = $('#membres');
     
     alternance = true;
+    membres = new Array();
 
     for (i in json_data) {
-      membre = json_data[i];
       
-      to_add = "<tr>";
+      infos = json_data[i];
+      membre = new Array();
 
-      to_add += "<td>" + membre.numero + "</td>";
-      to_add += "<td>" + membre.prenom + "</td>";
-      to_add += "<td>" + membre.nom + "</td>";
-      to_add += "<td>" + membre.provenance + "</td>";
+      membre.push(infos.numero);
+      membre.push(infos.prenom);
+      membre.push(infos.nom);
+      membre.push(infos.provenance);
 
-      to_add += "</tr>";
-
-      tableau.append(to_add);
+      membres.push(membre);
     }
+    $('#membres').dataTable({
+      'aaData': membres,
+    });
   }
 
   function ViderTableauMembres() {
@@ -30,14 +32,12 @@
 
   function RechargerListeMembres() {
     $.getJSON('/api/membres', null, function (data) {
-      ViderTableauMembres();
       RemplirTableauMembres(data);
     });
   }
 
   $(document).ready(function () {
     RechargerListeMembres();
-    AfficherInfo("ALLO!");
   });
 </script>
 
@@ -46,12 +46,16 @@
   <h1>Liste des membres</h1>
 
   <table id="membres">
-  <tr>
-    <th>#</th>
-    <th>Prénom</th>
-    <th>Nom</th>
-    <th>Provenance</th>
-  </tr>
+    <thead>
+       <tr>
+         <th>#</th>
+         <th>Prénom</th>
+         <th>Nom</th>
+         <th>Provenance</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
   </table>
 
 {% endblock %}

@@ -1,7 +1,7 @@
 import os
 
 import pymongo
-from pymongo import json_util
+from bson import json_util
 import json
 from flask import Flask
 from flask import request
@@ -72,5 +72,5 @@ if __name__ == '__main__':
   if 'BICIKLO_DEBUG' in os.environ:
     app.debug = True
 
-  app.run()
+  app.run(host='0.0.0.0')
 
