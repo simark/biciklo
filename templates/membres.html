@@ -53,7 +53,12 @@
   $(document).ready(function () {
     RechargerListeMembres();
 
-    $('input[type="button"]').button();
+    $('#boutonajoutmembre').button();
+    $('#boutonajoutmembre').click(function () {
+      $('#ajoutmembre').dialog('open');
+    });
+
+    $('#ajoutmembre').dialog({'autoOpen': false});
   });
 </script>
 
@@ -61,7 +66,9 @@
 {% block content %}
   <h1>Liste des membres</h1>
   
-  <input type="button" value="Nouveau membre" />
+  <input type="button" value="Nouveau membre" id="boutonajoutmembre" />
+  <div id="ajoutmembre">Blaaaaah</div>
+
   <br /></br />
   <table id="membres">
     <thead>

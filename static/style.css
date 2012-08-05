@@ -73,3 +73,7 @@ h1 {
 #membres tbody tr td {
   text-align: center;
 }
+
+#ajoutmembre {
+  display:none;
+}
