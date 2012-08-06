@@ -58,7 +58,38 @@
       $('#ajoutmembre').dialog('open');
     });
 
-    $('#ajoutmembre').dialog({'autoOpen': false});
+    $('#ajoutmembre').dialog({
+      'autoOpen': false,
+      'modal': true,
+      'height': 'auto',
+      'width': 900,
+      'title': 'Nouveau membre',
+    });
+
+    $('input[type="text"][data-default]').each(function (i) {
+      defval = $(this).attr('data-default');
+      $(this).val(defval);
+      $(this).addClass('input-with-default');
+
+      $(this).focus(function () {
+        defval = $(this).attr('data-default');
+        if ($(this).val() == defval) {
+          $(this).val('');
+          $(this).removeClass('input-with-default');
+        }
+      });
+
+      $(this).blur(function () {
+        if (!$(this).val()) {
+          defval = $(this).attr('data-default');
+          $(this).val(defval);
+          $(this).addClass('input-with-default');
+        }
+      });
+    });
+
+    $('#typeabonnement').buttonset();
+    $('#provenance').buttonset();
   });
 </script>
 
@@ -67,7 +98,30 @@
   <h1>Liste des membres</h1>
   
   <input type="button" value="Nouveau membre" id="boutonajoutmembre" />
-  <div id="ajoutmembre">Blaaaaah</div>
+  <div id="ajoutmembre">
+    <form id="formulaireajoutmembre">
+      <p>
+        <input type="text" id="ajoutprenom" data-default="Prénom" />
+        <input type="text" id="ajoutnom" data-default="Nom" />
+      </p>
+      <p> 
+        <div id="typeabonnement">
+          Type d'abonnement: 
+          <input type="radio" name="typeabonnement" id="abonnementannuel" checked="checked"/><label for="abonnementannuel">Annuel</label>
+          <input type="radio" name="typeabonnement" id="abonnementmensuel" /><label for="abonnementmensuel">Mensuel</label>
+        </div>
+      </p>
+      <p>
+        <div id="provenance">
+          Provenance: 
+          <input type="radio" name="provenance" id="provenance-poly" /><label for="provenance-poly">Poly</label>
+          <input type="radio" name="provenance" id="provenance-udem" /><label for="provenance-udem">UdeM</label>
+          <input type="radio" name="provenance" id="provenance-hec" /><label for="provenance-hec">HEC</label>
+          
+        </div>
+      </p>
+    </form>
+  </div>
 
   <br /></br />
   <table id="membres">

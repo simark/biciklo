@@ -77,3 +77,7 @@ h1 {
 #ajoutmembre {
   display:none;
 }
+
+.input-with-default {
+  color: #aaa;
+}
