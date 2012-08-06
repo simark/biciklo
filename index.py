@@ -41,7 +41,11 @@ def PostMembres():
         value = request.form[key]
         setattr(membre, key, value)
 
+
     membre.numero = ObtenirProchainNumeroDeMembre()
+    # TODO: check if mensuel or annuel, setter la date d'echeance
+    # Setter la date "first time seen"
+    # Setter la date de l'abonnement courant (now)
 
     db.DBConnection().membres.insert(membre.__dict__)
 
