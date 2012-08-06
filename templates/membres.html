@@ -91,6 +91,7 @@
     $('#provenance2').autocomplete({
       source: ['Poly', 'UdeM', 'HEC'],
       minLength: 0,
+      delay: 0,
     }).focus(function() {
       $('#provenance2').autocomplete('search');
     });
