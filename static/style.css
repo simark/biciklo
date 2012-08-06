@@ -3,7 +3,7 @@
 body {
   padding: 0;
   margin: 0;
-  background-color: #c9c9c9;
+  background: #c9c9c9 url('/static/menubg.png') repeat-y;
   width: 100%;
   font-family: 'Source Sans Pro', sans-serif;
 }
@@ -26,6 +26,7 @@ body {
   padding: 0;
   margin: 0;
   width: 190px;
+  border-bottom: 1px #4c4c4c solid;
 }
 
 #menu ul li {

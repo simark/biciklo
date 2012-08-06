@@ -1,13 +1,16 @@
+from datetime import datetime
+import json
 import os
 
 import pymongo
 from bson import json_util
-import json
+
 from flask import Flask
 from flask import request
 from flask import render_template
-import db
+
 from data import Membre
+import db
 
 app = Flask(__name__)
 
@@ -25,35 +28,52 @@ def GetMembres():
 
 @app.route('/api/membres', methods=['POST'])
 def PostMembres():
+  def ValiderValeur(choix_valeurs, cle, valeur):
+    if cle in choix_valeurs:
+      if not valeur in choix_valeurs[cle]:
+        raise ValueError(cle)
+
   membre = Membre()
 
   result = {'status': 'ok', 'errorstr': 'No error.'}
-  required_keys = ['prenom', 'nom', 'courriel']
+  required_keys = ['prenom', 'nom', 'courriel', 'type']
   optional_keys = ['provenance']
+
+  choix_valeurs = {
+    'type': ['permanent', 'annuel', 'mensuel'],
+  }
 
   try:
     for key in required_keys:
       value = request.form[key]
+      ValiderValeur(choix_valeurs, key, value)
       setattr(membre, key, value)
 
     for key in optional_keys:
       if key in request.form:
         value = request.form[key]
+        ValiderValeur(choix_valeurs, key, value)
         setattr(membre, key, value)
 
 
     membre.numero = ObtenirProchainNumeroDeMembre()
+    membre.date_apparition = datetime.now()
     # TODO: check if mensuel or annuel, setter la date d'echeance
     # Setter la date "first time seen"
     # Setter la date de l'abonnement courant (now)
 
     db.DBConnection().membres.insert(membre.__dict__)
 
+    print datetime.now
+
     print "Nouveau membre, numero %d" % membre.numero
 
   except KeyError as ex:
     result['status'] = 'bad'
-    result['errorstr'] = 'Parameter missing: %s.' % ex.message
+    result['errorstr'] = 'Parametre manquant: "%s".' % ex.message
+  except ValueError as ex:
+    result['status'] = 'bad'
+    result['errorstr'] = 'Valeur invalide pour "%s".' % ex.message
 
   return json.dumps(result) + '\n'
 
