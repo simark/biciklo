@@ -90,6 +90,12 @@
 
     $('#typeabonnement').buttonset();
     $('#provenance').buttonset();
+    $('#provenance2').autocomplete({
+      source: ['Poly', 'UdeM', 'HEC'],
+      minLength: 0,
+    }).focus(function() {
+      $('#provenance2').autocomplete('search');
+    });
   });
 </script>
 
@@ -119,6 +125,9 @@
           <input type="radio" name="provenance" id="provenance-hec" /><label for="provenance-hec">HEC</label>
           
         </div>
+      </p>
+      <p>
+        <input id="provenance2">
       </p>
     </form>
   </div>
