@@ -80,7 +80,11 @@ def PostMembres():
 @app.route('/membres', methods=['GET'])
 def ListeMembres():
   print os.getcwd()
-  return render_template('membres.html', var="lol")
+  return render_template('membres.html')
+
+@app.route('/membres/<int:membre>', methods=['GET'])
+def UnMembre(membre):
+  return render_template('membre.html', membre=membre)
 
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""

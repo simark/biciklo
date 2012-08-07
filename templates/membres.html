@@ -54,6 +54,10 @@
          sSearch: "rechercher&nbsp;:"
        }
     });
+
+    $('#loading').hide();
+    $('#membres').show();
+    $('#membres_wrapper').show();
   }
 
   function Majusculer(valeur) {
@@ -121,8 +125,9 @@
 {% endblock %}
 {% block content %}
   <h1>Liste des membres</h1>
-  
-  <input type="button" value="Nouveau membre" id="boutonajoutmembre" />
+  <div style="margin-bottom: 20px">
+    <input type="button" value="Nouveau membre" id="boutonajoutmembre" />
+  </div>
   <div id="ajoutmembre">
     <form id="formulaireajoutmembre">
       <p>
@@ -150,20 +155,23 @@
       </p>
     </form>
   </div>
-
-  <br /></br />
-  <table id="membres">
-    <thead>
-       <tr>
-         <th data-column="numero">#</th>
-         <th data-column="prenom">Prénom</th>
-         <th data-column="nom">Nom</th>
-         <th data-column="type" data-transform="Majusculer">Type</th>
-         <th data-column="dateecheance">Écheance</th>
-         <th data-column="provenance">Provenance</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
+  <div id="loading" style="text-align: center">
+    <img src="/static/loading.gif" />
+  </div>
+  <div>
+    <table id="membres">
+      <thead>
+         <tr>
+           <th data-column="numero">#</th>
+           <th data-column="prenom">Prénom</th>
+           <th data-column="nom">Nom</th>
+           <th data-column="type" data-transform="Majusculer">Type</th>
+           <th data-column="dateecheance">Écheance</th>
+           <th data-column="provenance">Provenance</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
 {% endblock %}
