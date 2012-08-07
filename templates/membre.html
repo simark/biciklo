@@ -2,14 +2,18 @@
 {% block head_extra %}
 <script type="text/javascript">
   function AfficherCacherBoutons() {
-    $('#annuler').toggle();
-    $('#sauvegarder').toggle();
+    $('#annuler').toggle().button('enable');
+    $('#sauvegarder').toggle().button('enable');
     $('#modifier').toggle();
   }
 
-  function InstallGlobalKeypressNormal() {
+  function RemoveGlobalKeypressHandlers() {
     $(document).unbind('keypress');
     $(document).unbind('keydown');
+  }
+
+  function InstallGlobalKeypressNormal() {
+    RemoveGlobalKeypressHandlers();
     $(document).keypress(function (event) {
       if (event.which == 109) { // 'm'
         Modifier();
@@ -18,8 +22,7 @@
   }
 
   function InstallGlobalKeypressEdit() {
-    $(document).unbind('keypress');
-    $(document).unbind('keydown');
+    RemoveGlobalKeypressHandlers();
     $(document).keydown(function (event) {
       if (event.which == 27) { // echap
         Annuler();
@@ -41,7 +44,12 @@
   }
 
   function Sauvegarder() {
-  
+    // Pendant qu'on sauve, on ne veut pas d'autres actions
+    RemoveGlobalKeypressHandlers();
+    $('#detailsmembre input').prop('disabled', 'true');
+    $('#annuler').button('disable');
+    $('#sauvegarder').button('disable');
+
     put_data = {
       'prenom': $('#prenom_input').val(),
       'nom': $('#nom_input').val(),
@@ -60,8 +68,6 @@
         RemettreTexte($('#nom'), true);
       }
     });
-
-
   }
 
   function Annuler() {
@@ -117,10 +123,10 @@
 {% block content %}
   <h1>Membre :  {{ membre.prenom }} {{ membre.nom  }}</h1>
   <p>
-    <a href="/membres" id="retourliste">Retour à la liste</a>&nbsp;
-    <a href="#" id="modifier">Modifier</a>
-    <a href="#" id="sauvegarder" style="display: none;">Sauvegarder</a>
-    <a href="#" id="annuler" style="display: none;">Annuler</a>
+    <a href="/membres" id="retourliste">Retour à la liste</a>
+    <input type="button" id="modifier" value="Modifier" />
+    <input type="button" id="sauvegarder" value="Sauvegarder" style="display: none;" />
+    <input type="button" id="annuler" value="Annuler" style="display: none;" />
   </p>
   <p>
   <strong>m</strong> - modifier, <strong>entrée</strong> - sauvegarder, <strong>échap.</strong> - annuler
