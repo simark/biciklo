@@ -1,17 +1,40 @@
 {% extends "layout.html" %}
 {% block head_extra %}
 <script type="text/javascript">
+  function AfficherCacherBoutons() {
+    $('#annuler').toggle();
+    $('#sauvegarder').toggle();
+    $('#modifier').toggle();
+  }
+
+  function Modifier() {
+    AfficherCacherBoutons();
+  }
+
+  function Sauvegarder() {
+    AfficherCacherBoutons();
+  }
+
+  function Annuler() {
+    AfficherCacherBoutons();
+  }
+
   $(document).ready(function() {
     $('#retourliste').button();
-    $('#modifier').button();
+    $('#modifier').button().click(Modifier);
+    $('#sauvegarder').button().click(Sauvegarder);
+    $('#annuler').button().click(Annuler);
   });
 </script>
+
 {% endblock %}
 {% block content %}
   <h1>Membre :  {{ membre.prenom }} {{ membre.nom  }}</h1>
   <p>
     <a href="/membres" id="retourliste">Retour à la liste</a>&nbsp;
     <a href="#" id="modifier">Modifier</a>
+    <a href="#" id="sauvegarder" style="display: none;">Sauvegarder</a>
+    <a href="#" id="annuler" style="display: none;">Annuler</a>
   </p>
   <p>
     <table id="detailsmembre">
