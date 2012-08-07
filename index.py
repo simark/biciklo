@@ -79,7 +79,10 @@ def ModifierMembre(numero):
       valeurs[key] = request.form[key]
 
   print valeurs
-  result = db.DBConnection().membres.update({'numero': numero}, {'$set': valeurs}, safe=True)
+  result = db.DBConnection().membres.update(
+      {'numero': numero},
+      {'$set': valeurs},
+      safe=True)
   print result
   return ""
 
