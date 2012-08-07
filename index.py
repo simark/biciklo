@@ -94,7 +94,7 @@ def ListePrenoms():
   prenoms = sorted(prenoms)
   return json.dumps(prenoms) + '\n'
 
-@app.route('/membres', methods=['GET'])
+@app.route('/membres/', methods=['GET'])
 def ListeMembres():
   print os.getcwd()
   return render_template('membres.html')
