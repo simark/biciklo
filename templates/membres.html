@@ -60,10 +60,6 @@
     return valeur.charAt(0).toUpperCase() + valeur.slice(1);
   }
 
-  function ViderTableauMembres() {
-    
-  }
-
   function RechargerListeMembres() {
     $.getJSON('/api/membres', null, function (data) {
       RemplirTableauMembres(data);
