@@ -10,7 +10,11 @@
 
     membres = new Array();
     $('#membres th').each(function(i) {
-      colonnes.push($(this).attr('data-column'));
+      
+      colonnes.push({
+        source: $(this).attr('data-column'),
+        transform: $(this).attr('data-transform'),
+      });
     });
     
     for (i in json_data) {
@@ -19,10 +23,15 @@
       membre = new Array();
 
       for (col in colonnes) {
-        colname = colonnes[col];
+        colname = colonnes[col].source;
+        transform = colonnes[col].transform;
 
         if (colname in infos) {
-          membre.push(infos[colname]);
+          valeur = infos[colname];
+          if (transform && transform in window && typeof(window[transform] == "function")) {
+            valeur = window[transform](valeur);
+          }
+          membre.push(valeur);
         } else {
           membre.push('?');
         }
@@ -35,7 +44,12 @@
       'aaData': membres,
       'bJQueryUI': true,
       'bLengthChange': false,
+      'iDisplayLength': 20,
     });
+  }
+
+  function Majusculer(valeur) {
+    return valeur.charAt(0).toUpperCase() + valeur.slice(1);
   }
 
   function ViderTableauMembres() {
@@ -138,8 +152,8 @@
          <th data-column="numero">#</th>
          <th data-column="prenom">Prénom</th>
          <th data-column="nom">Nom</th>
-         <th data-column="type">Type</th>
-         <th data-column="dateecheance">Echeance</th>
+         <th data-column="type" data-transform="Majusculer">Type</th>
+         <th data-column="dateecheance">Écheance</th>
          <th data-column="provenance">Provenance</th>
       </tr>
     </thead>
