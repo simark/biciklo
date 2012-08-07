@@ -7,7 +7,30 @@
     $('#modifier').toggle();
   }
 
+  function InstallGlobalKeypressNormal() {
+    $(document).unbind('keypress');
+    $(document).unbind('keydown');
+    $(document).keypress(function (event) {
+      if (event.which == 109) { // 'm'
+        Modifier();
+      }
+    });
+  }
+
+  function InstallGlobalKeypressEdit() {
+    $(document).unbind('keypress');
+    $(document).unbind('keydown');
+    $(document).keydown(function (event) {
+      if (event.which == 27) { // escape
+        Annuler();
+      } else if (event.which == 13) {
+        Sauvegarder();
+      }
+    });
+  }
+
   function Modifier() {
+    InstallGlobalKeypressEdit();
     AfficherCacherBoutons();
 
     RemplacerParInputText($('#prenom'));
@@ -15,12 +38,14 @@
   }
 
   function Sauvegarder() {
+    InstallGlobalKeypressNormal();
     AfficherCacherBoutons();
     RemettreTexte($('#prenom'), true);
     RemettreTexte($('#nom'), true);
   }
 
   function Annuler() {
+    InstallGlobalKeypressNormal();
     AfficherCacherBoutons();
     RemettreTexte($('#prenom'), false);
     RemettreTexte($('#nom'), false);
@@ -32,11 +57,6 @@
 
     field = $('<input type="text" />');
     field.val(val);
-    field.keypress(function(event) {
-      if (event.which == 13) {
-        Sauvegarder();
-      }
-    });
 
     cellule.prop('data-original', val);
     cellule.append(field);
@@ -67,6 +87,7 @@
     $('#modifier').button().click(Modifier);
     $('#sauvegarder').button().click(Sauvegarder);
     $('#annuler').button().click(Annuler);
+    InstallGlobalKeypressNormal();
   });
 
 </script>
@@ -79,6 +100,9 @@
     <a href="#" id="modifier">Modifier</a>
     <a href="#" id="sauvegarder" style="display: none;">Sauvegarder</a>
     <a href="#" id="annuler" style="display: none;">Annuler</a>
+  </p>
+  <p>
+  <strong>m</strong> - modifier, <strong>entrée</strong> - sauvegarder, <strong>escape</strong> - annuler
   </p>
   <p>
     <table id="detailsmembre">
