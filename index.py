@@ -37,7 +37,7 @@ def PostMembres():
       if not valeur in choix_valeurs[cle]:
         raise ValueError(cle)
 
-  membre = Membre()
+  membre = {}
 
   result = {'status': 'ok', 'errorstr': 'No error.'}
 
@@ -49,27 +49,18 @@ def PostMembres():
     for key in required_keys:
       value = request.form[key]
       ValiderValeur(choix_valeurs, key, value)
-      setattr(membre, key, value)
+      membre[key] = value
 
     for key in optional_keys:
       if key in request.form:
         value = request.form[key]
         ValiderValeur(choix_valeurs, key, value)
-        setattr(membre, key, value)
-
+        membre[key] = value
 
     membre.numero = ObtenirProchainNumeroDeMembre()
-    membre.date_apparition = datetime.now()
-    # TODO: check if mensuel or annuel, setter la date d'echeance
-    # Setter la date "first time seen"
-    # Setter la date de l'abonnement courant (now)
+    membre.date_inscription = datetime.now()
 
     db.DBConnection().membres.insert(membre.__dict__)
-
-    print datetime.now
-
-    print "Nouveau membre, numero %d" % membre.numero
-
   except KeyError as ex:
     result['status'] = 'bad'
     result['errorstr'] = 'Parametre manquant: "%s".' % ex.message
