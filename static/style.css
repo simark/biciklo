@@ -94,7 +94,7 @@ h1 {
 
 /* Datatables specific */
 table.dataTable tr.odd { background-color: #bdf76f; cursor: pointer; }
-table.dataTable tr.even { background-color: white;  cursor: pointer; }
+table.dataTable tr.even { background-color: #ecffbf;  cursor: pointer; }
 table.dataTable tr.odd:hover { text-decoration: underline; cursor: pointer; }
 table.dataTable tr.even:hover { text-decoration: underline;  cursor: pointer; }
 
@@ -130,7 +130,7 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 }
 
 #detailsmembre tr.odd {
-  background-color: white;
+  background-color: #ecffbf;
 }
 
 #detailsmembre tr.even {
