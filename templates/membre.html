@@ -9,14 +9,51 @@
 
   function Modifier() {
     AfficherCacherBoutons();
+
+    RemplacerParInputText($('#prenom'));
+    RemplacerParInputText($('#nom'));
   }
 
   function Sauvegarder() {
     AfficherCacherBoutons();
+    RemettreTexte($('#prenom'), true);
+    RemettreTexte($('#nom'), true);
   }
 
   function Annuler() {
     AfficherCacherBoutons();
+    RemettreTexte($('#prenom'), false);
+    RemettreTexte($('#nom'), false);
+  }
+
+  function RemplacerParInputText(cellule) {
+    val = cellule.text();
+    cellule.empty();
+
+    field = $('<input type="text" />');
+    field.val(val);
+    cellule.prop('data-original', val);
+    cellule.append(field);
+  }
+
+  function RemettreTexte(cellule, utiliser_nouvelle_valeur) {
+    if (utiliser_nouvelle_valeur) {
+      val = cellule.find('input').val();
+    } else {
+      val = cellule.prop('data-original');
+    }
+
+    cellule.empty();
+    cellule.removeProp('data-original');
+    cellule.text(val);
+    return val;
+  }
+
+  function RemettreNouveauTexte(cellule) {
+    val = cellule.find('input').val();
+
+    cellule.empty();
+    cellule.text(val);
   }
 
   $(document).ready(function() {
@@ -45,11 +82,11 @@
         </tr>
         <tr class="odd">
           <td class="cle">Prénom</td>
-          <td class="valeur">{{ membre.prenom }}</td>
+          <td class="valeur" id="prenom">{{ membre.prenom }}</td>
         </tr>
         <tr class="even">
           <td class="cle">Nom</td>
-          <td class="valeur">{{ membre.nom }}</td>
+          <td class="valeur" id="nom">{{ membre.nom }}</td>
         </tr>
         <tr class="odd">
           <td class="cle">Type d'abonnement</td>
