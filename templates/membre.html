@@ -36,14 +36,32 @@
     RemplacerParInputText($('#prenom'));
     RemplacerParInputText($('#nom'));
 
-    $('#detailsmembre input').first().focus();
+    // Bug: quand on appuie sur m, ça met un m dans la premiere case...
+    //$('#detailsmembre input').first().focus();
   }
 
   function Sauvegarder() {
-    InstallGlobalKeypressNormal();
-    AfficherCacherBoutons();
-    RemettreTexte($('#prenom'), true);
-    RemettreTexte($('#nom'), true);
+  
+    put_data = {
+      'prenom': $('#prenom_input').val(),
+      'nom': $('#nom_input').val(),
+    };
+  
+    numero = $('#numero').text();
+
+    $.ajax({
+      url: '/api/membres/' + numero,
+      type: 'PUT',
+      data: put_data,
+      success: function (result) {
+        InstallGlobalKeypressNormal();
+        AfficherCacherBoutons();
+        RemettreTexte($('#prenom'), true);
+        RemettreTexte($('#nom'), true);
+      }
+    });
+
+
   }
 
   function Annuler() {
@@ -59,6 +77,7 @@
 
     field = $('<input type="text" />');
     field.val(val);
+    field.prop('id', cellule.prop('id') + '_input');
 
     cellule.prop('data-original', val);
     cellule.append(field);
@@ -111,7 +130,7 @@
       <tbody>
         <tr class="even">
          <td class="cle">Numéro</td>
-         <td class="valeur">{{ membre.numero }}</td>
+         <td class="valeur" id="numero">{{ membre.numero }}</td>
         </tr>
         <tr class="odd">
           <td class="cle">Prénom</td>

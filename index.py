@@ -14,6 +14,9 @@ import db
 
 app = Flask(__name__)
 
+required_keys = ['prenom', 'nom', 'courriel', 'type']
+optional_keys = ['provenance']
+
 @app.route('/api/membres', methods=['GET'])
 def GetMembres():
   membres = db.DBConnection().membres.find()
@@ -36,8 +39,6 @@ def PostMembres():
   membre = Membre()
 
   result = {'status': 'ok', 'errorstr': 'No error.'}
-  required_keys = ['prenom', 'nom', 'courriel', 'type']
-  optional_keys = ['provenance']
 
   choix_valeurs = {
     'type': ['permanent', 'annuel', 'mensuel'],
@@ -76,6 +77,20 @@ def PostMembres():
     result['errorstr'] = 'Valeur invalide pour "%s".' % ex.message
 
   return json.dumps(result) + '\n'
+
+@app.route('/api/membres/<int:numero>', methods=['PUT'])
+def ModifierMembre(numero):
+  valeurs = {}
+
+  for key in request.form:
+    print key
+    if key in required_keys or key in optional_keys:
+      valeurs[key] = request.form[key]
+
+  print valeurs
+  result = db.DBConnection().membres.update({'numero': numero}, {'$set': valeurs}, safe=True)
+  print result
+  return ""
 
 @app.route('/api/prenoms', methods=['GET'])
 def ListePrenoms():
