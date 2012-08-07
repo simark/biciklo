@@ -115,12 +115,18 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
   text-align: right;
   border-radius: 10px 0 0 10px;
   padding: 8px 8px 8px 50px;
+  border-bottom: 1px #999 solid;
+  border-left: 1px #999 solid;
+  border-top: 1px #999 solid;
 }
 
 #detailsmembre td.valeur {
   padding: 8px 50px 8px 8px;
   font-size: 1.2em;
   border-radius: 0 10px 10px 0;
+  border-bottom: 1px #999 solid;
+  border-right: 1px #999 solid;
+  border-top: 1px #999 solid;
 }
 
 #detailsmembre tr.odd {
