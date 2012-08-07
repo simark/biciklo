@@ -102,3 +102,29 @@ table.dataTable tr.odd td.sorting_3 { background-color: #E0E2FF; }
 table.dataTable tr.even td.sorting_1 { background-color: #bdf76f; }
 table.dataTable tr.even td.sorting_2 { background-color: #F2F3FF; }
 table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
+
+#detailsmembre {
+  border-spacing: 0 2px;
+}
+
+#detailsmembre td.cle {
+  font-weight: bold;
+  font-size: 1.2em;
+  text-align: right;
+  border-radius: 10px 0 0 10px;
+  padding: 8px 8px 8px 50px;
+}
+
+#detailsmembre td.valeur {
+  padding: 8px 50px 8px 8px;
+  font-size: 1.2em;
+  border-radius: 0 10px 10px 0;
+}
+
+#detailsmembre tr.odd {
+  background-color: white;
+}
+
+#detailsmembre tr.even {
+  background-color: #bdf76f;
+}

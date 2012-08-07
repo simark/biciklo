@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#retourliste').button();
+    $('#modifier').button();
+  });
+</script>
+{% endblock %}
+{% block content %}
+  <h1>Membre :  {{ membre.prenom }} {{ membre.nom  }}</h1>
+  <p>
+    <a href="/membres" id="retourliste">Retour à la liste</a>&nbsp;
+    <a href="#" id="modifier">Modifier</a>
+  </p>
+  <p>
+    <table id="detailsmembre">
+      <tbody>
+        <tr class="even">
+         <td class="cle">Numéro</td>
+         <td class="valeur">{{ membre.numero }}</td>
+        </tr>
+        <tr class="odd">
+          <td class="cle">Prénom</td>
+          <td class="valeur">{{ membre.prenom }}</td>
+        </tr>
+        <tr class="even">
+          <td class="cle">Nom</td>
+          <td class="valeur">{{ membre.nom }}</td>
+        </tr>
+        <tr class="odd">
+          <td class="cle">Type d'abonnement</td>
+          <td class="valeur">{{ membre.type }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </p>
+{% endblock %}

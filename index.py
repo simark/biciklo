@@ -82,9 +82,10 @@ def ListeMembres():
   print os.getcwd()
   return render_template('membres.html')
 
-@app.route('/membres/<int:membre>', methods=['GET'])
-def UnMembre(membre):
-  return render_template('membre.html', membre=membre)
+@app.route('/membres/<int:numero>', methods=['GET'])
+def UnMembre(numero):
+  membre =  db.DBConnection().membres.find_one({'numero': numero})
+  return render_template('membre.html', numero=numero, membre=membre)
 
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
