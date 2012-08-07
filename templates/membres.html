@@ -56,6 +56,12 @@
     });
 
     $('#loading').hide();
+    $('#membres tbody tr').click(function() {
+
+      // TODO: trouver une meilleure solution pour aller chercher le numero...
+      numero = $(this).find('td').html();
+      location.href = ('/membres/' + numero);
+    });
     $('#membres').show();
     $('#membres_wrapper').show();
   }
@@ -71,7 +77,6 @@
   }
 
   $(document).ready(function () {
-    RechargerListeMembres();
 
     $('#boutonajoutmembre').button();
     $('#boutonajoutmembre').click(function () {
@@ -110,6 +115,11 @@
       });
     });
 
+    $('#ajoutprenom').autocomplete({
+      source: '/api/prenoms',
+      minLength: 0,
+      delay: 0,
+    });
     $('#typeabonnement').buttonset();
     $('#provenance').buttonset();
     $('#provenance2').autocomplete({
@@ -119,6 +129,8 @@
     }).focus(function() {
       $('#provenance2').autocomplete('search');
     });
+
+    RechargerListeMembres();
   });
 </script>
 

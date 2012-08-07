@@ -93,8 +93,10 @@ h1 {
 }
 
 /* Datatables specific */
-table.dataTable tr.odd { background-color: #bdf76f; }
-table.dataTable tr.even { background-color: white; }
+table.dataTable tr.odd { background-color: #bdf76f; cursor: pointer; }
+table.dataTable tr.even { background-color: white;  cursor: pointer; }
+table.dataTable tr.odd:hover { text-decoration: underline; cursor: pointer; }
+table.dataTable tr.even:hover { text-decoration: underline;  cursor: pointer; }
 
 table.dataTable tr.odd td.sorting_1 { background-color: #9dd74f; }
 table.dataTable tr.odd td.sorting_2 { background-color: #DADCFF; }

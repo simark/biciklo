@@ -77,6 +77,23 @@ def PostMembres():
 
   return json.dumps(result) + '\n'
 
+@app.route('/api/prenoms', methods=['GET'])
+def ListePrenoms():
+  liste = db.DBConnection().membres.find(fields = ['prenom'])
+
+  term = ''
+  if 'term' in request.args:
+    term = request.args['term'].lower()
+
+  prenoms = set()
+  for item in liste:
+    prenom = item['prenom']
+    if prenom.lower().startswith(term):
+      prenoms.add(item['prenom'])
+
+  prenoms = sorted(prenoms)
+  return json.dumps(prenoms) + '\n'
+
 @app.route('/membres', methods=['GET'])
 def ListeMembres():
   print os.getcwd()
