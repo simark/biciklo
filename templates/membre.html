@@ -32,6 +32,12 @@
 
     field = $('<input type="text" />');
     field.val(val);
+    field.keypress(function(event) {
+      if (event.which == 13) {
+        Sauvegarder();
+      }
+    });
+
     cellule.prop('data-original', val);
     cellule.append(field);
   }
@@ -62,6 +68,7 @@
     $('#sauvegarder').button().click(Sauvegarder);
     $('#annuler').button().click(Annuler);
   });
+
 </script>
 
 {% endblock %}
