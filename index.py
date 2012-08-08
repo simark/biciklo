@@ -15,7 +15,7 @@ import db
 app = Flask(__name__)
 
 # Cles requises pour un membre
-required_keys = ['prenom', 'nom', 'courriel']
+required_keys = ['prenom', 'nom', 'courriel', 'listedenvoi']
 
 # Cles optionnelles pour un membre
 optional_keys = ['provenance']

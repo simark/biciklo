@@ -76,20 +76,28 @@
     };
   
     numero = $('#numero').text();
-
+    
     $.ajax({
       url: '/api/membres/' + numero,
       type: 'PUT',
+      dataType: 'json',
       data: put_data,
-      }).done(function () {
-      InstallGlobalKeypressNormal();
-      AfficherCacherBoutons();
-      ActiverBoutons();
-      RemettreTexte($('#prenom'), true);
-      RemettreTexte($('#nom'), true);
-      AfficherInfo('Sauvegardé !');
+      }).done(function (data) {
+      if (data.status == 'ok') {
+        InstallGlobalKeypressNormal();
+        AfficherCacherBoutons();
+        ActiverBoutons();
+        RemettreTexte($('#prenom'), true);
+        RemettreTexte($('#nom'), true);
+        AfficherInfo('Sauvegardé !');
+      } else {
+        AfficherErreur('Erreur lors de la requête: ' + data.errorstr);
+        ActiverBoutons();
+        ActiverChamps();
+        InstallGlobalKeypressEdit();
+      }
     }).fail(function () {
-      AfficherErreur('Erreur lors de la requête...');
+      AfficherErreur('Erreur lors de la sauvegarde.');
       ActiverBoutons();
       ActiverChamps();
       InstallGlobalKeypressEdit();
