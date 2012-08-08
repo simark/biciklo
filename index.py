@@ -14,8 +14,16 @@ import db
 
 app = Flask(__name__)
 
-required_keys = ['prenom', 'nom', 'courriel', 'type']
+# Cles requises pour un membre
+required_keys = ['prenom', 'nom', 'courriel']
+
+# Cles optionnelles pour un membre
 optional_keys = ['provenance']
+
+# Map key to list of valid choices.
+choix_valeurs = {
+  'listedenvoi': ['non', 'oui', 'fait'],
+}
 
 @app.route('/api/membres', methods=['GET'])
 def GetMembres():
@@ -39,10 +47,6 @@ def PostMembres():
   membre = {}
 
   result = {'status': 'ok', 'errorstr': 'No error.'}
-
-  choix_valeurs = {
-    'type': ['permanent', 'annuel', 'mensuel'],
-  }
 
   try:
     for key in required_keys:
@@ -71,20 +75,35 @@ def PostMembres():
 
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
 def ModifierMembre(numero):
-  valeurs = {}
+  result = {'status': 'ok', 'errorstr': 'No error.'}
 
-  for key in request.form:
-    print key
-    if key in required_keys or key in optional_keys:
-      valeurs[key] = request.form[key]
+  try:
+    valeurs = {}
 
-  print valeurs
-  result = db.DBConnection().membres.update(
-      {'numero': numero},
-      {'$set': valeurs},
-      safe=True)
-  print result
-  return ""
+    for key in request.form:
+      valeur = request.form[key]
+      if key in required_keys or key in optional_keys:
+        if key in choix_valeurs:
+          if valeur not in choix_valeurs[key]:
+            raise ValueError(key)
+
+        valeurs[key] = valeur
+
+    print valeurs
+    request_result = db.DBConnection().membres.update(
+        {'numero': numero},
+        {'$set': valeurs},
+        safe=True)
+
+    if not request_result['updatedExisting']:
+      result['status'] = 'bad'
+      result['errorstr'] = 'Aucune entree trouvee pour numero %s' % numero
+
+  except ValueError as ex:
+    result['status'] = 'bad'
+    result['errorstr'] = 'Valeur invalide pour "%s"' % ex.message
+
+  return json.dumps(result) + '\n'
 
 @app.route('/api/prenoms', methods=['GET'])
 def ListePrenoms():

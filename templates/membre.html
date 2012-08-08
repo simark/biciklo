@@ -2,9 +2,27 @@
 {% block head_extra %}
 <script type="text/javascript">
   function AfficherCacherBoutons() {
-    $('#annuler').toggle().button('enable');
-    $('#sauvegarder').toggle().button('enable');
+    $('#annuler').toggle();
+    $('#sauvegarder').toggle();
     $('#modifier').toggle();
+  }
+
+  function DesactiverBoutons() {
+    $('#annuler').button('disable');
+    $('#sauvegarder').button('disable');
+  }
+
+  function ActiverBoutons() {
+    $('#annuler').button('enable');
+    $('#sauvegarder').button('enable');
+  }
+
+  function ActiverChamps() {
+    $('#detailsmembre input').removeProp('disabled');
+  }
+
+  function DesactiverChamps() {
+    $('#detailsmembre input').prop('disabled', 'true');
   }
 
   function RemoveGlobalKeypressHandlers() {
@@ -46,9 +64,8 @@
   function Sauvegarder() {
     // Pendant qu'on sauve, on ne veut pas d'autres actions
     RemoveGlobalKeypressHandlers();
-    $('#detailsmembre input').prop('disabled', 'true');
-    $('#annuler').button('disable');
-    $('#sauvegarder').button('disable');
+    DesactiverChamps();
+    DesactiverBoutons();
 
     put_data = {
       'prenom': $('#prenom_input').val(),
@@ -58,15 +75,21 @@
     numero = $('#numero').text();
 
     $.ajax({
-      url: '/api/membres/' + numero,
+      url: '/api/miembres/' + numero,
       type: 'PUT',
       data: put_data,
-      success: function (result) {
-        InstallGlobalKeypressNormal();
-        AfficherCacherBoutons();
-        RemettreTexte($('#prenom'), true);
-        RemettreTexte($('#nom'), true);
-      }
+      }).done(function () {
+      InstallGlobalKeypressNormal();
+      AfficherCacherBoutons();
+      ActiverBoutons();
+      RemettreTexte($('#prenom'), true);
+      RemettreTexte($('#nom'), true);
+      AfficherInfo('Sauvegardé !');
+    }).fail(function () {
+      AfficherErreur('Erreur lors de la requête...');
+      ActiverBoutons();
+      ActiverChamps();
+      InstallGlobalKeypressEdit();
     });
   }
 
