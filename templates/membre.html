@@ -75,7 +75,7 @@
     numero = $('#numero').text();
 
     $.ajax({
-      url: '/api/miembres/' + numero,
+      url: '/api/membres/' + numero,
       type: 'PUT',
       data: put_data,
       }).done(function () {
