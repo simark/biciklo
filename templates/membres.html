@@ -71,8 +71,13 @@
   }
 
   function RechargerListeMembres() {
-    $.getJSON('/api/membres', null, function (data) {
+    $.ajax({
+      url: '/aapi/membres',
+      dataType: 'json',
+    }).done(function(data) {
       RemplirTableauMembres(data);
+    }).fail(function() {
+      AfficherErreur('Erreur lors du téléchargement de la liste de membres...');
     });
   }
 
