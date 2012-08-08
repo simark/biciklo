@@ -72,7 +72,7 @@
 
   function RechargerListeMembres() {
     $.ajax({
-      url: '/aapi/membres',
+      url: '/api/membres',
       dataType: 'json',
     }).done(function(data) {
       RemplirTableauMembres(data);
