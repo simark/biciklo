@@ -91,7 +91,6 @@ def ModifierMembre(numero):
 
         valeurs[key] = valeur
 
-    print valeurs
     request_result = db.DBConnection().membres.update(
         {'numero': numero},
         {'$set': valeurs},

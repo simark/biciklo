@@ -22,7 +22,7 @@
   }
 
   function DesactiverChamps() {
-    $('#detailsmembre input').prop('disabled', 'true');
+    $('#detailsmembre input').prop('disabled', 'disabled');
   }
 
   function RemoveGlobalKeypressHandlers() {
@@ -60,7 +60,6 @@
     RemplacerParInputText($('#prenom'));
     RemplacerParInputText($('#nom'));
 
-    // Bug: quand on appuie sur m, ça met un m dans la premiere case...
     $('#detailsmembre input').first().focus();
   }
 
@@ -71,11 +70,11 @@
     DesactiverBoutons();
 
     put_data = {
-      'prenom': $('#prenom_input').val(),
-      'nom': $('#nom_input').val(),
+      'prenom': $('#prenom input').val(),
+      'nom': $('#nom input').val(),
     };
   
-    numero = $('#numero').text();
+    numero = $('#numero').text().trim();
     
     $.ajax({
       url: '/api/membres/' + numero,
@@ -87,6 +86,7 @@
         InstallGlobalKeypressNormal();
         AfficherCacherBoutons();
         ActiverBoutons();
+        ActiverChamps();
         RemettreTexte($('#prenom'), true);
         RemettreTexte($('#nom'), true);
         AfficherInfo('Sauvegardé !');
@@ -112,35 +112,27 @@
   }
 
   function RemplacerParInputText(cellule) {
-    val = cellule.text();
-    cellule.empty();
+    fixe = cellule.children('span');
+    champ = cellule.children('input');
 
-    field = $('<input type="text" />');
-    field.val(val);
-    field.prop('id', cellule.prop('id') + '_input');
+    champ.val(fixe.text());
 
-    cellule.prop('data-original', val);
-    cellule.append(field);
+    champ.show();
+    fixe.hide();
   }
 
   function RemettreTexte(cellule, utiliser_nouvelle_valeur) {
+    fixe = cellule.children('span');
+    champ = cellule.children('input');
+    
     if (utiliser_nouvelle_valeur) {
-      val = cellule.find('input').val();
-    } else {
-      val = cellule.prop('data-original');
+      fixe.text(champ.val());
     }
-
-    cellule.empty();
-    cellule.removeProp('data-original');
-    cellule.text(val);
-    return val;
-  }
-
-  function RemettreNouveauTexte(cellule) {
-    val = cellule.find('input').val();
-
-    cellule.empty();
-    cellule.text(val);
+    
+    champ.hide();
+    fixe.show();
+    
+    return fixe.text();
   }
 
   $(document).ready(function() {
@@ -170,19 +162,32 @@
       <tbody>
         <tr class="even">
          <td class="cle">Numéro</td>
-         <td class="valeur" id="numero">{{ membre.numero }}</td>
+         <td class="valeur" id="numero">
+           {{ membre.numero }}
+         </td>
         </tr>
         <tr class="odd">
           <td class="cle">Prénom</td>
-          <td class="valeur" id="prenom">{{ membre.prenom }}</td>
+          <td class="valeur" id="prenom">
+            <span>{{ membre.prenom }}</span>
+            <input type="text" style="display: none;" />
+          </td>
         </tr>
         <tr class="even">
           <td class="cle">Nom</td>
-          <td class="valeur" id="nom">{{ membre.nom }}</td>
+          <td class="valeur" id="nom">
+            <span>{{ membre.nom }}</span>
+            <input type="text" style="display: none;" />
+          </td>
         </tr>
         <tr class="even">
           <td class="cle">Liste d'envoi</td>
-          <td class="valeur" id="nom">{{ membre.listedenvoi }}</td>
+          <td class="valeur" id="nom">
+            <span>{{ membre.listedenvoi }}</span>
+            <input type="radio" name="listedenvoi" value="oui" style="display: none;" />
+            <input type="radio" name="listedenvoi" value="non" style="display: none;" />
+            <input type="radio" name="listedenvoi" value="fait" style="display: none;" />
+          </td>
         </tr>
       </tbody>
     </table>
