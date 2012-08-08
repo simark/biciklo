@@ -34,6 +34,7 @@
     RemoveGlobalKeypressHandlers();
     $(document).keypress(function (event) {
       if (event.which == 109) { // 'm'
+        event.preventDefault();
         Modifier();
       }
     });
@@ -43,8 +44,10 @@
     RemoveGlobalKeypressHandlers();
     $(document).keydown(function (event) {
       if (event.which == 27) { // echap
+        event.preventDefault();
         Annuler();
       } else if (event.which == 13) {
+        event.preventDefault();
         Sauvegarder();
       }
     });
@@ -58,7 +61,7 @@
     RemplacerParInputText($('#nom'));
 
     // Bug: quand on appuie sur m, ça met un m dans la premiere case...
-    //$('#detailsmembre input').first().focus();
+    $('#detailsmembre input').first().focus();
   }
 
   function Sauvegarder() {
