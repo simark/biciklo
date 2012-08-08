@@ -123,6 +123,13 @@ table.dataTable tr.even td.sorting_1 { background-color: #bdf76f; }
 table.dataTable tr.even td.sorting_2 { background-color: #F2F3FF; }
 table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
 
+/* Pour profil membre */
+
+#annuler { color: Coral; }
+#annuler:hover { color: #333; }
+#sauvegarder { color: LightGreen; }
+#sauvegarder:hover { color: #333; }
+
 #detailsmembre {
   border-spacing: 0 2px;
 }
