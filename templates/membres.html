@@ -18,7 +18,9 @@
       dataType: 'json',
     }).done(function (data) {
       if (data.status == 'ok') {
+        $('#ajoutmembre').dialog('close');
         AfficherInfo('Membre ' + request_data.prenom + ' ' + request_data.nom + ' (#' + data.numero + ') ajouté.');
+        RechargerListeMembres();
       } else {
         AfficherErreur('Erreur: ' + data.errorstr);
       }
@@ -27,8 +29,26 @@
     });
   }
 
+  function InitialiserTableauMembres() {
+    $('#membres').dataTable({
+      'aaData': null,
+      'bJQueryUI': true,
+      'bLengthChange': false,
+      'iDisplayLength': 20,
+      'oLanguage': {
+         sLengthMenu: "afficher _MENU_ entrées par page",
+         sZeroRecords: "désolé, aucun résultat trouvé...",
+         sInfo: "_START_ à _END_ de _TOTAL_ entrées",
+         sInfoEmpty: "0 à 0 d'aucune entrée",
+         sInfoFiltered: "(filtré de _MAX_ entrées en tout)",
+         sSearch: "rechercher&nbsp;:"
+       }
+    });
+  }
+
   function RemplirTableauMembres(json_data) {
     tableau = $('#membres');
+    tableau.dataTable().fnClearTable();
     
     colonnes = []
 
@@ -69,21 +89,8 @@
 
       membres.push(membre);
     }
-    
-    $('#membres').dataTable({
-      'aaData': membres,
-      'bJQueryUI': true,
-      'bLengthChange': false,
-      'iDisplayLength': 20,
-      'oLanguage': {
-         sLengthMenu: "afficher _MENU_ entrées par page",
-         sZeroRecords: "désolé, aucun résultat trouvé...",
-         sInfo: "_START_ à _END_ de _TOTAL_ entrées",
-         sInfoEmpty: "0 à 0 d'aucune entrée",
-         sInfoFiltered: "(filtré de _MAX_ entrées en tout)",
-         sSearch: "rechercher&nbsp;:"
-       }
-    });
+   
+    tableau.dataTable().fnAddData(membres);
 
     $('#loading').hide();
     $('#membres tbody tr').click(function() {
@@ -110,6 +117,9 @@
   }
 
   function RechargerListeMembres() {
+    $('#membres').hide();
+    $('#membres_wrapper').hide();
+    $('#loading').show();
     $.ajax({
       url: '/api/membres',
       dataType: 'json',
@@ -181,6 +191,7 @@
       EnvoyerNouveauMembre();
     });
   
+    InitialiserTableauMembres();
     RechargerListeMembres();
   });
 </script>
