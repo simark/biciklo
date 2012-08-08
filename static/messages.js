@@ -11,7 +11,7 @@ function AfficherInfo(texte) {
   
   enfant.slideDown();
 
-  window.setTimeout(EnleverPremierMessage, 2000);
+  window.setTimeout(EnleverPremierMessage, 5000);
 }
 
 function AfficherErreur(texte) {
@@ -20,11 +20,14 @@ function AfficherErreur(texte) {
   conteneur.show();
 
   enfant = $('<div class="ui-state-error ui-corner-all"></div>');
+  enfant.css('display', 'none');
   enfant.text(texte);
 
   conteneur.append(enfant);
 
-  window.setTimeout(EnleverPremierMessage, 6000);
+  enfant.slideDown();
+
+  window.setTimeout(EnleverPremierMessage, 5000);
 }
 
 function EnleverPremierMessage() {
