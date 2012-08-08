@@ -31,7 +31,6 @@ function AfficherErreur(texte) {
 }
 
 function EnleverPremierMessage() {
-  console.log("EPM called");
   conteneur = $('#conteneur-messages');
   conteneur.children(':not(:animated)').first().slideUp('normal', function () {
     $(this).remove();

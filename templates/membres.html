@@ -2,6 +2,8 @@
 {% block head_extra %}
 
 <script type="text/javascript">
+  var liste_prenoms = [];
+
   function EnvoyerNouveauMembre() {
     request_data = {};
 
@@ -62,14 +64,14 @@
       });
     });
     
-    liste_prenoms = {};
+    prenoms_vus = {};
 
     for (i in json_data) {
       
       infos = json_data[i];
 
       if ('prenom' in infos) {
-        liste_prenoms[infos.prenom] = 1;
+        prenoms_vus[infos.prenom] = 1;
       }
       membre = new Array();
 
@@ -102,11 +104,13 @@
     });
     $('#membres').show();
     $('#membres_wrapper').show();
-    
+   
+    liste_prenoms = Object.keys(prenoms_vus).sort();
+
     // Pour l'autocomplete des prenoms;
     $('#ajoutprenom').autocomplete({
-      source: Object.keys(liste_prenoms).sort(),
-      minLength: 0,
+      source: FiltreAutocompletePrenoms,
+      minLength: 1,
       delay: 0,
     }).focus(function() {
       $('#ajoutprenom').autocomplete('search');
@@ -131,6 +135,22 @@
     });
   }
 
+  function FiltreAutocompletePrenoms(request, response_cb) {
+    response = []
+    term = request.term;
+    termlen = term.length;
+    term = term.toLowerCase();
+
+    for (i in liste_prenoms) {
+      prenom = liste_prenoms[i];
+      if (prenom.toLowerCase().slice(0, termlen) == term) {
+        response.push(prenom);
+      }
+    }
+
+    response_cb(response);
+  }
+
   $(document).ready(function () {
 
     $('#boutonajoutmembre').button();
@@ -142,7 +162,7 @@
       'autoOpen': false,
       'modal': true,
       'height': 'auto',
-      'width': 900,
+      'width': 400,
       'title': 'Nouveau membre',
       'draggable': false,
       'resizable': false,
@@ -176,6 +196,7 @@
       source: ['Poly', 'UdeM', 'HEC'],
       minLength: 0,
       delay: 0,
+      autoFocus: true,
     }).focus(function() {
       $('#ajoutprovenance').autocomplete('search');
     });
@@ -211,9 +232,7 @@
       </p>
       <p>
         <input type="text" id="ajoutcourriel" data-default="Courriel" />
-      </p>
-      <p>
-        <input id="ajoutprovenance" data-default="Provenance" type="text">
+        <input type="text" id="ajoutprovenance" data-default="Provenance">
       </p>
       <p>
         <input type="checkbox" checked="true" id="ajoutlistedenvoi" /><label for="ajoutlistedenvoi">Ajouter à la liste d'envoi: oui</label>
