@@ -15,10 +15,10 @@ import db
 app = Flask(__name__)
 
 # Cles requises pour un membre
-required_keys = ['prenom', 'nom', 'courriel', 'listedenvoi']
+required_keys = ['prenom', 'nom', 'courriel', 'listedenvoi', 'provenance']
 
 # Cles optionnelles pour un membre
-optional_keys = ['provenance']
+optional_keys = []
 
 # Map key to list of valid choices.
 choix_valeurs = {
@@ -60,10 +60,12 @@ def PostMembres():
         ValiderValeur(choix_valeurs, key, value)
         membre[key] = value
 
-    membre.numero = ObtenirProchainNumeroDeMembre()
-    membre.date_inscription = datetime.now()
+    membre['numero'] = ObtenirProchainNumeroDeMembre()
+    membre['dateinscription'] = datetime.now()
 
-    db.DBConnection().membres.insert(membre.__dict__)
+    db.DBConnection().membres.insert(membre)
+
+    result['numero'] = membre['numero']
   except KeyError as ex:
     result['status'] = 'bad'
     result['errorstr'] = 'Parametre manquant: "%s".' % ex.message

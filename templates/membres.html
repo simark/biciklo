@@ -2,7 +2,31 @@
 {% block head_extra %}
 
 <script type="text/javascript">
- 
+  function EnvoyerNouveauMembre() {
+    request_data = {};
+
+    request_data.prenom = $('#ajoutprenom').val();
+    request_data.nom = $('#ajoutnom').val();
+    request_data.courriel = $('#ajoutcourriel').val();
+    request_data.provenance = $('#ajoutprovenance').val();
+    request_data.listedenvoi = ($('#ajoutlistedenvoi').prop('checked')) ? 'oui' : 'non';
+  
+    $.ajax({
+      url: '/api/membres',
+      type: 'POST',
+      data: request_data,
+      dataType: 'json',
+    }).done(function (data) {
+      if (data.status == 'ok') {
+        AfficherInfo('Membre ' + request_data.prenom + ' ' + request_data.nom + ' (#' + data.numero + ') ajouté.');
+      } else {
+        AfficherErreur('Erreur: ' + data.errorstr);
+      }
+    }).fail(function () {
+      AfficherErreur('Erreur...');
+    });
+  }
+
   function RemplirTableauMembres(json_data) {
     tableau = $('#membres');
     
@@ -17,9 +41,15 @@
       });
     });
     
+    liste_prenoms = {};
+
     for (i in json_data) {
       
       infos = json_data[i];
+
+      if ('prenom' in infos) {
+        liste_prenoms[infos.prenom] = 1;
+      }
       membre = new Array();
 
       for (col in colonnes) {
@@ -64,6 +94,15 @@
     });
     $('#membres').show();
     $('#membres_wrapper').show();
+    
+    // Pour l'autocomplete des prenoms;
+    $('#ajoutprenom').autocomplete({
+      source: Object.keys(liste_prenoms).sort(),
+      minLength: 0,
+      delay: 0,
+    }).focus(function() {
+      $('#ajoutprenom').autocomplete('search');
+    });
   }
 
   function Majusculer(valeur) {
@@ -120,21 +159,28 @@
       });
     });
 
-    $('#ajoutprenom').autocomplete({
-      source: '/api/prenoms',
-      minLength: 0,
-      delay: 0,
-    });
     $('#typeabonnement').buttonset();
-    $('#provenance').buttonset();
-    $('#provenance2').autocomplete({
+    
+    $('#ajoutprovenance').autocomplete({
       source: ['Poly', 'UdeM', 'HEC'],
       minLength: 0,
       delay: 0,
     }).focus(function() {
-      $('#provenance2').autocomplete('search');
+      $('#ajoutprovenance').autocomplete('search');
     });
 
+    $('#ajoutlistedenvoi').button().change(function() {
+      if ($(this).prop('checked')) {
+        $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: oui');
+      } else {
+        $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: non');
+      }
+    });
+    $('#ajoutenvoyer').button().click(function (event) {
+      event.preventDefault();
+      EnvoyerNouveauMembre();
+    });
+  
     RechargerListeMembres();
   });
 </script>
@@ -151,24 +197,17 @@
         <input type="text" id="ajoutprenom" data-default="Prénom" />
         <input type="text" id="ajoutnom" data-default="Nom" />
       </p>
-      <p> 
-        <div id="typeabonnement">
-          Type d'abonnement: 
-          <input type="radio" name="typeabonnement" id="abonnementannuel" checked="checked"/><label for="abonnementannuel">Annuel</label>
-          <input type="radio" name="typeabonnement" id="abonnementmensuel" /><label for="abonnementmensuel">Mensuel</label>
-        </div>
+      <p>
+        <input type="text" id="ajoutcourriel" data-default="Courriel" />
       </p>
       <p>
-        <div id="provenance">
-          Provenance: 
-          <input type="radio" name="provenance" id="provenance-poly" /><label for="provenance-poly">Poly</label>
-          <input type="radio" name="provenance" id="provenance-udem" /><label for="provenance-udem">UdeM</label>
-          <input type="radio" name="provenance" id="provenance-hec" /><label for="provenance-hec">HEC</label>
-          
-        </div>
+        <input id="ajoutprovenance" data-default="Provenance" type="text">
       </p>
       <p>
-        <input id="provenance2" data-default="Provenance" type="text">
+        <input type="checkbox" checked="true" id="ajoutlistedenvoi" /><label for="ajoutlistedenvoi">Ajouter à la liste d'envoi: oui</label>
+      </p>
+      <p>
+        <input type="submit" value="Envoyer" id="ajoutenvoyer" />
       </p>
     </form>
   </div>
@@ -182,8 +221,7 @@
            <th data-column="numero">#</th>
            <th data-column="prenom">Prénom</th>
            <th data-column="nom">Nom</th>
-           <th data-column="type" data-transform="Majusculer">Type</th>
-           <th data-column="dateecheance">Écheance</th>
+           <th data-column="courriel">Courriel</th>
            <th data-column="provenance">Provenance</th>
         </tr>
       </thead>
