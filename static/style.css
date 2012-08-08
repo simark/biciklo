@@ -147,10 +147,10 @@ table.dataTable tr.even td.sorting_3 { background-color: #F9F9FF; }
   border-top: 1px #999 solid;
 }
 
-#detailsmembre tr.odd {
+#detailsmembre tr.odd td {
   background-color: #ecffbf;
 }
 
-#detailsmembre tr.even {
+#detailsmembre tr.even td {
   background-color: #bdf76f;
 }
