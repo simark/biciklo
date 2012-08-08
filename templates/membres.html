@@ -21,6 +21,7 @@
     }).done(function (data) {
       if (data.status == 'ok') {
         $('#ajoutmembre').dialog('close');
+        $('#ajoutreinitialiser').click();
         AfficherInfo('Membre ' + request_data.prenom + ' ' + request_data.nom + ' (#' + data.numero + ') ajouté.');
         RechargerListeMembres();
       } else {
