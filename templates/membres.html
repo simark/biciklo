@@ -162,7 +162,7 @@
       'autoOpen': false,
       'modal': true,
       'height': 'auto',
-      'width': 400,
+      'width': 'auto',
       'title': 'Nouveau membre',
       'draggable': false,
       'resizable': false,
@@ -212,6 +212,18 @@
       event.preventDefault();
       EnvoyerNouveauMembre();
     });
+
+    $('#ajoutreinitialiser').button().click(function (event) {
+      event.preventDefault();
+      $('#ajoutmembre input[type="text"]').each(function () {
+        if ($(this).attr('data-default')) {
+          $(this).val($(this).attr('data-default'));
+          $(this).addClass('input-with-default');
+        } else {
+          $(this).val('');
+        }
+      });
+    });
   
     InitialiserTableauMembres();
     RechargerListeMembres();
@@ -239,6 +251,7 @@
       </p>
       <p>
         <input type="submit" value="Envoyer" id="ajoutenvoyer" />
+        <input type="reset" value="Réinitialiser" id="ajoutreinitialiser" />
       </p>
     </form>
   </div>
