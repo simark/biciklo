@@ -164,6 +164,12 @@
     $('#modifier').button().click(Modifier);
     $('#sauvegarder').button().click(Sauvegarder);
     $('#annuler').button().click(Annuler);
+
+    entrees_tableau = $('#detailsmembre > tbody > tr');
+    for (i = 0; i < entrees_tableau.length; i++) {
+      $(entrees_tableau[i]).addClass((i % 2) ? 'even' : 'odd');
+    }
+
     InstallGlobalKeypressNormal();
   });
 
@@ -184,27 +190,27 @@
   <p>
     <table id="detailsmembre">
       <tbody>
-        <tr class="even">
+        <tr>
          <td class="cle">Numéro</td>
          <td class="valeur" id="numero">
            {{ membre.numero }}
          </td>
         </tr>
-        <tr class="odd">
+        <tr>
           <td class="cle">Prénom</td>
           <td class="valeur" id="prenom">
             <span>{{ membre.prenom }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
-        <tr class="even">
+        <tr>
           <td class="cle">Nom</td>
           <td class="valeur" id="nom">
             <span>{{ membre.nom }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
-        <tr class="even">
+        <tr>
           <td class="cle">Liste d'envoi</td>
           <td class="valeur" id="listedenvoi">
             <span>{{ membre.listedenvoi }}</span>
