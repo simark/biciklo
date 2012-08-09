@@ -59,6 +59,7 @@
 
     RemplacerParInputText($('#prenom'));
     RemplacerParInputText($('#nom'));
+    RemplacerParInputRadio($('#listedenvoi'));
 
     $('#detailsmembre input').first().focus();
   }
@@ -89,6 +90,7 @@
         ActiverChamps();
         RemettreTexte($('#prenom'), true);
         RemettreTexte($('#nom'), true);
+        RemettreTexte($('#listedenvoi'), true);
         AfficherInfo('Sauvegardé !');
       } else {
         AfficherErreur('Erreur lors de la requête: ' + data.errorstr);
@@ -109,11 +111,12 @@
     AfficherCacherBoutons();
     RemettreTexte($('#prenom'), false);
     RemettreTexte($('#nom'), false);
+    RemettreTexte($('#listedenvoi'), false);
   }
 
   function RemplacerParInputText(cellule) {
     fixe = cellule.children('span');
-    champ = cellule.children('input');
+    champ = cellule.children('input[type="text"]');
 
     champ.val(fixe.text());
 
@@ -121,16 +124,36 @@
     fixe.hide();
   }
 
-  function RemettreTexte(cellule, utiliser_nouvelle_valeur) {
+  function RemplacerParInputRadio(cellule) {
     fixe = cellule.children('span');
-    champ = cellule.children('input');
+    champs = cellule.children('input[type="radio"]').show();
+    cellule.children('label').show();
+    cellule.buttonset();
+    
+    for (i = 0; i < champs.length; i++) {
+      champ = champs[i];
+      if ($(champ).val() == fixe.text()) {
+        $(champ).click();
+      }
+    }
+
+    fixe.hide();
+  }
+
+  function RemettreTexte(cellule, utiliser_nouvelle_valeur) {
+    fixe = cellule.children('span').show();
+    champ = cellule.children('input').hide();
+    cellule.children('label').hide();
     
     if (utiliser_nouvelle_valeur) {
-      fixe.text(champ.val());
+      // S'il y a des champs radio, on assume que c'est ce qui est utilisé.
+      radios = cellule.find('input[type="radio"]');
+      if (radios.length > 0) {
+        fixe.text(radios.filter(':checked').val());
+      } else {
+        fixe.text(champ.val());
+      }
     }
-    
-    champ.hide();
-    fixe.show();
     
     return fixe.text();
   }
@@ -182,11 +205,11 @@
         </tr>
         <tr class="even">
           <td class="cle">Liste d'envoi</td>
-          <td class="valeur" id="nom">
+          <td class="valeur" id="listedenvoi">
             <span>{{ membre.listedenvoi }}</span>
-            <input type="radio" name="listedenvoi" value="oui" style="display: none;" />
-            <input type="radio" name="listedenvoi" value="non" style="display: none;" />
-            <input type="radio" name="listedenvoi" value="fait" style="display: none;" />
+            <input type="radio" name="listedenvoi" value="oui" id="listedenvoi-oui" style="display: none;" /><label style="display: none;" for="listedenvoi-oui">oui</label>
+            <input type="radio" name="listedenvoi" value="non" id="listedenvoi-non" style="display: none;" /><label style="display: none;" for="listedenvoi-non">non</label>
+            <input type="radio" name="listedenvoi" value="fait" id="listedenvoi-fait" style="display: none;" /><label style="display: none;" for="listedenvoi-fait">fait</label>
           </td>
         </tr>
       </tbody>
