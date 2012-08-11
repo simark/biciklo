@@ -54,24 +54,73 @@
   }
 
   function Modifier() {
-    InstallGlobalKeypressEdit();
     AfficherCacherBoutons();
 
-    // Les champs qu'il faut remplacer par des inputs texte en mode modification.
-    input_text = ['#prenom', '#nom', '#courriel'];
-    // Les champs qu'il faut remplacer par des inputs radio en mode modification.
-    inpur_radio = ['#listedenvoi'];
+    FixeVersEdition();
 
-    for (i = 0; i < input_text.length; i++) {
-      RemplacerParInputText($(input_text[i]));
-    }
+  }
 
+  function FixeVersEdition() {
+    $('#detailsmembre td[data-edit="text"]').each(function (index, cellule) {
+      fixe = $(cellule).children('span');
+      champ = $(cellule).children('input[type="text"]');
+
+      champ.val(fixe.text());
+
+      champ.show();
+      fixe.hide();
+    });
     
-    for (i = 0; i < input_radio.length; i++) {
-      RemplacerParInputRadio($(input_radio[i]));
-    }
+    $('#detailsmembre td[data-edit="radio"]').each(function (index, cellule) {
+      fixe = $(cellule).children('span');
+      champs = $(cellule).children('input[type="radio"]');
+      labels = $(cellule).children('label');
+    
+      for (i = 0; i < champs.length; i++) {
+        champ = champs[i];
+        if ($(champ).val() == fixe.text()) {
+          $(champ).click();
+        }
+      }
+      
+      labels.show();
+      champs.show();
+      fixe.hide();
+    });
+    
+    InstallGlobalKeypressEdit();
 
     $('#detailsmembre input').first().focus();
+  }
+
+  function EditionVersFixe(sauvegarder) {
+    $('#detailsmembre td[data-edit="text"]').each(function (index, cellule) {
+      fixe = $(cellule).children('span');
+      champ = $(cellule).children('input[type="text"]');
+
+      if (sauvegarder) {
+        fixe.text(champ.val());
+      }
+
+      champ.hide();
+      fixe.show();
+    });
+    
+    $('#detailsmembre td[data-edit="radio"]').each(function (index, cellule) {
+      fixe = $(cellule).children('span');
+      champs = $(cellule).children('input[type="radio"]');
+      labels = $(cellule).children('label');
+
+      if (sauvegarder) {
+        fixe.text(champs.filter(':checked').val());
+      }
+
+      labels.hide();
+      champs.hide();
+      fixe.show();
+    });
+
+    InstallGlobalKeypressNormal();
   }
 
   function Sauvegarder() {
@@ -96,13 +145,10 @@
       data: put_data,
       }).done(function (data) {
       if (data.status == 'ok') {
-        InstallGlobalKeypressNormal();
         AfficherCacherBoutons();
         ActiverBoutons();
         ActiverChamps();
-        RemettreTexte($('#prenom'), true);
-        RemettreTexte($('#nom'), true);
-        RemettreTexte($('#listedenvoi'), true);
+        EditionVersFixe(true);
         AfficherInfo('Sauvegardé !');
       } else {
         AfficherErreur('Erreur lors de la requête: ' + data.errorstr);
@@ -119,55 +165,8 @@
   }
 
   function Annuler() {
-    InstallGlobalKeypressNormal();
     AfficherCacherBoutons();
-    RemettreTexte($('#prenom'), false);
-    RemettreTexte($('#nom'), false);
-    RemettreTexte($('#listedenvoi'), false);
-  }
-
-  function RemplacerParInputText(cellule) {
-    fixe = cellule.children('span');
-    champ = cellule.children('input[type="text"]');
-
-    champ.val(fixe.text());
-
-    champ.show();
-    fixe.hide();
-  }
-
-  function RemplacerParInputRadio(cellule) {
-    fixe = cellule.children('span');
-    champs = cellule.children('input[type="radio"]').show();
-    cellule.children('label').show();
-    cellule.buttonset();
-    
-    for (i = 0; i < champs.length; i++) {
-      champ = champs[i];
-      if ($(champ).val() == fixe.text()) {
-        $(champ).click();
-      }
-    }
-
-    fixe.hide();
-  }
-
-  function RemettreTexte(cellule, utiliser_nouvelle_valeur) {
-    fixe = cellule.children('span').show();
-    champ = cellule.children('input').hide();
-    cellule.children('label').hide();
-    
-    if (utiliser_nouvelle_valeur) {
-      // S'il y a des champs radio, on assume que c'est ce qui est utilisé.
-      radios = cellule.find('input[type="radio"]');
-      if (radios.length > 0) {
-        fixe.text(radios.filter(':checked').val());
-      } else {
-        fixe.text(champ.val());
-      }
-    }
-    
-    return fixe.text();
+    EditionVersFixe(false);
   }
 
   $(document).ready(function() {
@@ -182,6 +181,8 @@
     }
 
     InstallGlobalKeypressNormal();
+
+    $('#detailsmembre td[data-edit="radio"]').each(function () { $(this).buttonset(); });
   });
 
 </script>
@@ -209,28 +210,28 @@
         </tr>
         <tr>
           <td class="cle">Prénom</td>
-          <td class="valeur" id="prenom">
+          <td class="valeur" id="prenom" data-edit="text">
             <span>{{ membre.prenom }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
         <tr>
           <td class="cle">Nom</td>
-          <td class="valeur" id="nom">
+          <td class="valeur" id="nom" data-edit="text">
             <span>{{ membre.nom }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
         <tr>
           <td class="cle">Courriel</td>
-          <td class="valeur" id="courriel">
+          <td class="valeur" id="courriel" data-edit="text">
             <span>{{ membre.courriel }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
         <tr>
           <td class="cle">Liste d'envoi</td>
-          <td class="valeur" id="listedenvoi">
+          <td class="valeur" id="listedenvoi" data-edit="radio">
             <span>{{ membre.listedenvoi }}</span>
             <input type="radio" name="listedenvoi" value="oui" id="listedenvoi-oui" style="display: none;" /><label style="display: none;" for="listedenvoi-oui">oui</label>
             <input type="radio" name="listedenvoi" value="non" id="listedenvoi-non" style="display: none;" /><label style="display: none;" for="listedenvoi-non">non</label>

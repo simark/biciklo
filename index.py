@@ -25,16 +25,20 @@ choix_valeurs = {
   'listedenvoi': ['non', 'oui', 'fait'],
 }
 
+def jsonify(stuff):
+  return json.dumps(stuff, default=json_util.default) + '\n'
+
 @app.route('/api/membres', methods=['GET'])
 def GetMembres():
-  membres = db.DBConnection().membres.find()
+  result = {'status': 'ok', 'errorstr': 'No error.'}
+  
+  try:
+    result['membres'] = list(db.DBConnection().membres.find())
+  except Exception as e:
+    result['status'] = 'bad'
+    result['errorstr'] = str(e)
 
-  ret = list()
-
-  for membre in membres:
-    ret.append(membre)
-
-  return json.dumps(ret, default=json_util.default)
+  return jsonify(result)
 
 
 @app.route('/api/membres', methods=['POST'])
@@ -73,7 +77,7 @@ def PostMembres():
     result['status'] = 'bad'
     result['errorstr'] = 'Valeur invalide pour "%s".' % ex.message
 
-  return json.dumps(result) + '\n'
+  return jsonify(result)
 
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
 def ModifierMembre(numero):
@@ -104,7 +108,7 @@ def ModifierMembre(numero):
     result['status'] = 'bad'
     result['errorstr'] = 'Valeur invalide pour "%s"' % ex.message
 
-  return json.dumps(result) + '\n'
+  return jsonify(result)
 
 @app.route('/api/prenoms', methods=['GET'])
 def ListePrenoms():
@@ -121,7 +125,7 @@ def ListePrenoms():
       prenoms.add(item['prenom'])
 
   prenoms = sorted(prenoms)
-  return json.dumps(prenoms) + '\n'
+  return jsonify(prenoms)
 
 @app.route('/membres/', methods=['GET'])
 def ListeMembres():

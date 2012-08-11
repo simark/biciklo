@@ -131,13 +131,22 @@
       url: '/api/membres',
       dataType: 'json',
     }).done(function(data) {
-      RemplirTableauMembres(data);
+      if (data.status == 'ok') {
+        RemplirTableauMembres(data.membres);
+      } else {
+        AfficherErreur(
+            'Erreur lors du téléchargement de la liste de membres:\n' +
+            data.errorstr
+        )
+      }
     }).fail(function() {
-      AfficherErreur('Erreur lors du téléchargement de la liste de membres...');
+      AfficherErreur('Erreur lors du téléchargement de la liste de membres.');
     });
   }
 
-  function FiltreAutocompletePrenoms(request, response_cb) {
+  // Par défaut, le autocomplete de jquery cherche partout dans le mot. On
+  // définit ce filtre pour ne chercher qu'au début d'un mot.
+  function FiltreAutocompletesPrenom(request, response_cb) {
     response = []
     term = request.term;
     termlen = term.length;
