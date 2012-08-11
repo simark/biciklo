@@ -162,6 +162,15 @@
     response_cb(response);
   }
 
+  function InitialiserRaccourcisClavier() {
+    $(document).keypress(function (event) {
+      if (event.keyCode == 43) { // '+'
+        event.preventDefault();
+        $('#boutonajoutmembre').click();
+      }
+    });
+  }
+
   $(document).ready(function () {
 
     $('#boutonajoutmembre').button();
@@ -235,7 +244,8 @@
         }
       });
     });
-  
+    
+    InitialiserRaccourcisClavier();
     InitialiserTableauMembres();
     RechargerListeMembres();
   });
@@ -244,6 +254,7 @@
 {% endblock %}
 {% block content %}
   <h1>Liste des membres</h1>
+  <p><strong>+</strong> - nouveau membre</p>
   <div style="margin-bottom: 20px">
     <a id="boutonajoutmembre">Nouveau membre</a>
   </div>
