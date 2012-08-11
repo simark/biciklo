@@ -57,9 +57,19 @@
     InstallGlobalKeypressEdit();
     AfficherCacherBoutons();
 
-    RemplacerParInputText($('#prenom'));
-    RemplacerParInputText($('#nom'));
-    RemplacerParInputRadio($('#listedenvoi'));
+    // Les champs qu'il faut remplacer par des inputs texte en mode modification.
+    input_text = ['#prenom', '#nom', '#courriel'];
+    // Les champs qu'il faut remplacer par des inputs radio en mode modification.
+    inpur_radio = ['#listedenvoi'];
+
+    for (i = 0; i < input_text.length; i++) {
+      RemplacerParInputText($(input_text[i]));
+    }
+
+    
+    for (i = 0; i < input_radio.length; i++) {
+      RemplacerParInputRadio($(input_radio[i]));
+    }
 
     $('#detailsmembre input').first().focus();
   }
@@ -74,6 +84,7 @@
       'prenom': $('#prenom input').val(),
       'nom': $('#nom input').val(),
       'listedenvoi': $('#listedenvoi input:checked').val(),
+      'courriel': $('#courriel input').val(),
     };
   
     numero = $('#numero').text().trim();
@@ -207,6 +218,13 @@
           <td class="cle">Nom</td>
           <td class="valeur" id="nom">
             <span>{{ membre.nom }}</span>
+            <input type="text" style="display: none;" />
+          </td>
+        </tr>
+        <tr>
+          <td class="cle">Courriel</td>
+          <td class="valeur" id="courriel">
+            <span>{{ membre.courriel }}</span>
             <input type="text" style="display: none;" />
           </td>
         </tr>
