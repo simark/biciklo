@@ -103,7 +103,7 @@ function RemplirTableauMembres(membres_json) {
     membre_json = membres_json[i];
 
     // Ajouter le prenom a la liste de prenoms vus.
-    'prenom' in membre_json && prenoms_vus[membre_json.prenom] = 1;
+    if ('prenom' in membre_json) prenoms_vus[membre_json.prenom] = 1;
 
     membre = new Array();
 
