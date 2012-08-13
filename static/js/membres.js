@@ -1,10 +1,11 @@
 var liste_prenoms_membres = [];
 
 /**
- * Lis les champs du formulaire d'inscription d'un membre et retourne les
- * valeurs à envoyer dans un object/dict.
+ * Lis et retourne les champs du formulaire d'inscription d'un membre.
+ *
+ * @return Objet possédant les clés/valeurs à envoyer au serveur.
  */
-function LireChampsNouveauMembre() {
+function LireChampsAjoutMembre() {
   request_data = {};
 
   request_data.prenom = $('#ajoutprenom').val();
@@ -17,10 +18,10 @@ function LireChampsNouveauMembre() {
 }
 
 /**
- * Envoie une requête d'inscription d'un nouveau membre au serveur.
+ * Envoie une requête d'ajout d'un membre au serveur.
  */
-function EnvoyerNouveauMembre() {
-  donnees_requete = LireChampsNouveauMembre();
+function EnvoyerAjoutMembre() {
+  donnees_requete = LireChampsAjoutMembre();
 
   // Envoyer la requête au serveur.
   $.ajax({
@@ -51,7 +52,7 @@ function EnvoyerNouveauMembre() {
 /**
  * Initialise le formattage du tableau de membres.
  */
-function InitialiserTableauMembres() {
+function InitListeMembres() {
   // Initialiser le tableau datatables.
   $('#membres').dataTable({
     'aaData': null,
@@ -77,9 +78,14 @@ function InitialiserTableauMembres() {
   });
 }
 
-// Considerer utiliser dataTables' mDataProp
+
+/**
+ * Remplis la liste des membres à partir de la liste JSON reçue du serveur.
+ */
 function RemplirTableauMembres(membres_json) {
   tableau = $('#membres');
+  
+  // Vider le contenu actuel
   tableau.dataTable().fnClearTable();
   
   colonnes = []
@@ -120,6 +126,7 @@ function RemplirTableauMembres(membres_json) {
             typeof(window[transform] == "function")) {
           valeur = window[transform](valeur);
         }
+
         membre.push(valeur);
       } else {
         membre.push('?');
@@ -150,6 +157,9 @@ function RemplirTableauMembres(membres_json) {
   });
 }
 
+/**
+ * Charge la liste de membres et remplit le tableau.
+ */
 function RechargerListeMembres() {
   // Cacher le tableau, afficher l'indicateur de chargement.
   $('#membres').hide();
@@ -163,6 +173,7 @@ function RechargerListeMembres() {
     dataType: 'json',
   }).done(function(data) {
     if (data.status == 'ok') {
+      // Remplir le tableau.
       RemplirTableauMembres(data.membres);
     } else {
       AfficherErreur(
@@ -193,12 +204,13 @@ function FiltreAutocompletePrenoms(request, response_cb) {
   response_cb(response);
 }
 
-
 /**
- * Met en place les raccourcis clavier de la page.
- * TODO(simark): modifier les raccourcis claviers lorsqu'on ouvre le dialogue.
+ * Effectue la transition vers le mode normal.
  */
-function InitialiserRaccourcisClavier() {
+function ModeNormal() {
+  $('#ajoutmembre').dialog('close');
+
+  SupprimerRaccourcisClavier();
   $(document).keypress(function (event) {
     if (event.keyCode == 43) { // '+'
       event.preventDefault();
@@ -210,48 +222,42 @@ function InitialiserRaccourcisClavier() {
   });
 }
 
-// TODO(simark): clean that up.
-$(document).ready(function () {
+/**
+ * Effectue la transition vers le mode ajout d'un membre.
+ */
+function ModeAjout() {
+  $('#ajoutmembre').dialog('open');
+  
+  SupprimerRaccourcisClavier();
+  $(document).keyup(function (event) {
+    if (event.keyCode == 27) { // escape
+      ModeNormal();
+    }
+  });
+}
 
-  $('#boutonajoutmembre').button();
-  $('#boutonajoutmembre').click(function () {
-    $('#ajoutmembre').dialog('open');
+/**
+ * Initialise ce qui est en lien avec le formulaire d'ajout d'un membre.
+ */
+function InitFormulaireAjoutMembre() {
+  // Boutons ajout membre
+  $('#boutonajoutmembre').button().click(function () {
+    ModeAjout();
   });
 
+  // Dialogue ajout membre.
   $('#ajoutmembre').dialog({
     'autoOpen': false,
     'modal': true,
     'height': 'auto',
     'width': 'auto',
-    'title': 'Nouveau membre',
+    'title': 'Ajout d\'un membre',
     'draggable': false,
     'resizable': false,
   });
 
-  $('input[type="text"][data-default]').each(function (i) {
-    defval = $(this).attr('data-default');
-    $(this).val(defval);
-    $(this).addClass('input-with-default');
-
-    $(this).focus(function () {
-      defval = $(this).attr('data-default');
-      if ($(this).val() == defval) {
-        $(this).val('');
-        $(this).removeClass('input-with-default');
-      }
-    });
-
-    $(this).blur(function () {
-      if (!$(this).val()) {
-        defval = $(this).attr('data-default');
-        $(this).val(defval);
-        $(this).addClass('input-with-default');
-      }
-    });
-  });
-
-  $('#typeabonnement').buttonset();
   
+  // Bouton provenance
   $('#ajoutprovenance').autocomplete({
     source: ['Poly', 'UdeM', 'HEC'],
     minLength: 0,
@@ -261,6 +267,7 @@ $(document).ready(function () {
     $('#ajoutprovenance').autocomplete('search');
   });
 
+  // Bouton liste d'envoi
   $('#ajoutlistedenvoi').button().change(function() {
     if ($(this).prop('checked')) {
       $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: oui');
@@ -268,11 +275,14 @@ $(document).ready(function () {
       $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: non');
     }
   });
+
+  // Bouton submit
   $('#ajoutenvoyer').button().click(function (event) {
     event.preventDefault();
-    EnvoyerNouveauMembre();
+    EnvoyerAjoutMembre();
   });
 
+  // Bouton reset
   $('#ajoutreinitialiser').button().click(function (event) {
     event.preventDefault();
     $('#ajoutmembre input[type="text"]').each(function () {
@@ -284,8 +294,14 @@ $(document).ready(function () {
       }
     });
   });
-  
-  InitialiserRaccourcisClavier();
-  InitialiserTableauMembres();
+}
+
+$(document).ready(function () {
+  InitCommun();
+
+  InitFormulaireAjoutMembre(); 
+  InitListeMembres();
   RechargerListeMembres();
+  
+  ModeNormal();
 });
