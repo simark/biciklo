@@ -146,7 +146,7 @@
 
   // Par défaut, le autocomplete de jquery cherche partout dans le mot. On
   // définit ce filtre pour ne chercher qu'au début d'un mot.
-  function FiltreAutocompletesPrenom(request, response_cb) {
+  function FiltreAutocompletePrenoms(request, response_cb) {
     response = []
     term = request.term;
     termlen = term.length;
@@ -167,6 +167,9 @@
       if (event.keyCode == 43) { // '+'
         event.preventDefault();
         $('#boutonajoutmembre').click();
+      } else if (event.keyCode == 47) { // '/'
+        event.preventDefault();
+        $('#membres_filter input').focus();
       }
     });
   }
