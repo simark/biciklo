@@ -1,0 +1,18 @@
+
+#membres tbody tr td {
+
+  text-align: center;
+}
+
+#membres {
+  display: none;
+}
+
+/* Automatiquement ajoute par datatables. */
+#membres_wrapper {
+  display: none;
+}
+
+#ajoutmembre {
+  display:none;
+}

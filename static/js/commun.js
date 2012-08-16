@@ -9,13 +9,13 @@ function InitChampsAvecValeurParDefaut() {
   $('input[type="text"][data-default]').each(function (i) {
     defval = $(this).attr('data-default');
     $(this).val(defval);
-    $(this).addClass('input-with-default');
+    $(this).addClass('with-default');
 
     $(this).focus(function () {
       defval = $(this).attr('data-default');
       if ($(this).val() == defval) {
         $(this).val('');
-        $(this).removeClass('input-with-default');
+        $(this).removeClass('with-default');
       }
     });
 
@@ -23,7 +23,7 @@ function InitChampsAvecValeurParDefaut() {
       if (!$(this).val()) {
         defval = $(this).attr('data-default');
         $(this).val(defval);
-        $(this).addClass('input-with-default');
+        $(this).addClass('with-default');
       }
     });
   });

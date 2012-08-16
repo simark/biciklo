@@ -289,7 +289,7 @@ function InitFormulaireAjoutMembre() {
     $('#ajoutmembre input[type="text"]').each(function () {
       if ($(this).attr('data-default')) {
         $(this).val($(this).attr('data-default'));
-        $(this).addClass('input-with-default');
+        $(this).addClass('with-default');
       } else {
         $(this).val('');
       }

@@ -8,6 +8,9 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
 }
 
+/*
+  Boite de notifications.
+*/
 #conteneur-messages {
   display: none;
   position: absolute;
@@ -26,6 +29,9 @@ body {
   font-weight: bold;
 }
 
+/*
+  Menu
+*/
 #menu {
   width: 190px;
   text-align: center;
@@ -76,6 +82,9 @@ body {
   background-color: #AFD879;
 }
 
+/*
+  Contenu
+*/
 #content {
   /*float: left;*/
   overflow:hidden;
@@ -89,24 +98,10 @@ h1 {
   font-variant: small-caps;
 }
 
-#membres tbody tr td {
-  text-align: center;
-}
-
-#membres {
-  display: none;
-}
-
-/* Automatiquement ajoute par datatables. */
-#membres_wrapper {
-  display: none;
-}
-
-#ajoutmembre {
-  display:none;
-}
-
-.input-with-default {
+/*
+  Forms
+*/
+input.with-default {
   color: #aaa;
 }
 
