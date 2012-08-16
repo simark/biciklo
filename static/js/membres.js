@@ -178,16 +178,17 @@ function RechargerListeMembres() {
     } else {
       AfficherErreur(
           'Erreur lors du téléchargement de la liste de membres:' +
-          data.errorstr
-      )
+          data.errorstr)
     }
   }).fail(function() {
     AfficherErreur('Erreur lors du téléchargement de la liste de membres.');
   });
 }
 
-// Par défaut, le autocomplete de jquery cherche partout dans le mot. On
-// définit ce filtre pour ne chercher qu'au début d'un mot.
+/**
+ * Filtre pour autocomplete de JQuery. Par défaut, if cherche partout dans le
+ * mot. On définit ce filtre pour ne chercher qu'au début d'un mot.
+ */
 function FiltreAutocompletePrenoms(request, response_cb) {
   response = []
   term = request.term;
@@ -305,3 +306,4 @@ $(document).ready(function () {
   
   ModeNormal();
 });
+
