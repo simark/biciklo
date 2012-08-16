@@ -1,6 +1,7 @@
-
+/*
+  Liste de membres.
+*/
 #membres tbody tr td {
-
   text-align: center;
 }
 
@@ -8,11 +9,11 @@
   display: none;
 }
 
-/* Automatiquement ajoute par datatables. */
+/* Automatiquement ajouté par datatables. */
 #membres_wrapper {
   display: none;
 }
 
 #ajoutmembre {
-  display:none;
+  display: none;
 }
