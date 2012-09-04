@@ -177,6 +177,16 @@
     $('#sauvegarder').button().click(Sauvegarder);
     $('#annuler').button().click(Annuler);
 
+    // Champ provenance
+    $('#provenance input').autocomplete({
+      source: ['Poly', 'UdeM', 'HEC'],
+      minLength: 0,
+      delay: 0,
+      autoFocus: true,
+    }).focus(function() {i
+      $(this).autocomplete('search');
+    });
+  
     entrees_tableau = $('#detailsmembre > tbody > tr');
     for (i = 0; i < entrees_tableau.length; i++) {
       $(entrees_tableau[i]).addClass((i % 2) ? 'even' : 'odd');
