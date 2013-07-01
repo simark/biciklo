@@ -31,7 +31,7 @@ def jsonify(stuff):
 @app.route('/api/membres', methods=['GET'])
 def GetMembres():
   result = {'status': 'ok', 'errorstr': 'No error.'}
-  
+
   try:
     result['membres'] = list(db.DBConnection().membres.find())
   except Exception as e:
@@ -110,23 +110,6 @@ def ModifierMembre(numero):
 
   return jsonify(result)
 
-@app.route('/api/prenoms', methods=['GET'])
-def ListePrenoms():
-  liste = db.DBConnection().membres.find(fields = ['prenom'])
-
-  term = ''
-  if 'term' in request.args:
-    term = request.args['term'].lower()
-
-  prenoms = set()
-  for item in liste:
-    prenom = item['prenom']
-    if prenom.lower().startswith(term):
-      prenoms.add(item['prenom'])
-
-  prenoms = sorted(prenoms)
-  return jsonify(prenoms)
-
 @app.route('/membres/', methods=['GET'])
 def ListeMembres():
   print os.getcwd()
@@ -151,5 +134,5 @@ if __name__ == '__main__':
   if 'BICIKLO_DEBUG' in os.environ:
     app.debug = True
 
-  app.run(host='0.0.0.0')
+  app.run(host='0.0.0.0', port = 8888)
 

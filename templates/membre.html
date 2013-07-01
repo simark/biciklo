@@ -2,47 +2,21 @@
 {% block head_extra %}
 <link href="/static/css/membre.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript">
-  function AfficherCacherBoutons() {
-    $('#annuler').toggle();
-    $('#sauvegarder').toggle();
-    $('#modifier').toggle();
-  }
 
-  function DesactiverBoutons() {
-    $('#annuler').button('disable');
-    $('#sauvegarder').button('disable');
-  }
+  function RaccourcisClavierModeNormal() {
+    SupprimerRaccourcisClavier();
 
-  function ActiverBoutons() {
-    $('#annuler').button('enable');
-    $('#sauvegarder').button('enable');
-  }
-
-  function ActiverChamps() {
-    $('#detailsmembre input').removeProp('disabled');
-  }
-
-  function DesactiverChamps() {
-    $('#detailsmembre input').prop('disabled', 'disabled');
-  }
-
-  function RemoveGlobalKeypressHandlers() {
-    $(document).unbind('keypress');
-    $(document).unbind('keydown');
-  }
-
-  function InstallGlobalKeypressNormal() {
-    RemoveGlobalKeypressHandlers();
     $(document).keypress(function (event) {
       if (event.which == 109) { // 'm'
         event.preventDefault();
-        Modifier();
+        ModeModification();
       }
     });
   }
 
-  function InstallGlobalKeypressEdit() {
-    RemoveGlobalKeypressHandlers();
+  function RaccourcisClavierModeModification() {
+    SupprimerRaccourcisClavier();
+
     $(document).keydown(function (event) {
       if (event.which == 27) { // echap
         event.preventDefault();
@@ -54,50 +28,59 @@
     });
   }
 
-  function Modifier() {
-    AfficherCacherBoutons();
+  function ModeModification() {
+    $('#annuler').show();
+    $('#sauvegarder').show();
+    $('#modifier').hide();
 
-    FixeVersEdition();
+    RaccourcisClavierModeModification();
 
+    NormalVersEdition();
   }
 
-  function FixeVersEdition() {
+  function ModeNormal(sauvegarder) {
+    $('#annuler').hide();
+    $('#sauvegarder').hide();
+    $('#modifier').show();
+
+    RaccourcisClavierModeNormal();
+
+    EditionVersNormal(sauvegarder);
+  }
+
+  function NormalVersEdition() {
     $('#detailsmembre td[data-edit="text"]').each(function (index, cellule) {
-      fixe = $(cellule).children('span');
-      champ = $(cellule).children('input[type="text"]');
+      fixe = $(cellule).find('span');
+      champ = $(cellule).find('input[type="text"]');
 
       champ.val(fixe.text());
 
       champ.show();
       fixe.hide();
     });
-    
+
     $('#detailsmembre td[data-edit="radio"]').each(function (index, cellule) {
-      fixe = $(cellule).children('span');
-      champs = $(cellule).children('input[type="radio"]');
-      labels = $(cellule).children('label');
-    
+      fixe = $(cellule).find('span');
+      champs = $(cellule).find('input[type="radio"]');
+      labels = $(cellule).find('label');
+
       for (i = 0; i < champs.length; i++) {
         champ = champs[i];
         if ($(champ).val() == fixe.text()) {
           $(champ).click();
         }
       }
-      
+
       labels.show();
       champs.show();
       fixe.hide();
     });
-    
-    InstallGlobalKeypressEdit();
-
-    $('#detailsmembre input').first().focus();
   }
 
-  function EditionVersFixe(sauvegarder) {
+  function EditionVersNormal(sauvegarder) {
     $('#detailsmembre td[data-edit="text"]').each(function (index, cellule) {
-      fixe = $(cellule).children('span');
-      champ = $(cellule).children('input[type="text"]');
+      fixe = $(cellule).find('span');
+      champ = $(cellule).find('input[type="text"]');
 
       if (sauvegarder) {
         fixe.text(champ.val());
@@ -106,11 +89,11 @@
       champ.hide();
       fixe.show();
     });
-    
+
     $('#detailsmembre td[data-edit="radio"]').each(function (index, cellule) {
-      fixe = $(cellule).children('span');
-      champs = $(cellule).children('input[type="radio"]');
-      labels = $(cellule).children('label');
+      fixe = $(cellule).find('span');
+      champs = $(cellule).find('input[type="radio"]');
+      labels = $(cellule).find('label');
 
       if (sauvegarder) {
         fixe.text(champs.filter(':checked').val());
@@ -120,81 +103,54 @@
       champs.hide();
       fixe.show();
     });
-
-    InstallGlobalKeypressNormal();
   }
 
   function Sauvegarder() {
-    // Pendant qu'on sauve, on ne veut pas d'autres actions
-    RemoveGlobalKeypressHandlers();
-    DesactiverChamps();
-    DesactiverBoutons();
-
-    put_data = {
+    donnees = {
       'prenom': $('#prenom input').val(),
       'nom': $('#nom input').val(),
       'listedenvoi': $('#listedenvoi input:checked').val(),
       'courriel': $('#courriel input').val(),
       'provenance': $('#provenance input').val(),
     };
-  
+
     numero = $('#numero').text().trim();
-    
+
     $.ajax({
       url: '/api/membres/' + numero,
       type: 'PUT',
       dataType: 'json',
-      data: put_data,
+      data: donnees,
       }).done(function (data) {
       if (data.status == 'ok') {
-        AfficherCacherBoutons();
-        ActiverBoutons();
-        ActiverChamps();
-        EditionVersFixe(true);
-        AfficherInfo('Sauvegardé !');
+        ModeNormal(true);
+        AfficherSucces('Sauvegardé !');
       } else {
         AfficherErreur('Erreur lors de la requête: ' + data.errorstr);
-        ActiverBoutons();
-        ActiverChamps();
-        InstallGlobalKeypressEdit();
       }
     }).fail(function () {
       AfficherErreur('Erreur lors de la sauvegarde.');
-      ActiverBoutons();
-      ActiverChamps();
-      InstallGlobalKeypressEdit();
     });
   }
 
   function Annuler() {
-    AfficherCacherBoutons();
-    EditionVersFixe(false);
+    $('#annuler').hide();
+    $('#sauvegarder').hide();
+    $('#modifier').show();
+
+    ModeNormal(false);
+  }
+
+  function Modifier() {
+    ModeModification();
   }
 
   $(document).ready(function() {
-    $('#retourliste').button();
-    $('#modifier').button().click(Modifier);
-    $('#sauvegarder').button().click(Sauvegarder);
-    $('#annuler').button().click(Annuler);
+    $('#modifier').click(Modifier);
+    $('#sauvegarder').click(Sauvegarder);
+    $('#annuler').click(Annuler);
 
-    // Champ provenance
-    $('#provenance input').autocomplete({
-      source: ['Poly', 'UdeM', 'HEC'],
-      minLength: 0,
-      delay: 0,
-      autoFocus: true,
-    }).focus(function() {
-      $(this).autocomplete('search');
-    });
-  
-    entrees_tableau = $('#detailsmembre > tbody > tr');
-    for (i = 0; i < entrees_tableau.length; i++) {
-      $(entrees_tableau[i]).addClass((i % 2) ? 'even' : 'odd');
-    }
-
-    InstallGlobalKeypressNormal();
-
-    $('#detailsmembre td[data-edit="radio"]').each(function () { $(this).buttonset(); });
+    RaccourcisClavierModeNormal();
   });
 
 </script>
@@ -203,16 +159,16 @@
 {% block content %}
   <h1>Membre :  {{ membre.prenom }} {{ membre.nom  }}</h1>
   <p>
-    <a href="/membres" id="retourliste">Retour à la liste</a>
-    <a id="modifier">Modifier</a>
-    <a id="sauvegarder" style="display: none;">Sauvegarder</a>
-    <a id="annuler" style="display: none;">Annuler</a>
+    <a class="btn btn-primary" href="/membres" id="retourliste">&#8592; Retour à la liste</a>
+    <button type="button" class="btn" id="modifier">Modifier</button>
+    <button type="button" class="btn btn-success" id="sauvegarder" style="display: none;">Sauvegarder</button>
+    <button type="button" class="btn btn-danger" id="annuler" style="display: none;">Annuler</button>
   </p>
   <p>
   <strong>m</strong> - modifier, <strong>entrée</strong> - sauvegarder, <strong>échap.</strong> - annuler
   </p>
   <p>
-    <table id="detailsmembre">
+    <table class="table table-striped" id="detailsmembre" style="width: auto;">
       <tbody>
         <tr>
          <td class="cle">Numéro</td>
@@ -245,9 +201,9 @@
           <td class="cle">Liste d'envoi</td>
           <td class="valeur" id="listedenvoi" data-edit="radio">
             <span>{{ membre.listedenvoi }}</span>
-            <input type="radio" name="listedenvoi" value="oui" id="listedenvoi-oui" style="display: none;" /><label style="display: none;" for="listedenvoi-oui">oui</label>
-            <input type="radio" name="listedenvoi" value="non" id="listedenvoi-non" style="display: none;" /><label style="display: none;" for="listedenvoi-non">non</label>
-            <input type="radio" name="listedenvoi" value="fait" id="listedenvoi-fait" style="display: none;" /><label style="display: none;" for="listedenvoi-fait">fait</label>
+            <label style="display: none;" class="radio inline"><input type="radio" class="radio" name="listedenvoi" value="oui" id="listedenvoi-oui" />oui</label>
+            <label style="display: none;" class="radio inline"><input type="radio" class="radio inline" name="listedenvoi" value="non" id="listedenvoi-non" />non</label>
+            <label style="display: none;" class="radio inline"><input type="radio" class="radio inline" name="listedenvoi" value="fait" id="listedenvoi-fait" />fait</label>
           </td>
         </tr>
         <tr>

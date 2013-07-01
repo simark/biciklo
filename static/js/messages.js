@@ -1,33 +1,29 @@
-function AfficherInfo(texte) {
+function AfficherGenerique(texte, classe) {
   conteneur = $('#conteneur-messages');
 
   conteneur.show();
 
-  enfant = $('<div class="ui-state-highlight ui-corner-all"></div>');
+  enfant = $('<div class="alert ' + classe + '"></div>');
   enfant.css('display', 'none');
   enfant.text(texte);
 
   conteneur.append(enfant);
-  
+
   enfant.slideDown();
 
   window.setTimeout(EnleverPremierMessage, 5000);
 }
 
+function AfficherSucces(texte) {
+  AfficherGenerique(texte, 'alert-success');
+}
+
+function AfficherInfo(texte) {
+  AfficherGenerique(texte, '');
+}
+
 function AfficherErreur(texte) {
-  conteneur = $('#conteneur-messages');
-
-  conteneur.show();
-
-  enfant = $('<div class="ui-state-error ui-corner-all"></div>');
-  enfant.css('display', 'none');
-  enfant.text(texte);
-
-  conteneur.append(enfant);
-
-  enfant.slideDown();
-
-  window.setTimeout(EnleverPremierMessage, 5000);
+  AfficherGenerique(texte, 'alert-error');
 }
 
 function EnleverPremierMessage() {

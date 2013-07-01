@@ -1,19 +1,17 @@
-var liste_prenoms_membres = [];
-
 /**
  * Lis et retourne les champs du formulaire d'inscription d'un membre.
  *
  * @return Objet possédant les clés/valeurs à envoyer au serveur.
  */
 function LireChampsAjoutMembre() {
-  request_data = {};
+  var request_data = {};
 
   request_data.prenom = $('#ajoutprenom').val();
   request_data.nom = $('#ajoutnom').val();
   request_data.courriel = $('#ajoutcourriel').val();
   request_data.provenance = $('#ajoutprovenance').val();
   request_data.listedenvoi = ($('#ajoutlistedenvoi').prop('checked')) ? 'oui' : 'non';
-  
+
   return request_data;
 }
 
@@ -21,23 +19,23 @@ function LireChampsAjoutMembre() {
  * Envoie une requête d'ajout d'un membre au serveur.
  */
 function EnvoyerAjoutMembre() {
-  donnees_requete = LireChampsAjoutMembre();
+  donneesRequete = LireChampsAjoutMembre();
 
   // Envoyer la requête au serveur.
   $.ajax({
     url: '/api/membres',
     type: 'POST',
-    data: donnees_requete,
+    data: donneesRequete,
     dataType: 'json',
   }).done(function (data) {
     if (data.status == 'ok') {
       // Fermer le dialogue et réinitialiser le formulaire.
-      $('#ajoutmembre').dialog('close');
-      $('#ajoutreinitialiser').click();
+      $('#ajoutmembre').modal('hide');
+      ReinitialiserFormulaireAjoutMembre();
 
       // Afficher une confirmation.
-      AfficherInfo('Membre ' + request_data.prenom + ' ' + request_data.nom + ' (#' + data.numero + ') ajouté.');
-      
+      AfficherInfo('Membre ' + donneesRequete.prenom + ' ' + donneesRequete.nom + ' (#' + data.numero + ') ajouté.');
+
       // Recharger la liste de membres.
       RechargerListeMembres();
     } else {
@@ -84,33 +82,26 @@ function InitListeMembres() {
  */
 function RemplirTableauMembres(membres_json) {
   tableau = $('#membres');
-  
+
   // Vider le contenu actuel
   tableau.dataTable().fnClearTable();
-  
+
   colonnes = []
   membres = new Array();
 
   // Aller chercher les infos sur les colonnes.
   $('#membres th').each(function(i) {
-    
+
     colonnes.push({
       source: $(this).attr('data-column'),
       transform: $(this).attr('data-transform'),
     });
   });
-  
-  // Pour constuire la liste de prenoms.
-  prenoms_vus = {};
 
   // Créer une ligne par membre.
   for (i in membres_json) {
-    
+
     membre_json = membres_json[i];
-
-    // Ajouter le prenom a la liste de prenoms vus.
-    if ('prenom' in membre_json) prenoms_vus[membre_json.prenom] = 1;
-
     membre = new Array();
 
     // Créer le tableau d'infos pour ce membre.
@@ -135,7 +126,7 @@ function RemplirTableauMembres(membres_json) {
 
     membres.push(membre);
   }
- 
+
   // Ajouter les rangées au tableau.
   tableau.dataTable().fnAddData(membres);
 
@@ -143,18 +134,6 @@ function RemplirTableauMembres(membres_json) {
   $('#loading').hide();
   $('#membres').show();
   $('#membres_wrapper').show();
-
-  // Sauver la liste de prénoms.
-  liste_prenoms_membres = Object.keys(prenoms_vus).sort();
-
-  // Pour l'autocomplete des prenoms;
-  $('#ajoutprenom').autocomplete({
-    source: FiltreAutocompletePrenoms,
-    minLength: 1,
-    delay: 0,
-  }).focus(function() {
-    $('#ajoutprenom').autocomplete('search');
-  });
 }
 
 /**
@@ -166,7 +145,6 @@ function RechargerListeMembres() {
   $('#membres_wrapper').hide();
   $('#loading').show();
 
-
   // Faire la requête au serveur.
   $.ajax({
     url: '/api/membres',
@@ -176,9 +154,7 @@ function RechargerListeMembres() {
       // Remplir le tableau.
       RemplirTableauMembres(data.membres);
     } else {
-      AfficherErreur(
-          'Erreur lors du téléchargement de la liste de membres:' +
-          data.errorstr)
+      AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + data.errorstr);
     }
   }).fail(function() {
     AfficherErreur('Erreur lors du téléchargement de la liste de membres.');
@@ -186,36 +162,15 @@ function RechargerListeMembres() {
 }
 
 /**
- * Filtre pour autocomplete de JQuery. Par défaut, if cherche partout dans le
- * mot. On définit ce filtre pour ne chercher qu'au début d'un mot.
- */
-function FiltreAutocompletePrenoms(request, response_cb) {
-  response = []
-  term = request.term;
-  termlen = term.length;
-  term = term.toLowerCase();
-
-  for (i in liste_prenoms_membres) {
-    prenom = liste_prenoms_membres[i];
-    if (prenom.toLowerCase().slice(0, termlen) == term) {
-      response.push(prenom);
-    }
-  }
-
-  response_cb(response);
-}
-
-/**
  * Effectue la transition vers le mode normal.
  */
-function ModeNormal() {
-  $('#ajoutmembre').dialog('close');
-
+function RaccourcisClavierModeNormal() {
   SupprimerRaccourcisClavier();
+
   $(document).keypress(function (event) {
     if (event.keyCode == 43) { // '+'
       event.preventDefault();
-      $('#boutonajoutmembre').click();
+      ModeAjout();
     } else if (event.keyCode == 47) { // '/'
       event.preventDefault();
       $('#membres_filter input').focus();
@@ -226,84 +181,73 @@ function ModeNormal() {
 /**
  * Effectue la transition vers le mode ajout d'un membre.
  */
-function ModeAjout() {
-  $('#ajoutmembre').dialog('open');
-  
+function RaccourcisClavierModeAjout() {
   SupprimerRaccourcisClavier();
+
   $(document).keyup(function (event) {
     if (event.keyCode == 27) { // escape
+      event.preventDefault();
       ModeNormal();
     }
   });
+}
+
+function ModeAjout() {
+  $('#ajoutmembre').modal('show');
+}
+
+function ModeNormal() {
+  $('#ajoutmembre').modal('hide');
 }
 
 /**
  * Initialise ce qui est en lien avec le formulaire d'ajout d'un membre.
  */
 function InitFormulaireAjoutMembre() {
-  // Boutons ajout membre
-  $('#boutonajoutmembre').button().click(function () {
-    ModeAjout();
-  });
-
-  // Dialogue ajout membre.
-  $('#ajoutmembre').dialog({
-    'autoOpen': false,
-    'modal': true,
-    'height': 'auto',
-    'width': 'auto',
-    'title': 'Ajout d\'un membre',
-    'draggable': false,
-    'resizable': false,
-  });
-
-  
-  // Bouton provenance
-  $('#ajoutprovenance').autocomplete({
-    source: ['Poly', 'UdeM', 'HEC'],
+  // Champ provenance
+  $('#ajoutprovenance').typeahead({
+    source: ObtenirChoixProvenance,
     minLength: 0,
     delay: 0,
-    autoFocus: true,
-  }).focus(function() {
-    $('#ajoutprovenance').autocomplete('search');
-  });
-
-  // Bouton liste d'envoi
-  $('#ajoutlistedenvoi').button().change(function() {
-    if ($(this).prop('checked')) {
-      $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: oui');
-    } else {
-      $('label[for=ajoutlistedenvoi] span').text('Ajouter à la liste d\'envoi: non');
-    }
   });
 
   // Bouton submit
-  $('#ajoutenvoyer').button().click(function (event) {
-    event.preventDefault();
+  $('#ajoutenvoyer').click(function (event) {
     EnvoyerAjoutMembre();
   });
 
-  // Bouton reset
-  $('#ajoutreinitialiser').button().click(function (event) {
-    event.preventDefault();
-    $('#ajoutmembre input[type="text"]').each(function () {
-      if ($(this).attr('data-default')) {
-        $(this).val($(this).attr('data-default'));
-        $(this).addClass('with-default');
-      } else {
-        $(this).val('');
-      }
-    });
+  $('#ajoutmembre').on('hide', function() {
+    RaccourcisClavierModeNormal();
+    ReinitialiserFormulaireAjoutMembre();
   });
+
+  $('#ajoutmembre').on('show', function() {
+    RaccourcisClavierModeAjout();
+  });
+
+  $('#ajoutmembre').on('shown', function() {
+    $('#ajoutmembre').find('input').first().focus();
+  });
+}
+
+/**
+ * Réinitialise les champs du formulaire.
+ */
+function ReinitialiserFormulaireAjoutMembre() {
+  $('#ajoutprenom').val("");
+  $('#ajoutnom').val("");
+  $('#ajoutcourriel').val("");
+  $('#ajoutprovenance').val("");
+  $('#ajoutlistedenvoi').prop('checked', false);
 }
 
 $(document).ready(function () {
   InitCommun();
 
-  InitFormulaireAjoutMembre(); 
+  InitFormulaireAjoutMembre();
+
   InitListeMembres();
   RechargerListeMembres();
-  
-  ModeNormal();
-});
 
+  RaccourcisClavierModeNormal();
+});
