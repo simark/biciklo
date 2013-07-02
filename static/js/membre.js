@@ -116,15 +116,11 @@ function Sauvegarder() {
     type: 'PUT',
     dataType: 'json',
     data: donnees,
-    }).done(function (data) {
-    if (data.status == 'ok') {
+    }).done(function (data, textStatus, jqXHR) {
       ModeNormal(true);
       AfficherSucces('Sauvegardé !');
-    } else {
-      AfficherErreur('Erreur lors de la requête: ' + data.errorstr);
-    }
-  }).fail(function () {
-    AfficherErreur('Erreur lors de la sauvegarde.');
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+      AfficherErreur('Erreur lors de la sauvegarde: ' + errorThrown);
   });
 }
 

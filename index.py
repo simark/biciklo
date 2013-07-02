@@ -118,7 +118,8 @@ def PutMembre(numero):
 
     update_result = db.DBConnection().membres.update(
         {'numero': numero},
-        {'$set': valeurs}
+        {'$set': valeurs},
+        safe = True
     )
 
     if not update_result['updatedExisting']:
@@ -128,6 +129,9 @@ def PutMembre(numero):
   except ValueError as ex:
     status = 400
     result = str('Valeur invalide pour %s' % ex.message)
+  except Exception as ex:
+    status = 500
+    result = str(ex)
 
   return jsonify(result), status
 
