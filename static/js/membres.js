@@ -27,25 +27,20 @@ function EnvoyerAjoutMembre() {
     type: 'POST',
     data: donneesRequete,
     dataType: 'json',
-  }).done(function (data) {
-    if (data.status == 'ok') {
-      // Fermer le dialogue et réinitialiser le formulaire.
-      $('#ajoutmembre').modal('hide');
-      ReinitialiserFormulaireAjoutMembre();
+  }).done(function (data, textStatus, jqXHR) {
+    // Fermer le dialogue et réinitialiser le formulaire.
+    $('#ajoutmembre').modal('hide');
 
-      // Afficher une confirmation.
-      AfficherInfo('Membre ' + donneesRequete.prenom + ' ' + donneesRequete.nom + ' (#' + data.numero + ') ajouté.');
+    // Afficher une confirmation.
+    AfficherInfo('Membre ' + donneesRequete.prenom + ' ' + donneesRequete.nom + ' (#' + data['numero'] + ') ajouté.');
 
-      // Recharger la liste de membres.
-      RechargerListeMembres();
-    } else {
-      AfficherErreur('Erreur: ' + data.errorstr);
-    }
-  }).fail(function () {
-    AfficherErreur('Erreur lors de la connexion au serveur.');
+    // Recharger la liste de membres.
+    RechargerListeMembres();
+  }).fail(function (jqXHR, textStatus, errorThrown) {
+    AfficherErreur('Erreur lors de la connexion au serveur: ' + errorThrown);
+    console.log("bonbon");
   });
 }
-
 
 /**
  * Initialise le formattage du tableau de membres.
