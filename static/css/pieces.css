@@ -1,8 +1,8 @@
-#membres tbody tr td {
+#pieces tbody tr td {
   text-align: center;
 }
 
-#membres {
+#pieces {
   display: none;
 }
 
@@ -11,11 +11,13 @@
   display: none;
 }
 
-#ajoutmembre {
+#ajoutpiece {
   display: none;
 }
 
+/*
 table.dataTable tr.odd { cursor: pointer; }
 table.dataTable tr.even { cursor: pointer; }
 table.dataTable tr.odd:hover { text-decoration: underline; cursor: pointer; }
 table.dataTable tr.even:hover { text-decoration: underline;  cursor: pointer; }
+*/

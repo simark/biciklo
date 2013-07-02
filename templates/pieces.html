@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<link href="/static/css/pieces.css" rel="stylesheet" type="text/css" />
+<script src="/static/js/pieces.js"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Liste des pièces</h1>
+
+  <div>
+    <button type="button" class="btn btn-primary">Nouvelle pièce</button>
+  </div>
+
+  <div id="loading" style="text-align: center">
+    <img src="/static/loading.gif" />
+  </div>
+
+  <div>
+    <table id="pieces">
+      <thead>
+         <tr>
+           <th data-column="numero">#</th>
+           <th data-column="section">Section</th>
+           <th data-column="nom">Nom</th>
+           <th data-column="reference">Référence</th>
+           <th data-column="caracteristiques">Caractéristiques</th>
+           <th data-column="prix">Prix</th>
+           <th data-column="quantite">Quantité</th>
+           <th data-column="prixusage">Prix (usagé)</th>
+           <th data-column="quantiteusage">Quantité (usagé)</th>
+           <th data-column="remarques">Remarques</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

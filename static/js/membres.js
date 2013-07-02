@@ -54,7 +54,6 @@ function InitListeMembres() {
   // Initialiser le tableau datatables.
   $('#membres').dataTable({
     'aaData': null,
-    'bJQueryUI': true,
     'bLengthChange': false,
     'iDisplayLength': 20,
     'oLanguage': {
@@ -76,59 +75,13 @@ function InitListeMembres() {
   });
 }
 
-
 /**
  * Remplis la liste des membres à partir de la liste JSON reçue du serveur.
  */
 function RemplirTableauMembres(membres_json) {
   tableau = $('#membres');
 
-  // Vider le contenu actuel
-  tableau.dataTable().fnClearTable();
-
-  colonnes = []
-  membres = new Array();
-
-  // Aller chercher les infos sur les colonnes.
-  $('#membres th').each(function(i) {
-
-    colonnes.push({
-      source: $(this).attr('data-column'),
-      transform: $(this).attr('data-transform'),
-    });
-  });
-
-  // Créer une ligne par membre.
-  for (i in membres_json) {
-
-    membre_json = membres_json[i];
-    membre = new Array();
-
-    // Créer le tableau d'infos pour ce membre.
-    for (col in colonnes) {
-      colname = colonnes[col].source;
-      transform = colonnes[col].transform;
-
-      if (colname in membre_json) {
-        valeur = membre_json[colname];
-
-        // Si une fonction de transformation est spécifiée, l'appeler.
-        if (transform && transform in window &&
-            typeof(window[transform] == "function")) {
-          valeur = window[transform](valeur);
-        }
-
-        membre.push(valeur);
-      } else {
-        membre.push('?');
-      }
-    }
-
-    membres.push(membre);
-  }
-
-  // Ajouter les rangées au tableau.
-  tableau.dataTable().fnAddData(membres);
+  RemplirTableauGenerique(membres_json, tableau);
 
   // Afficher le tableau, cacher l'indicateur de chargement.
   $('#loading').hide();
@@ -149,15 +102,10 @@ function RechargerListeMembres() {
   $.ajax({
     url: '/api/membres',
     dataType: 'json',
-  }).done(function(data) {
-    if (data.status == 'ok') {
-      // Remplir le tableau.
-      RemplirTableauMembres(data.membres);
-    } else {
-      AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + data.errorstr);
-    }
-  }).fail(function() {
-    AfficherErreur('Erreur lors du téléchargement de la liste de membres.');
+  }).done(function(data, textStatus, jqXHR) {
+    RemplirTableauMembres(data);
+  }).fail(function(jqXHR, textStatus, errorThrown) {
+    AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + errorThrown);
   });
 }
 

@@ -1,8 +1,4 @@
-/* Pour profil membre */
-
-
 #detailsmembre td.cle {
-
   text-align: right;
   padding: 8px 8px 8px 50px;
   border-bottom: 1px #999 solid;
@@ -10,7 +6,8 @@
   border-top: 1px #999 solid;
 }
 
-#detailsmembre td.valeur {font-weight: bold;
+#detailsmembre td.valeur {
+  font-weight: bold;
   padding: 8px 50px 8px 8px;
   border-bottom: 1px #999 solid;
   border-right: 1px #999 solid;
