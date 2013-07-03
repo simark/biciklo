@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<link href="/static/css/caisse.css" rel="stylesheet" type="text/css" />
+<script src="/static/js/caisse.js"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Commandes en cours</h1>
+
+  <div>
+    <form class="form-inline" id="form-nouvelle-commande">
+    Nouvelle commande:
+    <div class="input-append">
+      <input type="text" class="input-mini" placeholder="membre" id="input-nouvelle-commande">
+      <button class="btn">Go</button>
+    </div>
+    </form>
+  </div>
+
+
+  <div id="commandes-container">
+    <div class="commande-container">
+      <span class="commande-membre"><strong>Simon Marchi</strong></span>
+      <span class="commande-remove"><strong><i class="icon-trash"></i></strong></span>
+
+      <div class="commande-contenu">
+        <table class="table table-condensed">
+          <tr>
+            <th>#</th>
+            <th>Catégorie</th>
+            <th>Pièce</th>
+            <th>Référence</th>
+            <th>Quantité</th>
+            <th>Prix unitaire</th>
+            <th>Prix total</th>
+            <th></th>
+          </tr>
+          <tr>
+            <td>123</td>
+            <td>Vitesse</td>
+            <td>Câble de vitesse</td>
+            <td>Montagne inox</td>
+            <td>3</td>
+            <td>1,50$</td>
+            <td>4,50$</td>
+            <td><i class="icon-remove"></i></td>
+          </tr>
+          <tr>
+            <td>456</td>
+            <td>Roues</td>
+            <td>Rayon</td>
+            <td>Inox</td>
+            <td>11</td>
+            <td>0,50$</td>
+            <td>5,50$</td>
+            <td><i class="icon-remove"></i></td>
+          </tr>
+          <tr>
+            <td colspan="100">
+              <form>
+              <input class="input-mini input-numero-piece" type="text" placeholder="#">
+              <input class="input-mini input-quantite-piece" type="text" placeholder="quantité">
+              <input type="submit" class="btn" value="Ajouter">
+              </form>
+            </td>
+          </tr>
+        </table>
+        <div style="text-align: right;"><strong>Montant total: 9.00$</strong></div>
+      </div>
+    </div>
+  </div>
+
+
+{% endblock %}

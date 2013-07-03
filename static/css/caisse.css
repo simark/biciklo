@@ -1,0 +1,56 @@
+
+.commande-container {
+  border: 1px solid #aaa;
+  margin: 20px;
+}
+
+.commande-membre {
+  -webkit-border-radius: 0px 0px 5px 0px;
+  -moz-border-radius: 0px 0px 5px 0px;
+  border-radius: 0px 0px 5px 0px;
+  border-right: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  padding: 5px;
+  background-color: #f9f9f9;
+  color: #333;
+  float: left;
+
+}
+
+.commande-remove {
+  -webkit-border-radius: 0px 0px 0px 5px;
+  -moz-border-radius: 0px 0px 0px 5px;
+  border-radius: 0px 0px 0px 5px;
+  border-left: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  padding: 5px;
+  background-color: #f9f9f9;
+  color: #333;
+
+  float: right;
+}
+
+.commande-contenu {
+  margin: 40px 20px 20px 20px;
+}
+
+.commande-contenu td {
+  background-color: #f9f9f9;
+}
+
+.commande-contenu input[type=text] {
+  margin-bottom: 0px;
+}
+
+.commande-contenu form {
+  margin: 0;
+}
+
+.commande-contenu i.icon-remove {
+  cursor: pointer;
+  color: #999;
+}
+
+.commande-contenu i.icon-remove:hover {
+  color: black;
+}

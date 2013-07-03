@@ -38,7 +38,6 @@ function EnvoyerAjoutMembre() {
     RechargerListeMembres();
   }).fail(function (jqXHR, textStatus, errorThrown) {
     AfficherErreur('Erreur lors de la connexion au serveur: ' + errorThrown);
-    console.log("bonbon");
   });
 }
 

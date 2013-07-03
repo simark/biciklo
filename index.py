@@ -169,6 +169,10 @@ def ListePieces():
 def UnePiece():
   return render_template('piece.html')
 
+@app.route('/caisse', methods=['GET'])
+def Caisse():
+  return render_template('caisse.html')
+
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
   d = db.DBConnection()
