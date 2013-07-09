@@ -59,6 +59,18 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
   tableau.dataTable().fnAddData(lignes);
 }
 
+function NombreVersPrix(str) {
+  int = parseInt(str);
+  cennes = (int % 100).toString();
+  dollars = ((int - cennes) / 100).toString();
+
+  if (cennes.length == 1) {
+    cennes = "0" + cennes;
+  }
+
+  return dollars + "," + cennes + " $";
+}
+
 function InitCommun() {
 
 }
