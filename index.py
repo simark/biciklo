@@ -92,6 +92,13 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
 
   return ret
 
+# dev
+@app.route('/api/dev/drop', methods=['GET'])
+def Drop():
+  db.DBConnection().membres.remove()
+  db.DBConnection().pieces.remove()
+
+  return "ok"
 
 # api membres
 @app.route('/api/membres', methods=['GET'])
@@ -124,7 +131,7 @@ def PostMembres():
 
     db.DBConnection().membres.insert(membre)
     
-    headers['Location'] = url_for('PostMembres') + "/" + membre['numero']
+    headers['Location'] = url_for('PostMembres') + "/" + str(membre['numero'])
 
     result = {'numero': membre['numero']}
 
@@ -141,7 +148,7 @@ def PostMembres():
   return jsonify(result), status
   
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
-def PutMembre(numero):
+def PutMembres(numero):
   result = {}
   status = 200
 
@@ -168,12 +175,12 @@ def PutMembre(numero):
   return jsonify(result), status
 
 @app.route('/api/membres/<int:numero>', methods=['DELETE'])
-def DeleteMembre(numero):
+def DeleteMembres(numero):
   result = ''
   status = 204
 
   try:
-    delete_result = db.DBConnection().membres.remove({'numero': numero}, w = 1)
+    db.DBConnection().membres.remove({'numero': numero})
   except Exception as ex:
     status = 500
     result = str(ex)
@@ -240,6 +247,46 @@ def PostPieces():
     result = str(ex)
 
   return jsonify(result), status, headers
+
+@app.route('/api/pieces/<int:numero>', methods=['PUT'])
+def PutPieces(numero):
+  result = {}
+  status = httplib.NO_CONTENT
+
+  try:
+    valeurs = ParseIncoming(request.form, 'pieces', False)
+
+    update_result = db.DBConnection().pieces.update(
+        {'numero': numero},
+        {'$set': valeurs},
+        safe = True
+    )
+
+    if not update_result['updatedExisting']:
+      status = 404
+      result = str('Piece inexistante')
+
+  except ValueError as ex:
+    status = 400
+    result = str('Valeur invalide pour %s' % ex.message)
+  except Exception as ex:
+    status = 500
+    result = str(ex)
+
+  return jsonify(result), status
+
+@app.route('/api/pieces/<int:numero>', methods=['DELETE'])
+def DeletePieces(numero):
+  result = ''
+  status = 204
+
+  try:
+    db.DBConnection().pieces.remove({'numero': numero})
+  except Exception as ex:
+    status = 500
+    result = str(ex)
+
+  return jsonify(result), status
 
 # l'app web
 @app.route('/membres/', methods=['GET'])
