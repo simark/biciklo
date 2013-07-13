@@ -68,8 +68,7 @@ validation = {
 }
 
 """
-  Throws KeyError if required key is not present.
-  Throws ValueError if value is not valid.
+  Throws RequestError if missing parameter/wrong value.
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   def ValidateValue(valid_values, key, value):
@@ -77,10 +76,10 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
       valid = valid_values[key]
       if hasattr(valid, '__call__'):
         if not valid(value):
-          raise ValueError(key)
+          raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
       elif isinstance(valid, list):
         if not value in valid:
-          raise ValueError(key)
+          raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
 
   if collection_name in validation:
     required_keys = validation[collection_name]['required']
@@ -94,10 +93,12 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   ret = {}
 
   for key in required_keys:
-    if key in data or throw_if_required_missing:
-      value = data[key]
-      ValidateValue(valid_values, key, value)
-      ret[key] = value
+    if key not in data and throw_if_required_missing:
+      raise RequestError(httplib.BAD_REQUEST, "Parametre manquant: %s" % key)
+
+    value = data[key]
+    ValidateValue(valid_values, key, value)
+    ret[key] = value
 
   for key in optional_keys:
     if key in data:
@@ -150,12 +151,9 @@ def PostMembres():
 
     result = {'numero': membre['numero']}
 
-  except KeyError as ex:
-    status = 400
-    result = 'Parametre manquant: %s.' % ex.message
-  except ValueError as ex:
-    status = 400
-    result = 'Valeur invalide pour %s.' % ex.message
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as ex:
     status = 500
     result = str(ex)
@@ -180,9 +178,9 @@ def PutMembres(numero):
       status = 404
       result = str('Membre inexistant')
 
-  except ValueError as ex:
-    status = 400
-    result = str('Valeur invalide pour %s' % ex.message)
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as ex:
     status = 500
     result = str(ex)
@@ -246,20 +244,16 @@ def PostPieces():
 
     piece['numero'] = int(piece['numero'])
 
-    if db.DBConnection().pieces.find_one({'numero': piece['numero']}) == None:
-      db.DBConnection().pieces.insert(piece)
+    if PieceExiste(piece['numero']):
+      raise RequestError(httplib.CONFLICT, 'Ce numero de piece est deja pris')
 
-      headers['Location'] = url_for('GetPiecesNumero', numero = piece['numero'])
-    else:
-      status = httplib.CONFLICT
-      result = 'Ce numero de piece est deja pris'
+    db.DBConnection().pieces.insert(piece)
 
-  except KeyError as ex:
-    status = httplib.BAD_REQUEST
-    result = 'Parametre manquant: %s.' % ex.message
-  except ValueError as ex:
-    status = httplib.BAD_REQUEST
-    result = 'Valeur invalide pour %s.' % ex.message
+    headers['Location'] = url_for('GetPiecesNumero', numero = piece['numero'])
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as ex:
     status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
@@ -284,9 +278,9 @@ def PutPieces(numero):
       status = 404
       result = str('Piece inexistante')
 
-  except ValueError as ex:
-    status = 400
-    result = str('Valeur invalide pour %s' % ex.message)
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as ex:
     status = 500
     result = str(ex)
@@ -369,12 +363,6 @@ def PostFactures():
     headers['Location'] = url_for('GetFacturesNumero', numero=facture['numero'])
     result = {'numero': facture['numero']}
 
-  except KeyError as ex:
-    status = 400
-    result = 'Parametre manquant: %s.' % ex.message
-  except ValueError as ex:
-    status = 400
-    result = 'Valeur invalide pour %s.' % ex.message
   except RequestError as ex:
     status = ex.status
     result = ex.msg
@@ -404,9 +392,6 @@ def PutFactures(numero):
       status = httplib.NOT_FOUND
       result = str('Facture inexistante')
 
-  except ValueError as ex:
-    status = httplib.BAD_REQUEST
-    result = str('Valeur invalide pour %s' % ex.message)
   except RequestError as ex:
     status = ex.status
     result = ex.msg
@@ -454,7 +439,7 @@ def MembreExiste(numero):
   return db.DBConnection().membres.find_one({'numero': numero}) != None
 
 def PieceExiste(numero):
-  return db.DBConnection().piece.find_one({'numero': numero}) != None
+  return db.DBConnection().pieces.find_one({'numero': numero}) != None
 
 def BenevoleExiste(numero):
   # En attendant...
