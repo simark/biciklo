@@ -19,6 +19,7 @@ import db
 app = Flask(__name__)
 
 def jsonify(stuff):
+  stuff = RemoveIds(stuff)
   return json.dumps(stuff,
                     default=json_util.default,
                     sort_keys = True,
@@ -200,7 +201,7 @@ def GetMembres():
   headers = {'Content-type': 'application/json'}
 
   try:
-    result = RemoveIds(list(db.DBConnection().membres.find()))
+    result = list(db.DBConnection().membres.find())
   except Exception as e:
     result = str(e)
     status = 500
@@ -284,10 +285,14 @@ def GetMembresNumero(numero):
   status = 200
 
   try:
+    if not MembreExiste(numero):
+      raise RequestError(httplib.NOT_FOUND, "Ce membre n'existe pas.")
+
     result = db.DBConnection().membres.find_one({'numero': numero})
-    if result is None:
-      result = {'error': 'Ce membre n\'existe pas'}
-      status = 404
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as e:
     result = str(e)
     status = 200
@@ -301,7 +306,7 @@ def GetPieces():
   status = 200
 
   try:
-    result = RemoveIds(list(db.DBConnection().pieces.find()))
+    result = list(db.DBConnection().pieces.find())
 
   except Exception as e:
     result = str(e)
@@ -381,13 +386,14 @@ def GetPiecesNumero(numero):
   status = 200
 
   try:
+    if not PieceExiste(numero):
+      raise RequestError(httplib.NOT_FOUND, "Cette pièce n'existe pas.")
+
     result = db.DBConnection().pieces.find_one({'numero': numero})
-    if result is None:
-      result = {'error': 'Cette piece n\'existe pas'}
-      status = 404
 
-    result = RemoveIds(result)
-
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as e:
     result = str(e)
     status = 200
@@ -480,6 +486,10 @@ def DeleteFactures(numero):
 
   try:
     db.DBConnection().factures.remove({'numero': numero})
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as ex:
     status = 500
     result = str(ex)
@@ -492,13 +502,14 @@ def GetFacturesNumero(numero):
   status = 200
 
   try:
+    if not FactureExiste(numero):
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
+
     result = db.DBConnection().factures.find_one({'numero': numero})
-    if result is None:
-      result = {'error': 'Cette facture n\'existe pas'}
-      status = 404
 
-    result = RemoveIds(result)
-
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
   except Exception as e:
     result = str(e)
     status = 200
@@ -512,6 +523,9 @@ def MembreExiste(numero):
 
 def PieceExiste(numero):
   return db.DBConnection().pieces.find_one({'numero': numero}) != None
+
+def FactureExiste(numero):
+  return db.DBConnection().factures.find_one({'numero': numero}) != None
 
 def EstBenevole(numero):
   membre = db.DBConnection().membres.find_one({'numero': numero, 'estbenevole': True})
