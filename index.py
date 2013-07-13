@@ -44,7 +44,7 @@ validation = {
   },
   'pieces': {
     'required': ['numero'],
-    'optional': ['section', 'nom', 'reference', 'caracteristique'],
+    'optional': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantiteneuf', 'prixneuf', 'quantiteusage', 'prixusage', 'remarques'],
     'valid': {
       'numero': unicode.isdigit
     }
@@ -130,7 +130,7 @@ def PostMembres():
     membre['dateinscription'] = datetime.now()
 
     db.DBConnection().membres.insert(membre)
-    
+
     headers['Location'] = url_for('PostMembres') + "/" + str(membre['numero'])
 
     result = {'numero': membre['numero']}
@@ -146,7 +146,7 @@ def PostMembres():
     result = str(ex)
 
   return jsonify(result), status
-  
+
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
 def PutMembres(numero):
   result = {}
