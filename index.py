@@ -121,6 +121,20 @@ validation = {
       'fermee': api_boolean,
     }
   },
+  'factureajoutpiece': {
+    'req': ['numero'],
+    'opt': ['quantiteneuf', 'quantiteusage'],
+    'valid': {
+      'numero': unicode.isdigit,
+      'quantiteneuf': unicode.isdigit,
+      'quantiteusage': unicode.isdigit,
+    },
+    'transform': {
+      'numero': int,
+      'quantiteneuf': int,
+      'quantiteusage': int,
+    }
+  },
 }
 
 """
@@ -197,14 +211,14 @@ sont parfois omises):
 @app.route('/api/membres', methods=['GET'])
 def GetMembres():
   result = {}
-  status = 200
+  status = httplib.OK
   headers = {'Content-type': 'application/json'}
 
   try:
     result = list(db.DBConnection().membres.find())
   except Exception as e:
     result = str(e)
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status, headers
 
@@ -214,7 +228,7 @@ def PostMembres():
   headers = {}
 
   result = None
-  status = 201
+  status = httplib.CREATED
 
   try:
     membre = ParseIncoming(request.form, 'membres')
@@ -232,7 +246,7 @@ def PostMembres():
     status = ex.status
     result = ex.msg
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status, headers
@@ -240,7 +254,7 @@ def PostMembres():
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
 def PutMembres(numero):
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
     membre = ParseIncoming(request.form, 'membres', False)
@@ -252,28 +266,27 @@ def PutMembres(numero):
     )
 
     if not update_result['updatedExisting']:
-      status = 404
+      status = httplib.NOT_FOUND
       result = str('Membre inexistant')
 
   except RequestError as ex:
     status = ex.status
     result = ex.msg
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
-    traceback.print_exc()
 
   return jsonify(result), status
 
 @app.route('/api/membres/<int:numero>', methods=['DELETE'])
 def DeleteMembres(numero):
   result = ''
-  status = 204
+  status = httplib.NO_CONTENT
 
   try:
     db.DBConnection().membres.remove({'numero': numero})
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status
@@ -282,7 +295,7 @@ def DeleteMembres(numero):
 @app.route('/api/membres/<int:numero>', methods=['GET'])
 def GetMembresNumero(numero):
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
     if not MembreExiste(numero):
@@ -295,7 +308,7 @@ def GetMembresNumero(numero):
     result = ex.msg
   except Exception as e:
     result = str(e)
-    status = 200
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status
 
@@ -303,14 +316,14 @@ def GetMembresNumero(numero):
 @app.route('/api/pieces', methods=['GET'])
 def GetPieces():
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
     result = list(db.DBConnection().pieces.find())
 
   except Exception as e:
     result = str(e)
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status
 
@@ -362,7 +375,7 @@ def PutPieces(numero):
     status = ex.status
     result = ex.msg
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status
@@ -370,12 +383,12 @@ def PutPieces(numero):
 @app.route('/api/pieces/<int:numero>', methods=['DELETE'])
 def DeletePieces(numero):
   result = ''
-  status = 204
+  status = httplib.NO_CONTENT
 
   try:
     db.DBConnection().pieces.remove({'numero': numero})
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status
@@ -383,7 +396,7 @@ def DeletePieces(numero):
 @app.route('/api/pieces/<int:numero>', methods=['GET'])
 def GetPiecesNumero(numero):
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
     if not PieceExiste(numero):
@@ -396,21 +409,21 @@ def GetPiecesNumero(numero):
     result = ex.msg
   except Exception as e:
     result = str(e)
-    status = 200
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status
 
 @app.route('/api/factures', methods=['GET'])
 def GetFactures():
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
-    result = RemoveIds(list(db.DBConnection().factures.find()))
+    result = list(db.DBConnection().factures.find())
 
   except Exception as e:
     result = str(e)
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status
 
@@ -445,7 +458,7 @@ def PostFactures():
     status = ex.status
     result = ex.msg
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status, headers
@@ -482,7 +495,7 @@ def PutFactures(numero):
 @app.route('/api/factures/<int:numero>', methods=['DELETE'])
 def DeleteFactures(numero):
   result = ''
-  status = 204
+  status = httplib.NO_CONTENT
 
   try:
     db.DBConnection().factures.remove({'numero': numero})
@@ -491,7 +504,7 @@ def DeleteFactures(numero):
     status = ex.status
     result = ex.msg
   except Exception as ex:
-    status = 500
+    status = httplib.INTERNAL_SERVER_ERROR
     result = str(ex)
 
   return jsonify(result), status
@@ -499,33 +512,178 @@ def DeleteFactures(numero):
 @app.route('/api/factures/<int:numero>', methods=['GET'])
 def GetFacturesNumero(numero):
   result = {}
-  status = 200
+  status = httplib.OK
 
   try:
     if not FactureExiste(numero):
       raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
 
-    result = db.DBConnection().factures.find_one({'numero': numero})
+    result = ObtenirFacture(numero)
 
   except RequestError as ex:
     status = ex.status
     result = ex.msg
   except Exception as e:
     result = str(e)
-    status = 200
+    status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status
 
+def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
+  entree_piece = {}
+
+  if 'quantiteneuf' in valeurs:
+    quantite_neuf = valeurs['quantiteneuf']
+    if 'prixneuf' not in piece:
+      raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix neuf.")
+
+    prix_neuf = piece['prixneuf']
+
+    entree_piece['prixneuf'] = prix_neuf
+    entree_piece['quantiteneuf'] = quantite_neuf
+
+  if 'quantiteusage' in valeurs:
+    quantite_usage = valeurs['quantiteusage']
+    if 'prixusage' not in piece:
+      raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix usagé.")
+
+    prix_usage = piece['prixusage']
+
+    entree_piece['prixusage'] = prix_usage
+    entree_piece['quantiteusage'] = quantite_usage
+
+  return entree_piece
+
+@app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
+def PostFacturesNumeroPieces(numero_facture):
+  result = {}
+  status = httplib.OK
+
+  try:
+    if not FactureExiste(numero_facture):
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
+
+    facture = ObtenirFacture(numero_facture)
+
+    val = ParseIncoming(request.form, 'factureajoutpiece')
+    numero_piece = val['numero']
+
+    if not PieceExiste(numero_piece):
+      raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce n'existe pas.")
+
+    if 'pieces' in facture:
+      for ep in facture['pieces']:
+        if ep['numero'] == numero_piece:
+          raise RequestError(httplib.CONFLICT, "Cette pièce fait déjà partie de cette facture.")
+
+    piece = ObtenirPiece(numero_piece)
+
+    entree_piece = TraiterQuantitesAjoutPieceFacture(val, piece)
+    entree_piece['numero'] = numero_piece
+
+    db.DBConnection().factures.update({'numero': numero_facture},
+      {'$push': {'pieces': entree_piece}})
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as e:
+    result = str(e)
+    status = httplib.INTERNAL_SERVER_ERROR
+
+  return jsonify(result), status
+
+@app.route('/api/factures/<int:numero_facture>/pieces/<int:numero_piece>', methods=['PUT'])
+def PutPieceInFacture(numero_facture, numero_piece):
+  result = {}
+  status = httplib.NO_CONTENT
+
+  try:
+    if not FactureExiste(numero_facture):
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
+
+    facture = ObtenirFacture(numero_facture)
+
+    if not PieceExiste(numero_piece):
+      raise RequestError(httplib.NOT_FOUND, "Cette piece n'existe pas.")
+
+    if 'pieces' not in facture:
+      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
+
+    entree_piece = None
+
+    for ep in facture['pieces']:
+      if ep['numero'] == numero_piece:
+        entree_piece = ep
+        break
+
+    if entree_piece is None:
+      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
+
+    val = ParseIncoming(request.form, 'factureajoutpiece', False)
+
+    piece = ObtenirPiece(numero_piece)
+
+    entree_piece_new = TraiterQuantitesAjoutPieceFacture(val, piece)
+    entree_piece.update(entree_piece_new)
+
+    db.DBConnection().factures.update({'numero': numero_facture, 'pieces.numero': numero_piece},
+      {'$set': {'pieces.$': entree_piece}})
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as ex:
+    status = httplib.INTERNAL_SERVER_ERROR
+    result = str(ex)
+
+  return jsonify(result), status
+
+@app.route('/api/factures/<int:numero_facture>/pieces/<int:numero_piece>', methods=['DELETE'])
+def DeletePieceFromFacture(numero_facture, numero_piece):
+  result = {}
+  status = httplib.NO_CONTENT
+
+  try:
+    if not FactureExiste(numero_facture):
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
+
+    facture = ObtenirFacture(numero_facture)
+
+    pieceDansFacture = False
+
+    if 'pieces' in facture:
+      for ep in facture['pieces']:
+        if ep['numero'] == numero_piece:
+          db.DBConnection().factures.update({'numero': numero_facture}, {'$pull': {'pieces': {'numero': numero_piece}}})
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as e:
+    result = str(e)
+    status = httplib.INTERNAL_SERVER_ERROR
+
+  return jsonify(result), status
 
 # Helper
 def MembreExiste(numero):
-  return db.DBConnection().membres.find_one({'numero': numero}) != None
+  return ObtenirMembre(numero) != None
+
+def ObtenirMembre(numero):
+  return db.DBConnection().membres.find_one({'numero': numero})
 
 def PieceExiste(numero):
-  return db.DBConnection().pieces.find_one({'numero': numero}) != None
+  return ObtenirPiece(numero) != None
+
+def ObtenirPiece(numero):
+  return db.DBConnection().pieces.find_one({'numero': numero})
 
 def FactureExiste(numero):
-  return db.DBConnection().factures.find_one({'numero': numero}) != None
+  return ObtenirFacture(numero) != None
+
+def ObtenirFacture(numero):
+  return db.DBConnection().factures.find_one({'numero': numero})
 
 def EstBenevole(numero):
   membre = db.DBConnection().membres.find_one({'numero': numero, 'estbenevole': True})
