@@ -34,6 +34,14 @@ def RemoveIds(data):
 
     return data
 
+class RequestError(Exception):
+  def __init__(self, status, msg):
+    self.status = status
+    self.msg = msg
+
+  def __str__(self):
+    return "%s (%d)" % (self.msg, self.status)
+
 validation = {
   'membres': {
     'required': ['prenom', 'nom'],
@@ -48,9 +56,16 @@ validation = {
     'valid': {
       'numero': unicode.isdigit
     }
+  },
+  'factures': {
+    'required': ['membre'],
+    'optional': ['benevole'],
+    'valid': {
+      'membre': unicode.isdigit,
+      'benevole': unicode.isdigit
+    }
   }
 }
-
 
 """
   Throws KeyError if required key is not present.
@@ -131,7 +146,7 @@ def PostMembres():
 
     db.DBConnection().membres.insert(membre)
 
-    headers['Location'] = url_for('PostMembres') + "/" + str(membre['numero'])
+    headers['Location'] = url_for('GetMembresNumero', numero = membre['numero'])
 
     result = {'numero': membre['numero']}
 
@@ -145,7 +160,7 @@ def PostMembres():
     status = 500
     result = str(ex)
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 @app.route('/api/membres/<int:numero>', methods=['PUT'])
 def PutMembres(numero):
@@ -189,7 +204,7 @@ def DeleteMembres(numero):
 
 
 @app.route('/api/membres/<int:numero>', methods=['GET'])
-def GetMembreNumero(numero):
+def GetMembresNumero(numero):
   result = {}
   status = 200
 
@@ -223,18 +238,21 @@ def GetPieces():
 @app.route('/api/pieces', methods=['POST'])
 def PostPieces():
   result = {}
-  print result
   status = httplib.CREATED
   headers = {}
 
   try:
     piece = ParseIncoming(request.form, 'pieces')
 
-    db.DBConnection().pieces.insert(piece)
+    piece['numero'] = int(piece['numero'])
 
-    numero = piece['numero']
+    if db.DBConnection().pieces.find_one({'numero': piece['numero']}) == None:
+      db.DBConnection().pieces.insert(piece)
 
-    headers['Location'] = url_for('GetPieces') + '/' + str(numero)
+      headers['Location'] = url_for('GetPiecesNumero', numero = piece['numero'])
+    else:
+      status = httplib.CONFLICT
+      result = 'Ce numero de piece est deja pris'
 
   except KeyError as ex:
     status = httplib.BAD_REQUEST
@@ -288,6 +306,162 @@ def DeletePieces(numero):
 
   return jsonify(result), status
 
+@app.route('/api/pieces/<int:numero>', methods=['GET'])
+def GetPiecesNumero(numero):
+  result = {}
+  status = 200
+
+  try:
+    result = db.DBConnection().pieces.find_one({'numero': numero})
+    if result is None:
+      result = {'error': 'Cette piece n\'existe pas'}
+      status = 404
+
+    result = RemoveIds(result)
+
+  except Exception as e:
+    result = str(e)
+    status = 200
+
+  return jsonify(result), status
+
+@app.route('/api/factures', methods=['GET'])
+def GetFactures():
+  result = {}
+  status = 200
+
+  try:
+    result = RemoveIds(list(db.DBConnection().factures.find()))
+
+  except Exception as e:
+    result = str(e)
+    status = 500
+
+  return jsonify(result), status
+
+def ValidationFactures(facture):
+  if 'membre' in facture and not MembreExiste(facture['membre']):
+    raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Ce membre n'existe pas.")
+
+  if 'benevole' in facture and not BenevoleExiste(facture['benevole']):
+    raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Ce benevole n'existe pas.")
+
+@app.route('/api/factures', methods=['POST'])
+def PostFactures():
+  facture = {}
+  headers = {}
+
+  result = {}
+  status = httplib.CREATED
+
+  try:
+    facture = ParseIncoming(request.form, 'factures')
+
+    facture['numero'] = ObtenirProchainNumeroDeFacture()
+    facture['date'] = datetime.now()
+    facture['membre'] = int(facture['membre'])
+    if 'benevole' in facture:
+      facture['benevole'] = int(facture['benevole'])
+
+    ValidationFactures(facture)
+
+    db.DBConnection().factures.insert(facture)
+    headers['Location'] = url_for('GetFacturesNumero', numero=facture['numero'])
+    result = {'numero': facture['numero']}
+
+  except KeyError as ex:
+    status = 400
+    result = 'Parametre manquant: %s.' % ex.message
+  except ValueError as ex:
+    status = 400
+    result = 'Valeur invalide pour %s.' % ex.message
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as ex:
+    status = 500
+    result = str(ex)
+
+  return jsonify(result), status, headers
+
+@app.route('/api/factures/<int:numero>', methods=['PUT'])
+def PutFactures(numero):
+  result = {}
+  status = httplib.NO_CONTENT
+
+  try:
+    facture = ParseIncoming(request.form, 'factures', False)
+
+    ValidationFactures(facture)
+
+    update_result = db.DBConnection().factures.update(
+        {'numero': numero},
+        {'$set': facture},
+        safe = True
+    )
+
+    if not update_result['updatedExisting']:
+      status = httplib.NOT_FOUND
+      result = str('Facture inexistante')
+
+  except ValueError as ex:
+    status = httplib.BAD_REQUEST
+    result = str('Valeur invalide pour %s' % ex.message)
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as ex:
+    status = httplib.INTERNAL_SERVER_ERROR
+    result = str(ex)
+
+  return jsonify(result), status
+
+@app.route('/api/factures/<int:numero>', methods=['DELETE'])
+def DeleteFactures(numero):
+  result = ''
+  status = 204
+
+  try:
+    db.DBConnection().factures.remove({'numero': numero})
+  except Exception as ex:
+    status = 500
+    result = str(ex)
+
+  return jsonify(result), status
+
+@app.route('/api/factures/<int:numero>', methods=['GET'])
+def GetFacturesNumero(numero):
+  result = {}
+  status = 200
+
+  try:
+    result = db.DBConnection().factures.find_one({'numero': numero})
+    if result is None:
+      result = {'error': 'Cette facture n\'existe pas'}
+      status = 404
+
+    result = RemoveIds(result)
+
+  except Exception as e:
+    result = str(e)
+    status = 200
+
+  return jsonify(result), status
+
+
+# Helper
+def MembreExiste(numero):
+  return db.DBConnection().membres.find_one({'numero': numero}) != None
+
+def PieceExiste(numero):
+  return db.DBConnection().piece.find_one({'numero': numero}) != None
+
+def BenevoleExiste(numero):
+  # En attendant...
+  #return db.DBConnection().benevole.find_one({'numero': numero}) != None
+  return True
+
+
 # l'app web
 @app.route('/membres/', methods=['GET'])
 def ListeMembres():
@@ -310,6 +484,7 @@ def UnePiece():
 def Caisse():
   return render_template('caisse.html')
 
+# TODO: replace by http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
   d = db.DBConnection()
@@ -317,7 +492,16 @@ def ObtenirProchainNumeroDeMembre():
   if d.membres.count() == 0:
     return 1
   else:
-    return db.DBConnection().membres.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
+    return d.membres.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
+
+def ObtenirProchainNumeroDeFacture():
+  """Retourne le prochain numero de facture disponible."""
+  d = db.DBConnection()
+
+  if d.factures.count() == 0:
+    return 1
+  else:
+    return d.factures.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
 
 
 if __name__ == '__main__':
