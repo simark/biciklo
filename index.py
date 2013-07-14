@@ -109,16 +109,16 @@ validation = {
   },
   'factures': {
     'req': ['membre'],
-    'opt': ['benevole', 'fermee'],
+    'opt': ['benevole', 'complete'],
     'valid': {
       'membre': unicode.isdigit,
       'benevole': unicode.isdigit,
-      'fermee': api_boolean,
+      'complete': api_boolean,
     },
     'transform': {
       'membre': int,
       'benevole': int,
-      'fermee': api_boolean,
+      'complete': api_boolean,
     }
   },
   'factureajoutpiece': {
@@ -278,6 +278,7 @@ def PutMembres(numero):
 
   return jsonify(result), status
 
+# TODO: est-ce qu'on veut vraiment ça?
 @app.route('/api/membres/<int:numero>', methods=['DELETE'])
 def DeleteMembres(numero):
   result = ''
@@ -380,6 +381,7 @@ def PutPieces(numero):
 
   return jsonify(result), status
 
+# TODO: est-ce qu'on veut vraiment ça?
 @app.route('/api/pieces/<int:numero>', methods=['DELETE'])
 def DeletePieces(numero):
   result = ''
@@ -469,6 +471,9 @@ def PutFactures(numero):
   status = httplib.NO_CONTENT
 
   try:
+    if not FactureExiste(numero):
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
+
     facture = ParseIncoming(request.form, 'factures', False)
 
     ValidationFactures(facture)
@@ -476,12 +481,7 @@ def PutFactures(numero):
     update_result = db.DBConnection().factures.update(
         {'numero': numero},
         {'$set': facture},
-        safe = True
     )
-
-    if not update_result['updatedExisting']:
-      status = httplib.NOT_FOUND
-      result = str('Facture inexistante')
 
   except RequestError as ex:
     status = ex.status
@@ -492,6 +492,7 @@ def PutFactures(numero):
 
   return jsonify(result), status
 
+# TODO: est-ce qu'on veut vraiment ça?
 @app.route('/api/factures/<int:numero>', methods=['DELETE'])
 def DeleteFactures(numero):
   result = ''
@@ -554,10 +555,32 @@ def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
 
   return entree_piece
 
+# Ajoute les quantités à l'inventaire à partir d'une entrée pièce d'une facture
+def AjouterQuantitePieces(entree_piece):
+  numero_piece = entree_piece['numero']
+  if 'quantiteneuf' in entree_piece:
+    quantiteneuf = entree_piece['quantiteneuf']
+    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': quantiteneuf}})
+
+  if 'quantiteusage' in entree_piece:
+    quantiteusage = entree_piece['quantiteusage']
+    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': quantiteusage}})
+
+# Soustrait les quantités de l'inventaire à partir d'une entrée pièce d'une facture
+def SoustraireQuantitePieces(entree_piece):
+  numero_piece = entree_piece['numero']
+  if 'quantiteneuf' in entree_piece:
+    quantiteneuf = entree_piece['quantiteneuf']
+    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': -quantiteneuf}})
+
+  if 'quantiteusage' in entree_piece:
+    quantiteusage = entree_piece['quantiteusage']
+    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': -quantiteusage}})
+
 @app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
-def PostFacturesNumeroPieces(numero_facture):
+def PostPieceInFacture(numero_facture):
   result = {}
-  status = httplib.OK
+  status = httplib.CREATED
 
   try:
     if not FactureExiste(numero_facture):
@@ -583,6 +606,9 @@ def PostFacturesNumeroPieces(numero_facture):
 
     db.DBConnection().factures.update({'numero': numero_facture},
       {'$push': {'pieces': entree_piece}})
+
+    # Ajuster quantités en inventaire
+    SoustraireQuantitePieces(entree_piece)
 
   except RequestError as ex:
     status = ex.status
@@ -625,7 +651,14 @@ def PutPieceInFacture(numero_facture, numero_piece):
     piece = ObtenirPiece(numero_piece)
 
     entree_piece_new = TraiterQuantitesAjoutPieceFacture(val, piece)
+
+    # Ajuster quantités en inventaire (remettre les pièces, anciennes quantités)
+    AjouterQuantitePieces(entree_piece)
+
     entree_piece.update(entree_piece_new)
+
+    # Ajuster quantités en inventaire (enlever les pièces, nouvelles quantités)
+    SoustraireQuantitePieces(entree_piece)
 
     db.DBConnection().factures.update({'numero': numero_facture, 'pieces.numero': numero_piece},
       {'$set': {'pieces.$': entree_piece}})
@@ -650,12 +683,22 @@ def DeletePieceFromFacture(numero_facture, numero_piece):
 
     facture = ObtenirFacture(numero_facture)
 
-    pieceDansFacture = False
+    if 'pieces' not in facture:
+      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
 
-    if 'pieces' in facture:
-      for ep in facture['pieces']:
+    entree_piece = None
+
+    for ep in facture['pieces']:
         if ep['numero'] == numero_piece:
-          db.DBConnection().factures.update({'numero': numero_facture}, {'$pull': {'pieces': {'numero': numero_piece}}})
+          entree_piece = ep
+          break
+
+    if entree_piece is None:
+      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
+
+    AjouterQuantitePieces(entree_piece)
+
+    db.DBConnection().factures.update({'numero': numero_facture}, {'$pull': {'pieces': {'numero': numero_piece}}})
 
   except RequestError as ex:
     status = ex.status
