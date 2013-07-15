@@ -257,17 +257,15 @@ def PutMembres(numero):
   status = httplib.OK
 
   try:
+    if not MembreExiste(numero):
+      raise RequestError(httplib.NOT_FOUND, "Ce membre n'existe pas")
+
     membre = ParseIncoming(request.form, 'membres', False)
 
     update_result = db.DBConnection().membres.update(
         {'numero': numero},
-        {'$set': membre},
-        safe = True
+        {'$set': membre}
     )
-
-    if not update_result['updatedExisting']:
-      status = httplib.NOT_FOUND
-      result = str('Membre inexistant')
 
   except RequestError as ex:
     status = ex.status
