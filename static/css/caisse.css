@@ -4,7 +4,11 @@
   margin: 20px;
 }
 
-.commande-membre {
+#commande-template {
+  display: none;
+}
+
+.commande-titre {
   -webkit-border-radius: 0px 0px 5px 0px;
   -moz-border-radius: 0px 0px 5px 0px;
   border-radius: 0px 0px 5px 0px;
@@ -14,7 +18,7 @@
   background-color: #f9f9f9;
   color: #333;
   float: left;
-
+  font-weight: bold;
 }
 
 .commande-remove {

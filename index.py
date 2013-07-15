@@ -297,6 +297,7 @@ def DeleteMembres(numero):
 def GetMembresNumero(numero):
   result = {}
   status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     if not MembreExiste(numero):
@@ -311,13 +312,14 @@ def GetMembresNumero(numero):
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 # api pieces
 @app.route('/api/pieces', methods=['GET'])
 def GetPieces():
   result = {}
   status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     result = list(db.DBConnection().pieces.find())
@@ -326,7 +328,7 @@ def GetPieces():
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 @app.route('/api/pieces', methods=['POST'])
 def PostPieces():
@@ -419,6 +421,7 @@ def GetPiecesNumero(numero):
 def GetFactures():
   result = {}
   status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     result = list(db.DBConnection().factures.find())
@@ -427,7 +430,7 @@ def GetFactures():
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 def ValidationFactures(facture):
   if 'membre' in facture and not MembreExiste(facture['membre']):
@@ -439,7 +442,7 @@ def ValidationFactures(facture):
 @app.route('/api/factures', methods=['POST'])
 def PostFactures():
   facture = {}
-  headers = {}
+  headers = {'Content-type': 'application/json'}
 
   result = {}
   status = httplib.CREATED
@@ -733,6 +736,10 @@ def EstBenevole(numero):
   return membre != None
 
 # l'app web
+@app.route('/', methods=['GET'])
+def Index():
+  return render_template('index.html')
+
 @app.route('/membres/', methods=['GET'])
 def ListeMembres():
   return render_template('membres.html')

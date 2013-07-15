@@ -19,8 +19,8 @@
 
 
   <div id="commandes-container">
-    <div class="commande-container">
-      <span class="commande-membre"><strong>Simon Marchi</strong></span>
+    <div class="commande-container" id="commande-template">
+      <span class="commande-titre"><strong></strong></span>
       <span class="commande-remove"><strong><i class="icon-trash"></i></strong></span>
 
       <div class="commande-contenu">
@@ -35,7 +35,7 @@
             <th>Prix total</th>
             <th></th>
           </tr>
-          <tr>
+       <!--   <tr>
             <td>123</td>
             <td>Vitesse</td>
             <td>Câble de vitesse</td>
@@ -54,10 +54,10 @@
             <td>0,50$</td>
             <td>5,50$</td>
             <td><i class="icon-remove"></i></td>
-          </tr>
+          </tr>-->
           <tr>
             <td colspan="100">
-              <form>
+              <form class="form-ajout-piece-facture">
               <input class="input-mini input-numero-piece" type="text" placeholder="#">
               <input class="input-mini input-quantite-piece" type="text" placeholder="quantité">
               <input type="submit" class="btn" value="Ajouter">
@@ -65,7 +65,7 @@
             </td>
           </tr>
         </table>
-        <div style="text-align: right;"><strong>Montant total: 9.00$</strong></div>
+        <div style="text-align: right;"><strong>Montant total: x.yy$</strong></div>
       </div>
     </div>
   </div>
