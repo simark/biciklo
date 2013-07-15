@@ -40,6 +40,7 @@ function AjouterFacture(numeroFacture, numeroMembre) {
         {numero: numeroPiece, quantiteneuf: quantite})
         .done(function (data, textStatus, jqXHR) {
           console.log(data);
+          AjouterLignePiece(numeroFacture, numeroPiece);
         })
         .fail(DisplayError);
 
@@ -52,7 +53,13 @@ function AjouterFacture(numeroFacture, numeroMembre) {
 
 }
 
+function AjouterLignePiece(numeroFacture, numeroPiece) {
+  html = $('<tr><td>123</td><td>Vitesse</td><td>Câble de vitesse</td><td>Montagne inox</td><td>3</td><td>1,50$</td><td>4,50$</td><td><i class="icon-remove"></i></td></tr>');
 
+  divCommande = $('#commande-' + numeroFacture);
+  divCommande.find('.commande-contenu table tbody tr').first().after(html);
+
+}
 
 $(document).ready(function () {
   // Batir liste de pieces
@@ -102,6 +109,8 @@ $(document).ready(function () {
       $.each(data, function(key, facture) {
         AjouterFacture(facture.numero, facture.membre);
       });
+
+      $('#loading').hide();
     })
     .fail(DisplayError);
 });
