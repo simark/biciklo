@@ -759,6 +759,14 @@ def UnePiece():
 def Caisse():
   return render_template('caisse.html')
 
+@app.route('/admin', methods=['GET'])
+def Admin():
+  return render_template('admin.html')
+  
+@app.route('/admin/ajoutpiece', methods=['GET'])
+def AdminAjoutPiece():
+  return render_template('admin-ajout-piece.html')
+
 # TODO: replace by http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
