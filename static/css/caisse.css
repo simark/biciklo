@@ -1,14 +1,14 @@
 
-.commande-container {
+.facture-container {
   border: 1px solid #aaa;
   margin: 20px;
 }
 
-#commande-template {
+#facture-template {
   display: none;
 }
 
-.commande-titre {
+.facture-titre {
   -webkit-border-radius: 0px 0px 5px 0px;
   -moz-border-radius: 0px 0px 5px 0px;
   border-radius: 0px 0px 5px 0px;
@@ -21,7 +21,7 @@
   font-weight: bold;
 }
 
-.commande-remove {
+.facture-remove {
   -webkit-border-radius: 0px 0px 0px 5px;
   -moz-border-radius: 0px 0px 0px 5px;
   border-radius: 0px 0px 0px 5px;
@@ -34,27 +34,31 @@
   float: right;
 }
 
-.commande-contenu {
+.facture-contenu {
   margin: 40px 20px 20px 20px;
 }
 
-.commande-contenu td {
+.facture-contenu td {
   background-color: #f9f9f9;
 }
 
-.commande-contenu input[type=text] {
+.facture-contenu input[type=text] {
   margin-bottom: 0px;
 }
 
-.commande-contenu form {
+.facture-contenu form {
   margin: 0;
 }
 
-.commande-contenu i.icon-remove {
+.facture-contenu i.icon-remove {
   cursor: pointer;
   color: #999;
 }
 
-.commande-contenu i.icon-remove:hover {
+.facture-contenu i.icon-remove:hover {
   color: black;
+}
+
+.facture-total {
+  font-weight: bold;
 }

@@ -399,6 +399,7 @@ def DeletePieces(numero):
 def GetPiecesNumero(numero):
   result = {}
   status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     if not PieceExiste(numero):
@@ -413,7 +414,7 @@ def GetPiecesNumero(numero):
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 @app.route('/api/factures', methods=['GET'])
 def GetFactures():
@@ -422,7 +423,7 @@ def GetFactures():
   headers = {'Content-type': 'application/json'}
 
   try:
-    result = list(db.DBConnection().factures.find())
+    result = list(db.DBConnection().factures.find().sort('numero', 1))
 
   except Exception as e:
     result = str(e)
@@ -450,12 +451,13 @@ def PostFactures():
 
     facture['numero'] = ObtenirProchainNumeroDeFacture()
     facture['date'] = datetime.now()
+    facture['pieces'] = []
 
     ValidationFactures(facture)
 
     db.DBConnection().factures.insert(facture)
     headers['Location'] = url_for('GetFacturesNumero', numero=facture['numero'])
-    result = {'numero': facture['numero']}
+    result = facture
 
   except RequestError as ex:
     status = ex.status
@@ -515,6 +517,7 @@ def DeleteFactures(numero):
 def GetFacturesNumero(numero):
   result = {}
   status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     if not FactureExiste(numero):
@@ -529,7 +532,7 @@ def GetFacturesNumero(numero):
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
   entree_piece = {}
@@ -581,7 +584,8 @@ def SoustraireQuantitePieces(entree_piece):
 @app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
 def PostPieceInFacture(numero_facture):
   result = {}
-  status = httplib.CREATED
+  status = httplib.OK
+  headers = {'Content-type': 'application/json'}
 
   try:
     if not FactureExiste(numero_facture):
@@ -611,6 +615,8 @@ def PostPieceInFacture(numero_facture):
     # Ajuster quantités en inventaire
     SoustraireQuantitePieces(entree_piece)
 
+    result = entree_piece
+
   except RequestError as ex:
     status = ex.status
     result = ex.msg
@@ -618,7 +624,7 @@ def PostPieceInFacture(numero_facture):
     result = str(e)
     status = httplib.INTERNAL_SERVER_ERROR
 
-  return jsonify(result), status
+  return jsonify(result), status, headers
 
 @app.route('/api/factures/<int:numero_facture>/pieces/<int:numero_piece>', methods=['PUT'])
 def PutPieceInFacture(numero_facture, numero_piece):
@@ -762,7 +768,7 @@ def Caisse():
 @app.route('/admin', methods=['GET'])
 def Admin():
   return render_template('admin.html')
-  
+
 @app.route('/admin/ajoutpiece', methods=['GET'])
 def AdminAjoutPiece():
   return render_template('admin-ajout-piece.html')

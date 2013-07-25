@@ -1,68 +1,153 @@
 var listePieces = null;
 
-function DisplayError(jqXHR, textStatus, errorThrown) {
-  data = jqXHR.responseText;
-  AfficherErreur(JSON.parse(data));
+function SubmitAjoutPiece() {
+  var champNumeroPiece = $(this).find('.input-numero-piece');
+  var champQuantite = $(this).find('.input-quantite-piece');
+
+  var numeroPiece = champNumeroPiece.val();
+  var quantite = champQuantite.val();
+  var numeroFacture = CetteFacture(this);
+
+  if (numeroPiece.length == 0) {
+    AfficherErreur("Il faut un numéro de pièce.");
+    return false;
+  }
+
+  if (quantite.length == 0) {
+    AfficherErreur("Il faut une quantité.");
+    return false;
+  }
+
+  $.get('/api/pieces/' + numeroPiece).done( function(piece) {
+    var postUrl = '/api/factures/' + numeroFacture + '/pieces';
+    var postData = {numero: numeroPiece, quantiteneuf: quantite};
+    $.post(postUrl, postData).done(function (ligneFacture, textStatus, jqXHR) {
+        AjouterLignePiece(numeroFacture, piece, ligneFacture);
+
+        champNumeroPiece.val("");
+        champQuantite.val("");
+
+        CalculerPrixTotalFacture(numeroFacture);
+      }).fail(DisplayError);
+  }).fail(DisplayError);
+
+  return false;
 }
 
-function AjouterFacture(numeroFacture, numeroMembre) {
-  $.get('/api/membres/' + numeroMembre, {}, function(data, textStatus, jqXHR) {
-    nom = data.prenom + " " + data.nom;
+function ChargerFacture(facture) {
+  // Cloner le template
+  var template = $('#facture-template');
+  var divfacture = template.clone();
 
-    template = $('#commande-template');
-    divCommande = template.clone();
+  divfacture.attr('id', 'facture-' + facture.numero);
+  divfacture.attr('data-numero-facture', facture.numero);
+  divfacture.find('.input-numero-piece').typeahead({
+    source: listePieces,
+    updater: parseInt, // Ça ne retient que le nombre du début
+  });
+  divfacture.find('.form-ajout-piece-facture').submit(SubmitAjoutPiece);
 
-    divCommande.attr('id', 'commande-' + numeroFacture);
-    titre = nom + " (facture " + numeroFacture + ")";
-    divCommande.find('.commande-titre').first().text(titre);
+  divfacture.appendTo( $('#factures-container') );
 
-    divCommande.find('.input-numero-piece').typeahead({
-      source: listePieces,
-      updater: parseInt, // Ça ne retient que le nombre du début
+  // Requête membre
+  var httpRequests = [];
+  httpRequests.push($.get('/api/membres/' + facture.membre));
+
+  // Requête pièces
+  $.each(facture.pieces, function (k, ligneFacture) {
+    httpRequests.push($.get('/api/pieces/' + ligneFacture.numero));
+  });
+
+  $.when.apply($, httpRequests).done(function() {
+    // Lorsque toutes les requêtes HTTP sont terminées avec succès.
+    var pieces;
+    var membre;
+
+    // Extraire les réponses
+    if (httpRequests.length > 1) {
+      pieces = $.map(arguments, function (e) { return e[0]; });
+      membre = pieces.shift();
+    } else {
+      pieces = []
+      membre = arguments[0];
+    }
+
+    // Ajouter les lignes à la facture
+    $.each(pieces, function (k, piece) {
+      AjouterLignePiece(facture.numero, piece, facture.pieces[k]);
     });
 
-    divCommande.find('.form-ajout-piece-facture').submit(function () {
-      numeroPiece = $(this).find('.input-numero-piece').val();
-      quantite = $(this).find('.input-quantite-piece').val();
-      numeroFacture = $(this).closest('.commande-container').attr('id').replace('commande-', '');
+    CalculerPrixTotalFacture(facture.numero);
 
-      if (numeroPiece.length == 0) {
-        AfficherErreur("Il faut un numéro de pièce.");
-        return false;
-      }
-
-      if (quantite.length == 0) {
-        AfficherErreur("Il faut une quantité.");
-        return false;
-      }
-
-      $.post('/api/factures/' + numeroFacture + '/pieces',
-        {numero: numeroPiece, quantiteneuf: quantite})
-        .done(function (data, textStatus, jqXHR) {
-          console.log(data);
-          AjouterLignePiece(numeroFacture, numeroPiece);
-        })
-        .fail(DisplayError);
-
-      return false;
-    });
-
-    divCommande.appendTo( $('#commandes-container') );
-  })
-    .fail(DisplayError);
-
+    // Mettre les infos du membre
+    nom = membre.prenom + " " + membre.nom;
+    divfacture.find('.facture-titre').text(nom + " (facture " + facture.numero + ")");
+  }).fail(function () {
+    AfficherErreur(DisplayError);
+  });
 }
 
-function AjouterLignePiece(numeroFacture, numeroPiece) {
-  html = $('<tr><td>123</td><td>Vitesse</td><td>Câble de vitesse</td><td>Montagne inox</td><td>3</td><td>1,50$</td><td>4,50$</td><td><i class="icon-remove"></i></td></tr>');
+function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
+  function GetProp(obj, prop) {
+    return (prop in obj) ? obj[prop] : '?';
+  }
 
-  divCommande = $('#commande-' + numeroFacture);
-  divCommande.find('.commande-contenu table tbody tr').first().after(html);
+  html = $('<tr class="ligne-facture"></tr>');
+  html.attr('data-prixtotal', ligneFacture.prixneuf * ligneFacture.quantiteneuf);
+  html.append('<td>' + GetProp(piece, "numero") + '</td>');
+  html.append('<td>' + GetProp(piece, "section") + '</td>');
+  html.append('<td>' + GetProp(piece, "nom") + '</td>');
+  html.append('<td>' + GetProp(piece, "reference") + '</td>');
 
+  html.append('<td>' + ligneFacture.quantiteneuf + '</td>');
+  html.append('<td>' + NombreVersPrix(ligneFacture.prixneuf) + '</td>');
+  html.append('<td>' + NombreVersPrix(ligneFacture.prixneuf * ligneFacture.quantiteneuf) + '</td>');
+  html.append('<td><i class="icon-remove"></i></td>');
+
+  html.attr('data-numero-piece', piece.numero);
+  html.find("i").click(SupprimerPiece);
+
+  divfacture = $('#facture-' + numeroFacture);
+  divfacture.find('.facture-contenu table tbody tr').last().before(html);
+}
+
+function CetteFacture(zis) {
+  return $(zis).closest('.facture-container').attr('data-numero-facture');
+}
+
+function CettePiece(zis) {
+  return $(zis).closest(".ligne-facture").attr('data-numero-piece');
+}
+
+function SupprimerPiece() {
+  var numeroPiece = CettePiece(this);
+  var numeroFacture = CetteFacture(this);
+
+  console.log($.delete);
+  $.ajax({
+    'url': '/api/factures/' + numeroFacture + '/pieces/' + numeroPiece,
+    'type': 'DELETE'
+  }).done(function (data, textStatus, jqXHR) {
+    AfficherSucces('Pièce supprimée');
+    $('#facture-' + numeroFacture).find('tr[data-numero-piece=' + numeroPiece + ']').remove();
+    CalculerPrixTotalFacture(numeroFacture);
+  }).fail(DisplayError);
+  //console.log("Supprimer " + numeroPiece + " de " + numeroFacture);
+}
+
+function CalculerPrixTotalFacture(numeroFacture) {
+  facture = $('#facture-' + numeroFacture);
+  var prixtotal = 0;
+
+  $.each(facture.find('table').find('tr[data-prixtotal]'), function (k, row) {
+    prixtotal += parseInt($(row).attr('data-prixtotal'));
+  });
+
+  facture.find('.facture-total').text(NombreVersPrix(prixtotal));
 }
 
 $(document).ready(function () {
-  // Batir liste de pieces
+  // Batir liste de pieces pour autocomplete
   $.get('/api/pieces', null, function (data, textStatus, jqXHR) {
     listePieces = []
 
@@ -72,7 +157,7 @@ $(document).ready(function () {
     });
   });
 
-  // Batir liste de membres
+  // Batir liste de membres pour autocomplete
   $.get('/api/membres', null, function (data, textStatus, jqXHR) {
     listeMembres = []
 
@@ -81,33 +166,34 @@ $(document).ready(function () {
       listeMembres.push(s);
     });
 
-    $('#input-nouvelle-commande').typeahead({
+    $('#input-nouvelle-facture').typeahead({
       source: listeMembres,
       updater: parseInt,
     });
   });
 
-  // Action ajouter nouvelle commande
-  $('#form-nouvelle-commande').submit(function () {
-    numeroMembre = $('#input-nouvelle-commande').val();
+  // Action ajouter nouvelle facture
+  $('#form-nouvelle-facture').submit(function () {
+    numeroMembre = $('#input-nouvelle-facture').val();
     if (numeroMembre.length == 0) {
       AfficherErreur("Il manque le numéro de membre.");
       return false;
     }
 
     $.post('/api/factures', {'membre': numeroMembre})
-      .done(function (data, textStatus, jqXHR) {
-        AjouterFacture(data.numero, numeroMembre);
+      .done(function (facture, textStatus, jqXHR) {
+        ChargerFacture(facture);
       })
       .fail(DisplayError);
     return false;
   });
 
-  // Aller chercher les commandes existantes
+
+  // Aller chercher les factures existantes
   $.get('/api/factures', {})
     .done(function (data, textStatus, jqXHR) {
       $.each(data, function(key, facture) {
-        AjouterFacture(facture.numero, facture.membre);
+        ChargerFacture(facture);
       });
 
       $('#loading').hide();

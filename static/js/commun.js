@@ -71,6 +71,11 @@ function NombreVersPrix(str) {
   return dollars + "," + cennes + " $";
 }
 
+function DisplayError(jqXHR, textStatus, errorThrown) {
+  data = jqXHR.responseText;
+  AfficherErreur(JSON.parse(data));
+}
+
 function InitCommun() {
 
 }

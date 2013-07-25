@@ -5,13 +5,13 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Commandes en cours</h1>
+  <h1>factures en cours</h1>
 
   <div>
-    <form class="form-inline" id="form-nouvelle-commande">
-    Nouvelle commande:
+    <form class="form-inline" id="form-nouvelle-facture">
+    Nouvelle facture:
     <div class="input-append">
-      <input type="text" class="input-mini" placeholder="membre" id="input-nouvelle-commande">
+      <input type="text" class="input-mini" placeholder="membre" id="input-nouvelle-facture">
       <button class="btn">Go</button>
     </div>
     </form>
@@ -21,12 +21,12 @@
     <img src="/static/loading.gif" />
   </div>
 
-  <div id="commandes-container">
-    <div class="commande-container" id="commande-template">
-      <span class="commande-titre"><strong></strong></span>
-      <span class="commande-remove"><strong><i class="icon-trash"></i></strong></span>
+  <div id="factures-container">
+    <div class="facture-container" id="facture-template">
+      <span class="facture-titre"></span>
+      <span class="facture-remove"><strong><i class="icon-trash"></i></strong></span>
 
-      <div class="commande-contenu">
+      <div class="facture-contenu">
         <table class="table table-condensed">
           <tr>
             <th>#</th>
@@ -68,7 +68,7 @@
             </td>
           </tr>
         </table>
-        <div style="text-align: right;"><strong>Montant total: x.yy$</strong></div>
+        <div style="text-align: right;" class="facture-total">Montant total: x.yy$</div>
       </div>
     </div>
   </div>
