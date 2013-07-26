@@ -1,0 +1,12 @@
+@import "cfg";
+
+#content {
+	overflow: hidden;
+	padding: 0 20px;
+	h1 {
+		font-family: $cfg-font-text;
+		font-weight: bold;
+		text-shadow: 0 0 10px #666;
+		font-variant: small-caps;
+	}
+}

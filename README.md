@@ -3,6 +3,11 @@ biciklo
 
 Système d'inventaire pour l'atelier Biciklo.
 
+Avant de démarrer :
+
+	$ cd sass
+	$ compass compile
+
 Pour démarrer:
 * Installer les dépendances (voir plus loin)
 * Cloner l'entrepôt
