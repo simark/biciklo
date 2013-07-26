@@ -1,0 +1,34 @@
+@import "cfg";
+
+table.dataTable {
+	tr.odd {
+		$color: $cfg-main-color;
+		background-color: $color;
+		td {
+			&.sorting_1 {
+				background-color: lighten($color, 10%);
+			}
+			&.sorting_2 {
+				background-color: lighten($color, 15%);
+			}
+			&.sorting_3 {
+				background-color: lighten($color, 20%);
+			}
+		}
+	}
+	tr.even {
+		$color: lighten($cfg-main-color, 15%);
+		background-color: $color;
+		td {
+			&.sorting_1 {
+				background-color: lighten($color, 10%);
+			}
+			&.sorting_2 {
+				background-color: lighten($color, 15%);
+			}
+			&.sorting_3 {
+				background-color: lighten($color, 20%);
+			}
+		}
+	}
+}

@@ -1,0 +1,20 @@
+#membres {
+	display: none;
+	tbody tr td {
+		text-align: center;
+	}
+}
+
+// #membres_wrapper automatiquement ajouté par datatables
+#membres_wrapper, #ajoutmembre {
+	display: none;
+}
+
+table.dataTable {
+	tr.odd, tr.even {
+		cursor: pointer;
+	}
+	tr.odd:hover, tr.even:hover {
+		text-decoration: underline;
+	}
+}
