@@ -21,7 +21,7 @@
   font-weight: bold;
 }
 
-.facture-remove {
+.facture-boutons {
   -webkit-border-radius: 0px 0px 0px 5px;
   -moz-border-radius: 0px 0px 0px 5px;
   border-radius: 0px 0px 0px 5px;
@@ -32,6 +32,24 @@
   color: #333;
 
   float: right;
+}
+
+.facture-boutons i.icon-trash {
+  cursor: pointer;
+  color: #999;
+}
+
+.facture-boutons i.icon-trash:hover {
+  color: black;
+}
+
+.facture-boutons i.icon-folder-close {
+  cursor: pointer;
+  color: #999;
+}
+
+.facture-boutons i.icon-folder-close:hover {
+  color: black;
 }
 
 .facture-contenu {

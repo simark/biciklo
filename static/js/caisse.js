@@ -48,6 +48,8 @@ function ChargerFacture(facture) {
   divfacture.find('.form-ajout-piece-facture').submit(SubmitAjoutPiece);
 
   divfacture.appendTo( $('#factures-container') );
+  divfacture.find('.facture-remove').click(SupprimerFacture);
+  divfacture.find('.facture-close').click(FermerFacture);
 
   // Requête membre
   var httpRequests = [];
@@ -119,11 +121,37 @@ function CettePiece(zis) {
   return $(zis).closest(".ligne-facture").attr('data-numero-piece');
 }
 
+function SupprimerFacture() {
+  var numeroFacture = CetteFacture(this);
+  ret = confirm("Supprimer la facture " + numeroFacture + "? Cette action est irréversible, fais attention!")
+  if (ret) {
+    $.ajax({
+      'url': '/api/factures/' + numeroFacture,
+      'type': 'DELETE'
+    }).done(function (data, textStatus, jqXHR) {
+      AfficherSucces('Facture supprimée');
+      $('#facture-' + numeroFacture).remove();
+    }).fail(DisplayError);
+  }
+}
+
+function FermerFacture() {
+  var numeroFacture = CetteFacture(this);
+  var data = {'complete': 'oui'};
+    $.ajax({
+      'url': '/api/factures/' + numeroFacture,
+      'type': 'PUT',
+      'data': data,
+    }).done(function (data, textStatus, jqXHR) {
+      AfficherSucces('Facture fermée');
+      $('#facture-' + numeroFacture).remove();
+    }).fail(DisplayError);
+}
+
 function SupprimerPiece() {
   var numeroPiece = CettePiece(this);
   var numeroFacture = CetteFacture(this);
 
-  console.log($.delete);
   $.ajax({
     'url': '/api/factures/' + numeroFacture + '/pieces/' + numeroPiece,
     'type': 'DELETE'
@@ -132,7 +160,6 @@ function SupprimerPiece() {
     $('#facture-' + numeroFacture).find('tr[data-numero-piece=' + numeroPiece + ']').remove();
     CalculerPrixTotalFacture(numeroFacture);
   }).fail(DisplayError);
-  //console.log("Supprimer " + numeroPiece + " de " + numeroFacture);
 }
 
 function CalculerPrixTotalFacture(numeroFacture) {
@@ -193,7 +220,9 @@ $(document).ready(function () {
   $.get('/api/factures', {})
     .done(function (data, textStatus, jqXHR) {
       $.each(data, function(key, facture) {
-        ChargerFacture(facture);
+        if (!facture['complete']) {
+          ChargerFacture(facture);
+        }
       });
 
       $('#loading').hide();
