@@ -34,6 +34,25 @@ function SubmitAjoutPiece() {
   return false;
 }
 
+function SubmitAjoutFacture() {
+  numeroMembre = $('#input-nouvelle-facture').val();
+
+  if (numeroMembre.length == 0) {
+    AfficherErreur("Il manque le numéro de membre.");
+    return false;
+  }
+
+  $.post('/api/factures', {'membre': numeroMembre})
+    .done(function (facture, textStatus, jqXHR) {
+      ChargerFacture(facture);
+      AfficherSucces("Facture ajoutée");
+
+      $('#input-nouvelle-facture').val("");
+    })
+    .fail(DisplayError);
+  return false;
+}
+
 function ChargerFacture(facture) {
   // Cloner le template
   var template = $('#facture-template');
@@ -200,21 +219,7 @@ $(document).ready(function () {
   });
 
   // Action ajouter nouvelle facture
-  $('#form-nouvelle-facture').submit(function () {
-    numeroMembre = $('#input-nouvelle-facture').val();
-    if (numeroMembre.length == 0) {
-      AfficherErreur("Il manque le numéro de membre.");
-      return false;
-    }
-
-    $.post('/api/factures', {'membre': numeroMembre})
-      .done(function (facture, textStatus, jqXHR) {
-        ChargerFacture(facture);
-      })
-      .fail(DisplayError);
-    return false;
-  });
-
+  $('#form-nouvelle-facture').submit(SubmitAjoutFacture);
 
   // Aller chercher les factures existantes
   $.get('/api/factures', {})
