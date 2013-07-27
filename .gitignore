@@ -28,3 +28,4 @@ pip-log.txt
 
 # sass
 static/css
+sass/.sass-cache
