@@ -190,7 +190,7 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
 def Drop():
   db.DBConnection().membres.remove()
   db.DBConnection().pieces.remove()
-  db.DBConnection().facture.remove()
+  db.DBConnection().factures.remove()
 
   return "ok"
 
