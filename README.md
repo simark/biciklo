@@ -24,6 +24,7 @@ Exemples d'utilisation de curl pour débugger l'API HTTP:
 
 Dépendances:
 * MongoDB (http://www.mongodb.org/)
+* Compass (http://compass-style.org/)
 
 Dépendances Python:
 * Python 2, pour l'instant
