@@ -22,32 +22,38 @@
 
   <div id="factures-container">
     <div class="facture-container" id="facture-template">
-      <span class="facture-titre"></span>
-      <span class="facture-boutons"><i class="icon-folder-close facture-close"></i>&nbsp;&nbsp;<i class="icon-trash facture-remove"></i></span>
+      <span class="titre"></span>
+      <span class="boutons">
+        <i class="icon-folder-close close"></i>&nbsp;&nbsp;<i class="icon-trash remove"></i>
+      </span>
 
-      <div class="facture-contenu">
+      <div class="contenu">
         <table class="table table-condensed">
-          <tr>
-            <th>#</th>
-            <th>Catégorie</th>
-            <th>Pièce</th>
-            <th>Référence</th>
-            <th>Quantité</th>
-            <th>Prix unitaire</th>
-            <th>Prix total</th>
-            <th></th>
-          </tr>
-          <tr>
-            <td colspan="100">
-              <form class="form-ajout-piece-facture">
-              <input class="input-mini input-numero-piece" type="text" placeholder="#">
-              <input class="input-mini input-quantite-piece" type="text" placeholder="quantité">
-              <input type="submit" class="btn" value="Ajouter">
-              </form>
-            </td>
-          </tr>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Catégorie</th>
+              <th>Pièce</th>
+              <th>Référence</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Prix total</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="100">
+                <form class="form-ajout-piece-facture">
+                <input class="input-mini input-numero-piece" type="text" placeholder="#">
+                <input class="input-mini input-quantite-piece" type="text" placeholder="quantité">
+                <input type="submit" class="btn" value="Ajouter">
+                </form>
+              </td>
+            </tr>
+          </tbody>
         </table>
-        <div style="text-align: right;" class="facture-total">Montant total: x.yy$</div>
+        <div style="text-align: right;" class="total">Montant total: x.yy$</div>
       </div>
     </div>
   </div>

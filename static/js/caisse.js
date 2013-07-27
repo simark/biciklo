@@ -48,8 +48,8 @@ function ChargerFacture(facture) {
   divfacture.find('.form-ajout-piece-facture').submit(SubmitAjoutPiece);
 
   divfacture.appendTo( $('#factures-container') );
-  divfacture.find('.facture-remove').click(SupprimerFacture);
-  divfacture.find('.facture-close').click(FermerFacture);
+  divfacture.find('.remove').click(SupprimerFacture);
+  divfacture.find('.close').click(FermerFacture);
 
   // Requête membre
   var httpRequests = [];
@@ -83,7 +83,7 @@ function ChargerFacture(facture) {
 
     // Mettre les infos du membre
     nom = membre.prenom + " " + membre.nom;
-    divfacture.find('.facture-titre').text(nom + " (facture " + facture.numero + ")");
+    divfacture.find('.titre').text(nom + " (facture " + facture.numero + ")");
   }).fail(function () {
     AfficherErreur(DisplayError);
   });
@@ -110,7 +110,7 @@ function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
   html.find("i").click(SupprimerPiece);
 
   divfacture = $('#facture-' + numeroFacture);
-  divfacture.find('.facture-contenu table tbody tr').last().before(html);
+  divfacture.find('.contenu table tbody tr').last().before(html);
 }
 
 function CetteFacture(zis) {
@@ -170,7 +170,7 @@ function CalculerPrixTotalFacture(numeroFacture) {
     prixtotal += parseInt($(row).attr('data-prixtotal'));
   });
 
-  facture.find('.facture-total').text(NombreVersPrix(prixtotal));
+  facture.find('.total').text(NombreVersPrix(prixtotal));
 }
 
 $(document).ready(function () {

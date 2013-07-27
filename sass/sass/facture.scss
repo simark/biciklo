@@ -1,55 +1,66 @@
 @import "compass/css3";
 @import "utils";
 
-.facture-container {
-	border: 1px solid #aaa;
-	margin: 20px;
-}
-
 #facture-template {
 	display: none;
 }
 
-.facture-titre {
-	$border: 1px solid #aaa;
-	
-	@include border-radius(0px 0px 5px 0px);
-	border-right: $border;
-	border-bottom: $border;
-	padding: 5px;
-	background-color: #f9f9f9;
-	color: #333;
-	float: left;
-	font-weight: bold;
-}
+.facture-container {
+	border: 1px solid #aaa;
+	margin: 20px;
 
-.facture-boutons {
-	$border: 1px solid #aaa;
-	
-	@include border-radius(0px 0px 0px 5px);
-	border-left: $border;
-	border-bottom: $border;
-	padding: 5px;
-	background-color: #f9f9f9;
-	color: #333;
-	float: right;
-}
+	.titre {
+		$border: 1px solid #aaa;
 
-.facture-icon {
-	cursor: pointer;
-	color: #999;
-	&:hover {
-		color: black;
-	}
-}
-
-.facture-contenu {
-	margin: 40px 20px 20px 20px;
-	td {
+		@include border-radius(0px 0px 5px 0px);
+		border-right: $border;
+		border-bottom: $border;
+		padding: 5px;
 		background-color: #f9f9f9;
+		color: #333;
+		float: left;
+		font-weight: bold;
 	}
-}
 
-.facture-total {
-	font-weight: bold;
+	.boutons {
+		$border: 1px solid #aaa;
+
+		@include border-radius(0px 0px 0px 5px);
+		border-left: $border;
+		border-bottom: $border;
+		padding: 5px 2px 5px 0px;
+		background-color: #f9f9f9;
+		color: #333;
+		float: right;
+
+		i {
+			cursor: pointer;
+			color: #999;
+			margin-right: 4px;
+			&:hover {
+				color: black;
+			}
+		}
+	}
+
+	.contenu {
+		margin: 40px 20px 20px 20px;
+		td {
+			background-color: #f9f9f9;
+		}
+
+		.total {
+			font-weight: bold;
+		}
+
+		.form-ajout-piece-facture {
+			margin: 0;
+
+			input {
+				margin: 0;
+			}
+		}
+	}
+
+
 }
