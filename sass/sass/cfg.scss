@@ -1,2 +1,9 @@
 $cfg-main-color: #8dc73f;
+$cfg-main-color-dark: darken($cfg-main-color, 10%);
+$cfg-main-color-darker: darken($cfg-main-color, 15%);
+$cfg-main-color-darkest: darken($cfg-main-color, 20%);
+$cfg-main-color-light: lighten($cfg-main-color, 10%);
+$cfg-main-color-lighter: lighten($cfg-main-color, 15%);
+$cfg-main-color-lightest: lighten($cfg-main-color, 20%);
+
 $cfg-font-text: 'Open Sans', sans-serif;

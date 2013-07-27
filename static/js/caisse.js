@@ -170,7 +170,7 @@ function CalculerPrixTotalFacture(numeroFacture) {
     prixtotal += parseInt($(row).attr('data-prixtotal'));
   });
 
-  facture.find('.total').text(NombreVersPrix(prixtotal));
+  facture.find('.total').text("Total: " + NombreVersPrix(prixtotal));
 }
 
 $(document).ready(function () {

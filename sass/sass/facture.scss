@@ -6,8 +6,11 @@
 }
 
 .facture-container {
-	border: 1px solid #aaa;
+	$color: #eee;
+
+	border: 1px solid darken($color, 30%);
 	margin: 20px;
+	background-color: $color;
 
 	.titre {
 		$border: 1px solid #aaa;
@@ -16,8 +19,8 @@
 		border-right: $border;
 		border-bottom: $border;
 		padding: 5px;
-		background-color: #f9f9f9;
-		color: #333;
+		background-color: darken($color, 10%);
+		color: #444;
 		float: left;
 		font-weight: bold;
 	}
@@ -29,8 +32,7 @@
 		border-left: $border;
 		border-bottom: $border;
 		padding: 5px 2px 5px 0px;
-		background-color: #f9f9f9;
-		color: #333;
+		background-color: darken($color, 10%);
 		float: right;
 
 		i {
@@ -45,8 +47,9 @@
 
 	.contenu {
 		margin: 40px 20px 20px 20px;
-		td {
-			background-color: #f9f9f9;
+
+		tbody td {
+			background-color: lighten($color, 15%)
 		}
 
 		.total {
