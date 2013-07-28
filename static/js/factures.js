@@ -183,11 +183,13 @@ function SupprimerPiece() {
 
 function CalculerPrixTotalFacture(numeroFacture) {
   facture = $('#facture-' + numeroFacture);
-  var prixtotal = 0;
+  var prixtotal = 0; //en cents
 
   $.each(facture.find('table').find('tr[data-prixtotal]'), function (k, row) {
     prixtotal += parseInt($(row).attr('data-prixtotal'));
   });
+
+  prixtotal = Math.round(prixtotal/25)*25; //arrondi au 25 cent le plus pres
 
   facture.find('.total').text("Total: " + NombreVersPrix(prixtotal));
 }
