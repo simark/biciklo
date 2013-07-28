@@ -198,7 +198,12 @@ $(document).ready(function () {
     listePieces = []
 
     $.each(data, function(key, piece) {
-      s = piece.numero.toString() + " - " + piece.nom;
+      s = piece.numero.toString() + " - "
+        + piece.section + " - "
+        + piece.nom + " - "
+        + piece.reference + " ("
+        + NombreVersPrix(piece.prixneuf) + "/"
+        + NombreVersPrix(piece.prixusage) + ")" ;
       listePieces.push(s);
     });
   });
