@@ -495,13 +495,21 @@ def PutFactures(numero):
 
   return jsonify(result), status
 
-# TODO: est-ce qu'on veut vraiment ça?
 @app.route('/api/factures/<int:numero>', methods=['DELETE'])
 def DeleteFactures(numero):
   result = ''
   status = httplib.NO_CONTENT
 
   try:
+    facture = ObtenirFacture(numero)
+    if not facture:
+      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas")
+
+    if 'pieces' in facture:
+      lignes = facture['pieces']
+      for ligne in lignes:
+        AjouterQuantitePieces(ligne)
+
     db.DBConnection().factures.remove({'numero': numero})
 
   except RequestError as ex:
