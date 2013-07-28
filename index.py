@@ -782,6 +782,17 @@ def UnePiece():
 def Factures():
   return render_template('factures.html')
 
+@app.route('/factures-fermees', methods=['GET'])
+def FacturesFermees():
+  factures = list(db.DBConnection().factures.find({'complete': True}))
+  membres = {}
+
+  for facture in factures:
+    if facture['membre'] not in membres:
+      membres[facture['membre']] = ObtenirMembre(facture['membre'])
+
+  return render_template('factures-fermees.html', factures = factures, membres = membres)
+
 @app.route('/admin', methods=['GET'])
 def Admin():
   return render_template('admin.html')
