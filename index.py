@@ -54,8 +54,8 @@ création/modification de chaque type de ressource de l'API.
 Ce tableau est utilisé principalement par ParseIncoming().
 
 Pour chaque clé (p.e. 'membres'), on a:
-  * required: liste de clés nécessaires lors de la création (POST)
-  * optional: liste de clés optionnelles
+  * req: liste de clés nécessaires lors de la création (POST)
+  * opt: liste de clés optionnelles
   * valid: dict avec les noms de paramètres comme clés.
            Si la valeur est une liste, la valeur fournie par le client
            doit se trouver dans cette liste pour être valide. S'il
