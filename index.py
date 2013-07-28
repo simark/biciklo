@@ -76,12 +76,14 @@ Maybe TODO: peut-être qu'un seul callback qui fait validation + transform ce se
 validation = {
   'membres': {
     'req': ['prenom', 'nom'],
-    'opt': ['courriel', 'listedenvoi', 'provenance', 'estbenevole', 'telephone'],
+    'opt': ['numero', 'courriel', 'listedenvoi', 'provenance', 'estbenevole', 'telephone'],
     'valid': {
+      'numero': unicode.isdigit,
       'listedenvoi': ['non', 'oui', 'fait'],
       'estbenevole': api_boolean
     },
     'transform': {
+      'numero': int,
       'estbenevole': api_boolean
     }
   },
@@ -233,7 +235,14 @@ def PostMembres():
   try:
     membre = ParseIncoming(request.form, 'membres')
 
-    membre['numero'] = ObtenirProchainNumeroDeMembre()
+    if 'numero' in membre:
+      # Numéro de membre fourni par le client, vérifier qu'il n'est pas pris
+      if ObtenirMembre(membre['numero']) != None:
+        raise RequestError(httplib.CONFLICT, "Ce numéro de membre est déjà pris.")
+    else:
+      # On attribut automatiquement un # de membre
+      membre['numero'] = ObtenirProchainNumeroDeMembre()
+
     membre['dateinscription'] = datetime.now()
 
     db.DBConnection().membres.insert(membre)
