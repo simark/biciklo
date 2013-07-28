@@ -140,11 +140,15 @@ validation = {
 """
   Analyse les paramètres fournis par le client.
   Lève un RequestError s'il y a une erreur de paramètres (manquants ou mauvaises valeurs).
+
+  data
+  collection_name
+      type de ressource 'membres', 'pieces', 'factures' ou 'factureajoutpiece'
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   def ValidateValue(valid, key, value):
     if key in valid: 
-      validate = valid[key]
+      validate = valid[key] #type de variable qu'est sensé être value
       if hasattr(validate, '__call__'):
         if not validate(value):
           raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
@@ -159,10 +163,10 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
         return transformation(value)
       elif isinstance(transformation, dict):
         return transformation[value]
-
     return value
 
   v = validation[collection_name] if collection_name in validation else {}
+  # v est un dictionnaire contenant les clés 'req', 'opt', 'valid' et 'transform' suivant le type de ressource
   required_keys = v['req'] if 'req' in v else {}
   optional_keys = v['opt'] if 'opt' in v else {}
   valid = v['valid'] if 'valid' in v else {}
