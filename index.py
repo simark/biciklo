@@ -778,9 +778,9 @@ def ListePieces():
 def UnePiece():
   return render_template('piece.html')
 
-@app.route('/caisse', methods=['GET'])
-def Caisse():
-  return render_template('caisse.html')
+@app.route('/factures', methods=['GET'])
+def Factures():
+  return render_template('factures.html')
 
 @app.route('/admin', methods=['GET'])
 def Admin():
