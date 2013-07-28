@@ -11,6 +11,7 @@
       <thead>
          <tr>
            <th># facture</th>
+           <th>Date</th>
            <th>Membre</th>
            <th>Prix total</th>
            <th>Réouvrir</th>
@@ -20,6 +21,7 @@
         {% for facture in factures %}
           <tr data-numero-facture="{{ facture.numero }}">
             <td>{{ facture.numero }}</td>
+            <td>{{ facture.date.strftime("%Y-%M-%S") }}</td>
             <td>{{ membres[facture['membre']].prenom }} {{ membres[facture['membre']].nom }}</td>
             <td>{{ facture.prixtotal }}</td>
             <td><i class="icon-folder-open reouvrir-facture"></i></td>

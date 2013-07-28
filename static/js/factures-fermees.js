@@ -20,14 +20,12 @@ function ReouvrirFacture() {
   var tr = $(this).closest('tr');
   numeroFacture = tr.attr('data-numero-facture');
   var data = {'complete': 'non'};
-  console.log(tr);
   $.ajax({
       'url': '/api/factures/' + numeroFacture,
       'type': 'PUT',
       'data': data,
     }).done(function (data, textStatus, jqXHR) {
       AfficherSucces('Facture réouverte');
-      console.log(tr);
       $('#factures-fermees').dataTable().fnDeleteRow(tr.get(0));
     }).fail(DisplayError);
 }
