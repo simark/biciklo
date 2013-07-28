@@ -167,21 +167,21 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
 
   v = validation[collection_name] if collection_name in validation else {}
   # v est un dictionnaire contenant les clés 'req', 'opt', 'valid' et 'transform' suivant le type de ressource
-  required_keys = v['req'] if 'req' in v else {}
-  optional_keys = v['opt'] if 'opt' in v else {}
+  required_keys = v['req'] if 'req' in v else {} #liste des parametres requis
+  optional_keys = v['opt'] if 'opt' in v else {} #liste des parametres optionnels
   valid = v['valid'] if 'valid' in v else {}
   transform = v['transform'] if 'transform' in v else {}
 
   ret = {}
 
-  for key in required_keys:
+  for key in required_keys: #teste sur les paramètres requis
     if key in data:
       value = data[key]
       ValidateValue(valid, key, value)
       ret[key] = TransformValue(transform, key, value)
-    elif throw_if_required_missing:
+    elif throw_if_required_missing: #lève une interruption s'il en manque au moins un
       raise RequestError(httplib.BAD_REQUEST, "Parametre manquant: %s" % key)
-  for key in optional_keys:
+  for key in optional_keys: #teste sur la paramètres optionnels
     if key in data:
       value = data[key]
       ValidateValue(valid, key, value)
