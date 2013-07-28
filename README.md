@@ -12,7 +12,8 @@ Pour démarrer:
 * Installer les dépendances (voir plus loin)
 * Cloner l'entrepôt
 * Démarrer mongodb
-* BICIKLO_DEBUG=1 python index.py
+* BICIKLO_DEBUG=1
+* python index.py  #python 2
 
 index.py va imprimer l'adresse pour accéder au site avec le fureteur
 
