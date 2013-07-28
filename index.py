@@ -54,8 +54,8 @@ création/modification de chaque type de ressource de l'API.
 Ce tableau est utilisé principalement par ParseIncoming().
 
 Pour chaque clé (p.e. 'membres'), on a:
-  * required: liste de clés nécessaires lors de la création (POST)
-  * optional: liste de clés optionnelles
+  * req: liste de clés nécessaires lors de la création (POST)
+  * opt: liste de clés optionnelles
   * valid: dict avec les noms de paramètres comme clés.
            Si la valeur est une liste, la valeur fournie par le client
            doit se trouver dans cette liste pour être valide. S'il
@@ -140,12 +140,26 @@ validation = {
 }
 
 """
-  Throws RequestError if missing parameter/wrong value.
+  Analyse les paramètres fournis par le client.
+  Lève un RequestError s'il y a une erreur de paramètres (manquants ou mauvaises valeurs).
+
+  Variables d'entrée
+
+      data
+          dict. Données fournie en entrée par le client
+      collection_name
+          type de ressource 'membres', 'pieces', 'factures' ou 'factureajoutpiece'
+      throw_if_required_missing
+          bool. Si True, lève une interruption s'il manque au moins un paramètre requis.
+
+  Variable de sortie
+      ret
+          dict. data dont chaque valeur a subit la transformation transform
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   def ValidateValue(valid, key, value):
     if key in valid:
-      validate = valid[key]
+      validate = valid[key] #type de variable qu'est sensé être value
       if hasattr(validate, '__call__'):
         if not validate(value):
           raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
@@ -160,26 +174,25 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
         return transformation(value)
       elif isinstance(transformation, dict):
         return transformation[value]
-
     return value
 
   v = validation[collection_name] if collection_name in validation else {}
-  required_keys = v['req'] if 'req' in v else {}
-  optional_keys = v['opt'] if 'opt' in v else {}
+  # v est un dictionnaire contenant les clés 'req', 'opt', 'valid' et 'transform' suivant le type de ressource
+  required_keys = v['req'] if 'req' in v else {} #liste des parametres requis
+  optional_keys = v['opt'] if 'opt' in v else {} #liste des parametres optionnels
   valid = v['valid'] if 'valid' in v else {}
   transform = v['transform'] if 'transform' in v else {}
 
   ret = {}
 
-  for key in required_keys:
+  for key in required_keys: #teste sur les paramètres requis
     if key in data:
       value = data[key]
       ValidateValue(valid, key, value)
       ret[key] = TransformValue(transform, key, value)
-    elif throw_if_required_missing:
+    elif throw_if_required_missing: #lève une exception s'il en manque au moins un
       raise RequestError(httplib.BAD_REQUEST, "Parametre manquant: %s" % key)
-
-  for key in optional_keys:
+  for key in optional_keys: #teste sur la paramètres optionnels
     if key in data:
       value = data[key]
       ValidateValue(valid, key, value)
