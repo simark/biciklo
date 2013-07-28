@@ -141,9 +141,18 @@ validation = {
   Analyse les paramètres fournis par le client.
   Lève un RequestError s'il y a une erreur de paramètres (manquants ou mauvaises valeurs).
 
-  data
-  collection_name
-      type de ressource 'membres', 'pieces', 'factures' ou 'factureajoutpiece'
+  Variables d'entrée
+
+      data
+          dict. Données fournie en entrée par le client
+      collection_name
+          type de ressource 'membres', 'pieces', 'factures' ou 'factureajoutpiece'
+      throw_if_required_missing
+          bool. Si True, lève une interruption s'il manque au moins un paramètre requis.
+
+  Variable de sortie
+      ret
+          dict. data dont chaque valeur a subit la transformation transform
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   def ValidateValue(valid, key, value):
