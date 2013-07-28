@@ -138,11 +138,12 @@ validation = {
 }
 
 """
-  Throws RequestError if missing parameter/wrong value.
+  Analyse les paramètres fournis par le client.
+  Lève un RequestError s'il y a une erreur de paramètres (manquants ou mauvaises valeurs).
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
   def ValidateValue(valid, key, value):
-    if key in valid:
+    if key in valid: 
       validate = valid[key]
       if hasattr(validate, '__call__'):
         if not validate(value):
@@ -176,7 +177,6 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
       ret[key] = TransformValue(transform, key, value)
     elif throw_if_required_missing:
       raise RequestError(httplib.BAD_REQUEST, "Parametre manquant: %s" % key)
-
   for key in optional_keys:
     if key in data:
       value = data[key]
