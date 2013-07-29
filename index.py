@@ -493,6 +493,7 @@ def PostFactures():
     facture['numero'] = ObtenirProchainNumeroDeFacture()
     facture['date'] = datetime.datetime.now()
     facture['pieces'] = []
+    facture['prixtotal'] = 0
 
     ValidationFactures(facture)
 
