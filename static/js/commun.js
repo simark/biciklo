@@ -85,7 +85,7 @@ function FormatDate(obj) {
 
   d = new Date(obj['$date'])
   year = d.getFullYear();
-  month = d.getMonth();
+  month = d.getMonth() + 1;
   if (month < 10)
     month = '0' + month;
   day = d.getDate();
