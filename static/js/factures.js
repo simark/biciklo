@@ -74,10 +74,12 @@ function ChargerFacture(facture) {
   var httpRequests = [];
   httpRequests.push($.get('/api/membres/' + facture.membre));
 
-  // Requête pièces
-  $.each(facture.pieces, function (k, ligneFacture) {
-    httpRequests.push($.get('/api/pieces/' + ligneFacture.numero));
-  });
+  if (facture.pieces) {
+    // Requête pièces
+    $.each(facture.pieces, function (k, ligneFacture) {
+      httpRequests.push($.get('/api/pieces/' + ligneFacture.numero));
+    });
+  }
 
   $.when.apply($, httpRequests).done(function() {
     // Lorsque toutes les requêtes HTTP sont terminées avec succès.
