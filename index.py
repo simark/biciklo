@@ -626,6 +626,7 @@ def SoustraireQuantitePieces(entree_piece):
 
 # Calcule et écris le prix total de la facture, en cents, dans la base
 # de données et dans l'objet facture directement.
+# Arrondit le montant final au 25 cents le plus près.
 def EcrirePrixTotalFacture(facture):
   total = 0
 
@@ -640,6 +641,13 @@ def EcrirePrixTotalFacture(facture):
       if 'prixusage' in ligne and 'quantiteusage' in ligne:
         t = int(ligne['prixusage'] * ligne['quantiteusage'])
         total = total + t
+
+  # Arrondir au 25 cents supérieur
+  rem = total % 25
+  if rem >= 13:
+    total = total - rem + 25
+  else:
+    total = total - rem
 
   facture['prixtotal'] = total
   db.DBConnection().factures.update({'numero': facture['numero']}, {'$set' : {'prixtotal': total}})
