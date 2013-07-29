@@ -104,7 +104,7 @@ function ChargerFacture(facture) {
 
     // Mettre les infos du membre
     nom = membre.prenom + " " + membre.nom;
-    divfacture.find('.titre').text(nom + " (facture " + facture.numero + ")");
+    divfacture.find('.titre').text(nom + " - membre #" + membre.numero + " - facture #" + facture.numero + " - " + FormatDate(facture.date));
 
     if (membre.expiration && membre.expiration['$date']) {
       exp = new Date(membre.expiration['$date']);
