@@ -47,6 +47,27 @@ class RequestError(Exception):
 
 api_boolean = {'oui': True, 'non': False}
 
+def ValidationQuantite(quantite_str):
+  try:
+    val =  int(quantite_str)
+  except ValueError as e:
+    val = float(quantite_str)
+
+  if val < 0:
+    raise ValueError()
+
+  return val
+
+def ValidationEntierPositif(entier_str):
+  i = int(entier_str)
+
+  print "allo " + str(i)
+
+  if i < 0:
+    raise ValueError()
+
+  return i
+
 """
 Méthode déclarative pour décrire les arguments nécessaires pour la
 création/modification de chaque type de ressource de l'API.
@@ -56,34 +77,30 @@ Ce tableau est utilisé principalement par ParseIncoming().
 Pour chaque clé (p.e. 'membres'), on a:
   * req: liste de clés nécessaires lors de la création (POST)
   * opt: liste de clés optionnelles
-  * valid: dict avec les noms de paramètres comme clés.
-           Si la valeur est une liste, la valeur fournie par le client
-           doit se trouver dans cette liste pour être valide. S'il
-           s'agit d'un objet "callable", celui-ci est appelé et doit
-           retourner True ou False pour indiquer si la valeur est
-           valide. Si la valeur est un dict, la valeur fournie par le
-           client doit se trouver dans la liste de clés du dict pour
-           être valide.
-  * transform: dict avec les noms de paramètres comme clés.
-               Si la valeur est un dict, celui-ci est utilisé pour faire
-               la transformation (le paramètre est utilisé comme clé
-               pour déduire la valeur transformée). Si la valeur est un
-               objet "callable", celui-ci est appelé et doit retourner
-               la valeur transformée.
+  * valid: Effecture la validation et la transformation des valeurs
+           en entrée. Il doit s'agir d'un dict avec les noms de
+           paramètres comme clés. Les valeurs peuvent être les
+           suivantes:
 
-Maybe TODO: peut-être qu'un seul callback qui fait validation + transform ce serait assez...
+           list: Pour être valide, la valeur doit se trouver dans la
+                 liste. Aucune transformation n'est appliquée.
+
+           dict: Pour être valide, la valeur en entrée doit être une clé
+                 dans le dict (opérateur "in"). La valeur transformée
+                 est la valeur correspondand à cette clé.
+
+           fonction: La fonction est appelée avec la valeur, et doit
+                     lever une exception ValueError pour indiquer une
+                     valeur invalide. La valeur transformée correspond
+                     à la valeur de retour de cette fonction.
 """
 validation = {
   'membres': {
     'req': ['prenom', 'nom'],
     'opt': ['numero', 'courriel', 'listedenvoi', 'provenance', 'estbenevole', 'telephone'],
     'valid': {
-      'numero': unicode.isdigit,
+      'numero': ValidationEntierPositif,
       'listedenvoi': ['non', 'oui', 'fait'],
-      'estbenevole': api_boolean
-    },
-    'transform': {
-      'numero': int,
       'estbenevole': api_boolean
     }
   },
@@ -91,35 +108,21 @@ validation = {
     'req': ['numero'],
     'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantiteneuf', 'prixneuf', 'quantiteusage', 'prixusage', 'remarques'],
     'valid': {
-      'numero': unicode.isdigit,
-      'numerobabac': unicode.isdigit,
-      'prixneuf': unicode.isdigit,
-      'prixusage': unicode.isdigit,
-      'prixbabac': unicode.isdigit,
-      'quantiteneuf': unicode.isdigit,
-      'quantiteusage': unicode.isdigit,
-    },
-    'transform': {
-      'numero': int,
-      'numerobabac': int,
-      'prixneuf': int,
-      'prixusage': int,
-      'prixbabac': int,
-      'quantiteneuf': int,
-      'quantiteusage': int,
+      'numero': ValidationEntierPositif,
+      'numerobabac': ValidationEntierPositif,
+      'prixneuf': ValidationEntierPositif,
+      'prixusage': ValidationEntierPositif,
+      'prixbabac': ValidationEntierPositif,
+      'quantiteneuf': ValidationEntierPositif,
+      'quantiteusage': ValidationEntierPositif,
     }
   },
   'factures': {
     'req': ['membre'],
     'opt': ['benevole', 'complete'],
     'valid': {
-      'membre': unicode.isdigit,
-      'benevole': unicode.isdigit,
-      'complete': api_boolean,
-    },
-    'transform': {
-      'membre': int,
-      'benevole': int,
+      'membre': ValidationEntierPositif,
+      'benevole': ValidationEntierPositif,
       'complete': api_boolean,
     }
   },
@@ -127,14 +130,9 @@ validation = {
     'req': ['numero'],
     'opt': ['quantiteneuf', 'quantiteusage'],
     'valid': {
-      'numero': unicode.isdigit,
-      'quantiteneuf': unicode.isdigit,
-      'quantiteusage': unicode.isdigit,
-    },
-    'transform': {
-      'numero': int,
-      'quantiteneuf': int,
-      'quantiteusage': int,
+      'numero': ValidationEntierPositif,
+      'quantiteneuf': ValidationQuantite,
+      'quantiteusage': ValidationQuantite,
     }
   },
 }
@@ -148,55 +146,70 @@ validation = {
       data
           dict. Données fournie en entrée par le client
       collection_name
-          type de ressource 'membres', 'pieces', 'factures' ou 'factureajoutpiece'
+          type de ressource à aller chercher dans le tableau 'validation'
+          (exemple: 'membres', 'pieces', 'factures', ...)
       throw_if_required_missing
-          bool. Si True, lève une interruption s'il manque au moins un paramètre requis.
+          bool. Si True, lève une exception s'il manque au moins un paramètre requis.
 
   Variable de sortie
       ret
-          dict. data dont chaque valeur a subit la transformation transform
+          dict. data dont chaque valeur a posiblement été transformée par
+          la fonction de validation.
 """
 def ParseIncoming(data, collection_name, throw_if_required_missing = True):
-  def ValidateValue(valid, key, value):
-    if key in valid:
-      validate = valid[key] #type de variable qu'est sensé être value
+  def ValidateAndTransformValue(validationArray, key, value):
+    if key in validationArray:
+      # Objet de validation correspondant au paramètre
+      validate = validationArray[key]
+
+      # validate est un objet "callable" (comme une fonction)...
       if hasattr(validate, '__call__'):
-        if not validate(value):
-          raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
-      elif isinstance(validate, list) or isinstance(validate, dict):
-        if not value in validate:
+        try:
+          return validate(value)
+        except ValueError as e:
+          raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s." %key)
+      # ... ou une liste...
+      elif isinstance(validate, list):
+        if value in validate:
+          return value
+        else:
+          raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s." %key)
+      # ... ou un dictionnaire...
+      elif isinstance(validate, dict):
+        if value in validate:
+          return validate[value]
+        else:
           raise RequestError(httplib.BAD_REQUEST, "Valeur invalide pour %s" % key)
 
-  def TransformValue(transformations, key, value):
-    if key in transformations:
-      transformation = transformations[key]
-      if hasattr(transformation, '__call__'):
-        return transformation(value)
-      elif isinstance(transformation, dict):
-        return transformation[value]
+      # ... ou autre chose.
+      return value
+
+    # Pas de validation pour cette clé
     return value
 
+  # v est un dictionnaire contenant, pour chaque paramètre valide pour
+  # ce type de ressource, un dict avec les clés 'req', 'opt' et 'valid'
   v = validation[collection_name] if collection_name in validation else {}
-  # v est un dictionnaire contenant les clés 'req', 'opt', 'valid' et 'transform' suivant le type de ressource
-  required_keys = v['req'] if 'req' in v else {} #liste des parametres requis
-  optional_keys = v['opt'] if 'opt' in v else {} #liste des parametres optionnels
-  valid = v['valid'] if 'valid' in v else {}
-  transform = v['transform'] if 'transform' in v else {}
+  required_keys = v['req'] if 'req' in v else {}
+  optional_keys = v['opt'] if 'opt' in v else {}
+  validateCollection = v['valid'] if 'valid' in v else {}
 
   ret = {}
 
-  for key in required_keys: #teste sur les paramètres requis
+  # Teste les paramètres requis
+  for key in required_keys:
     if key in data:
       value = data[key]
-      ValidateValue(valid, key, value)
-      ret[key] = TransformValue(transform, key, value)
-    elif throw_if_required_missing: #lève une exception s'il en manque au moins un
+      ret[key] = ValidateAndTransformValue(validateCollection, key, value)
+    elif throw_if_required_missing:
+      # Lève une exception si le paramètre est manquant
       raise RequestError(httplib.BAD_REQUEST, "Parametre manquant: %s" % key)
-  for key in optional_keys: #teste sur la paramètres optionnels
+
+  # Teste les paramètres optionnels
+  for key in optional_keys:
     if key in data:
       value = data[key]
-      ValidateValue(valid, key, value)
-      ret[key] = TransformValue(transform, key, value)
+      ret[key] = ValidateAndTransformValue(validateCollection, key, value)
 
   return ret
 
