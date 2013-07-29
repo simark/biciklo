@@ -74,6 +74,9 @@ def ValidationEntierPositif(entier_str):
 
   return i
 
+def ValidationDate(date_str):
+  return datetime.datetime.strptime(date_str, "%Y-%m-%d")
+
 """
 Méthode déclarative pour décrire les arguments nécessaires pour la
 création/modification de chaque type de ressource de l'API.
@@ -125,11 +128,12 @@ validation = {
   },
   'factures': {
     'req': ['membre'],
-    'opt': ['benevole', 'complete'],
+    'opt': ['benevole', 'complete', 'date'],
     'valid': {
       'membre': ValidationEntierPositif,
       'benevole': ValidationEntierPositif,
       'complete': api_boolean,
+      'date': ValidationDate,
     }
   },
   'factureajoutpiece': {
@@ -491,9 +495,10 @@ def PostFactures():
     facture = ParseIncoming(request.form, 'factures')
 
     facture['numero'] = ObtenirProchainNumeroDeFacture()
-    facture['date'] = datetime.datetime.now()
     facture['pieces'] = []
     facture['prixtotal'] = 0
+    if 'date' not in facture:
+      facture['date'] = datetime.datetime.now()
 
     ValidationFactures(facture)
 
