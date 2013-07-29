@@ -1,32 +1,57 @@
 biciklo
 =======
 
-Système d'inventaire pour l'atelier Biciklo.
+Système d'inventaire pour l'atelier **Biciklo**.
 
-Avant de démarrer :
+dépendances
+-----------
+
+* Ruby (pour Compass ci-dessous)
+* Compass (`gem install compass`)
+* MongoDB
+* Python 2
+ * `python2-httplib2`
+ * `python2-flask` (<http://flask.pocoo.org/>)
+ * `python2-pymongo` (<http://api.mongodb.org/python/current/>)
+
+
+lancement
+---------
+
+Les dépendances ci-dessus doivent être satisfaites et le serveur MongoDB
+doit être lancé.
+
+Compiler le CSS :
 
 	$ cd sass
 	$ compass compile
+	$ cd ..
 
-Pour démarrer:
-* Installer les dépendances (voir plus loin)
-* Cloner l'entrepôt
-* Démarrer mongodb
-* BICIKLO_DEBUG=1 python index.py
+Lancer le site Flask :
 
-index.py va imprimer l'adresse pour accéder au site avec le fureteur
+	$ BICIKLO_DEBUG=1 python index.py
 
-Exemples d'utilisation de curl pour débugger l'API HTTP:
-* Liste de factures: curl -X GET http://0.0.0.0:8888/api/factures
-* Liste de membres: curl -X GET http://0.0.0.0:8888/api/membres
-* Ajout d'un membre: curl -X POST --data "prenom=bob&nom=leponge" http://0.0.0.0:8888/api/membres
-* Suppression d'un membre: curl -X DELETE http://0.0.0.0:8888/api/membres/6
+`index.py` imprimera l'URL qui permet l'accès au site Web.
 
-Dépendances:
-* MongoDB (http://www.mongodb.org/)
-* Compass (http://compass-style.org/)
 
-Dépendances Python:
-* Python 2, pour l'instant
-* flask (http://flask.pocoo.org/)
-* pymongo (http://api.mongodb.org/python/current/)
+API HTTP
+--------
+
+Exemples d'utilisation de cURL pour déboguer l'API HTTP.
+
+### Liste de factures
+
+	$ curl -X GET http://0.0.0.0:8888/api/factures
+	
+### Liste de membres
+
+
+	$ curl -X GET http://0.0.0.0:8888/api/membres
+	
+### Ajout d'un membre
+
+	$ curl -X POST --data "prenom=bob&nom=leponge" http://0.0.0.0:8888/api/membres
+	
+### Suppression d'un membre
+
+	$ curl -X DELETE http://0.0.0.0:8888/api/membres/6
