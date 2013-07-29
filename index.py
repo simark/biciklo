@@ -622,9 +622,9 @@ def SoustraireQuantitePieces(entree_piece):
     quantiteusage = entree_piece['quantiteusage']
     db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': -quantiteusage}})
 
-# Calcule et écris le prix total de la facture, en cents, dans la base
-# de données et dans l'objet facture directement.
-# Arrondit le montant final au 25 cents le plus près.
+# Calcule et écris le prix total de la facture, en cents, dans l'objet
+# facture directement. Arrondit le montant final au 25 cents le plus
+# près.
 def EcrirePrixTotalFacture(facture):
   total = 0
 
@@ -648,7 +648,6 @@ def EcrirePrixTotalFacture(facture):
     total = total - rem
 
   facture['prixtotal'] = total
-  db.DBConnection().factures.update({'numero': facture['numero']}, {'$set' : {'prixtotal': total}})
 
 @app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
 def PostPieceInFacture(numero_facture):
