@@ -6,6 +6,8 @@
 {% block content %}
   <h1>factures ouvertes</h1>
 
+  <div><a href="/factures-fermees" class="btn btn-primary" id="btn-factures-fermees">Factures fermées &raquo;</a></div>
+
   <div>
     <form class="form-inline" id="form-nouvelle-facture">
     Nouvelle facture:
@@ -15,8 +17,6 @@
     </div>
     </form>
   </div>
-
-  <div><a href="/factures-fermees" class="btn btn-primary">Factures fermées &raquo;</a></div>
 
   <div id="loading" style="text-align: center">
     <img src="/static/loading.gif" />
