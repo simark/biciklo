@@ -105,6 +105,17 @@ function ChargerFacture(facture) {
     // Mettre les infos du membre
     nom = membre.prenom + " " + membre.nom;
     divfacture.find('.titre').text(nom + " (facture " + facture.numero + ")");
+
+    if (membre.expiration && membre.expiration['$date']) {
+      exp = new Date(membre.expiration['$date']);
+      now = new Date();
+      if (exp < now) {
+        divfacture.find('.titre').addClass('abonnement-expire');
+      }
+    } else {
+      divfacture.find('.titre').addClass('abonnement-absent');
+    }
+
   }).fail(function () {
     AfficherErreur(DisplayError);
   });

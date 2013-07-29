@@ -60,6 +60,18 @@
             <input type="text" style="display: none;" />
           </td>
         </tr>
+        <tr>
+          <td class="cle">Expiration</td>
+          <td class="valeur" id="expiration">
+            <span>
+              {% if 'expiration' in membre %}
+                {{ membre.expiration.strftime("%Y-%m-%d") }}
+              {% else %}
+                ?
+              {% endif %}
+            </span>
+          </td>
+        </tr>
       </tbody>
     </table>
   </p>

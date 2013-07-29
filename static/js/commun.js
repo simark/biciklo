@@ -79,6 +79,22 @@ function NombreVersPrix(str) {
   return ret;
 }
 
+function FormatDate(obj) {
+  if (!obj || !obj['$date'])
+    return '?';
+
+  d = new Date(obj['$date'])
+  year = d.getFullYear();
+  month = d.getMonth();
+  if (month < 10)
+    month = '0' + month;
+  day = d.getDate();
+  if (day < 10)
+    day = '0' + day;
+
+  return year + "-" + month + "-" + day;
+}
+
 function DisplayError(jqXHR, textStatus, errorThrown) {
   data = jqXHR.responseText;
   AfficherErreur(JSON.parse(data));

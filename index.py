@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+import datetime
 import json
 import os
 import time
@@ -17,6 +17,14 @@ from flask import url_for
 import db
 
 app = Flask(__name__)
+
+# numéro de pièce des abonnements et durées
+abonnements = {
+  # Annuel
+  100: datetime.timedelta(days = 364),
+  # Mensuel
+  200: datetime.timedelta(days = 30),
+}
 
 def jsonify(stuff):
   stuff = RemoveIds(stuff)
@@ -267,7 +275,7 @@ def PostMembres():
       # On attribut automatiquement un # de membre
       membre['numero'] = ObtenirProchainNumeroDeMembre()
 
-    membre['dateinscription'] = datetime.now()
+    membre['dateinscription'] = datetime.datetime.now()
 
     db.DBConnection().membres.insert(membre)
 
@@ -483,7 +491,7 @@ def PostFactures():
     facture = ParseIncoming(request.form, 'factures')
 
     facture['numero'] = ObtenirProchainNumeroDeFacture()
-    facture['date'] = datetime.now()
+    facture['date'] = datetime.datetime.now()
     facture['pieces'] = []
 
     ValidationFactures(facture)
@@ -535,6 +543,8 @@ def DeleteFactures(numero):
 
   try:
     facture = ObtenirFacture(numero)
+    mettreAJourAbonnement = False
+
     if not facture:
       raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas")
 
@@ -543,7 +553,15 @@ def DeleteFactures(numero):
       for ligne in lignes:
         AjouterQuantitePieces(ligne)
 
+        if ligne['numero'] in abonnements:
+          mettreAJourAbonnement = True
+
+    # Supprimer la facture
     db.DBConnection().factures.remove({'numero': numero})
+
+    # Mettre à jour l'abonnement au besoin
+    if mettreAJourAbonnement:
+      MettreAJourExpirationMembre(facture['membre'])
 
   except RequestError as ex:
     status = ex.status
@@ -689,6 +707,10 @@ def PostPieceInFacture(numero_facture):
     # Ajuster les quantités en inventaire
     SoustraireQuantitePieces(entree_piece)
 
+    # Mise à jour de la date d'abonnement, si requis
+    if numero_piece in abonnements:
+      MettreAJourExpirationMembre(facture['membre'])
+
     result = entree_piece
 
   except RequestError as ex:
@@ -735,6 +757,11 @@ def DeletePieceFromFacture(numero_facture, numero_piece):
 
     # Ajuster les quantités en inventaire
     AjouterQuantitePieces(entree_piece)
+
+    # Mise à jour de la date d'abonnement, si requis
+    if numero_piece in abonnements:
+      MettreAJourExpirationMembre(facture['membre'])
+
   except RequestError as ex:
     status = ex.status
     result = ex.msg
@@ -766,6 +793,30 @@ def ObtenirFacture(numero):
 def EstBenevole(numero):
   membre = db.DBConnection().membres.find_one({'numero': numero, 'estbenevole': True})
   return membre != None
+
+def CalculerExpirationMembre(numero):
+  if not MembreExiste(numero):
+    raise ValueError('Membre inexistant')
+
+  factures = db.DBConnection().factures.find({'membre': numero})
+
+  latest = None
+  for facture in factures:
+    if 'pieces' not in facture:
+      continue
+    for ligne in facture['pieces']:
+      if ligne['numero'] in abonnements:
+        tentative = facture['date'] + abonnements[ligne['numero']]
+        if latest is None or tentative > latest:
+          latest = tentative
+
+  return latest
+
+def MettreAJourExpirationMembre(numero):
+  exp = CalculerExpirationMembre(numero)
+
+  db.DBConnection().membres.update({'numero': numero}, {'$set': {'expiration': exp}})
+
 
 # l'app web
 @app.route('/', methods=['GET'])
