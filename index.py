@@ -61,8 +61,6 @@ def ValidationQuantite(quantite_str):
 def ValidationEntierPositif(entier_str):
   i = int(entier_str)
 
-  print "allo " + str(i)
-
   if i < 0:
     raise ValueError()
 
