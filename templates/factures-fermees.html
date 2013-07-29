@@ -23,7 +23,7 @@
         {% for facture in factures %}
           <tr data-numero-facture="{{ facture.numero }}">
             <td>{{ facture.numero }}</td>
-            <td>{{ facture.date.strftime("%Y-%M-%S") }}</td>
+            <td>{{ facture.date.strftime("%Y-%m-%d") }}</td>
             <td>{{ membres[facture['membre']].prenom }} {{ membres[facture['membre']].nom }}</td>
             <td>{{ facture.prixtotal / 100 }}$ </td>
             <td><i class="icon-folder-open reouvrir-facture"></i></td>
