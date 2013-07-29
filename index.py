@@ -701,63 +701,6 @@ def PostPieceInFacture(numero_facture):
 
   return jsonify(result), status, headers
 
-@app.route('/api/factures/<int:numero_facture>/pieces/<int:numero_piece>', methods=['PUT'])
-def PutPieceInFacture(numero_facture, numero_piece):
-  result = {}
-  status = httplib.NO_CONTENT
-
-  try:
-    if not FactureExiste(numero_facture):
-      raise RequestError(httplib.NOT_FOUND, "Cette facture n'existe pas.")
-
-    facture = ObtenirFacture(numero_facture)
-
-    if not PieceExiste(numero_piece):
-      raise RequestError(httplib.NOT_FOUND, "Cette piece n'existe pas.")
-
-    if 'pieces' not in facture:
-      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
-
-    entree_piece = None
-
-    for ep in facture['pieces']:
-      if ep['numero'] == numero_piece:
-        entree_piece = ep
-        break
-
-    if entree_piece is None:
-      raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
-
-    val = ParseIncoming(request.form, 'factureajoutpiece', False)
-
-    piece = ObtenirPiece(numero_piece)
-
-    entree_piece_new = TraiterQuantitesAjoutPieceFacture(val, piece)
-
-    # Ajuster quantités en inventaire (remettre les pièces, anciennes quantités)
-    AjouterQuantitePieces(entree_piece)
-
-    entree_piece.update(entree_piece_new)
-
-    # Ajuster quantités en inventaire (enlever les pièces, nouvelles quantités)
-    SoustraireQuantitePieces(entree_piece)
-
-    # Modifier la facture
-    db.DBConnection().factures.update({'numero': numero_facture, 'pieces.numero': numero_piece},
-      {'$set': {'pieces.$': entree_piece}})
-
-    # Ajuster le prix total de la facture
-    EcrirePrixTotalFacture(facture)
-
-  except RequestError as ex:
-    status = ex.status
-    result = ex.msg
-  except Exception as ex:
-    status = httplib.INTERNAL_SERVER_ERROR
-    result = str(ex)
-
-  return jsonify(result), status
-
 @app.route('/api/factures/<int:numero_facture>/pieces/<int:numero_piece>', methods=['DELETE'])
 def DeletePieceFromFacture(numero_facture, numero_piece):
   result = {}
