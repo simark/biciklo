@@ -679,11 +679,13 @@ def PostPieceInFacture(numero_facture):
     entree_piece['numero'] = numero_piece
 
     # Ajouter la pièce dans la facture
-    db.DBConnection().factures.update({'numero': numero_facture},
-      {'$push': {'pieces': entree_piece}})
+    facture['pieces'].append(entree_piece)
 
     # Ajuster le prix total de la facture
     EcrirePrixTotalFacture(facture)
+
+    # Écrire la facture dans la BD
+    db.DBConnection().factures.update({'numero': numero_facture}, facture)
 
     # Ajuster les quantités en inventaire
     SoustraireQuantitePieces(entree_piece)
@@ -780,15 +782,17 @@ def DeletePieceFromFacture(numero_facture, numero_piece):
     if entree_piece is None:
       raise RequestError(httplib.NOT_FOUND, "Cette facture ne contient pas cette pièce.")
 
-    # Ajuster les quantités en inventaire
-    AjouterQuantitePieces(entree_piece)
-
     # Supprimer la pièce de la facture
-    db.DBConnection().factures.update({'numero': numero_facture}, {'$pull': {'pieces': {'numero': numero_piece}}})
+    facture['pieces'] = [x for x in facture['pieces'] if x['numero'] != numero_piece]
 
     # Ajuster le prix total de la facture
     EcrirePrixTotalFacture(facture)
 
+    # Écrire la facture dans la BD
+    db.DBConnection().factures.update({'numero': numero_facture}, facture)
+
+    # Ajuster les quantités en inventaire
+    AjouterQuantitePieces(entree_piece)
   except RequestError as ex:
     status = ex.status
     result = ex.msg
