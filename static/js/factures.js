@@ -149,7 +149,7 @@ function SupprimerFacture() {
       'type': 'DELETE'
     }).done(function (data, textStatus, jqXHR) {
       AfficherSucces('Facture supprimée');
-      $('#facture-' + numeroFacture).hide('slow', function () { $(this).remove(); });
+      $('#facture-' + numeroFacture).slideUp('slow', function () { $(this).remove(); });
     }).fail(DisplayError);
   }
 }
@@ -163,7 +163,7 @@ function FermerFacture() {
       'data': data,
     }).done(function (data, textStatus, jqXHR) {
       AfficherSucces('Facture fermée');
-      $('#facture-' + numeroFacture).hide('slow', function () { $(this).remove(); });
+      $('#facture-' + numeroFacture).slideUp('slow', function () { $(this).remove(); });
     }).fail(DisplayError);
 }
 
