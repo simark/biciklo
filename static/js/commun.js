@@ -60,7 +60,14 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
 }
 
 function NombreVersPrix(str) {
-  int = parseInt(str);
+  var int = parseInt(str);
+  var ret = "";
+
+  if (int < 0) {
+    int = -int;
+    ret += "-";
+  }
+
   cennes = (int % 100).toString();
   dollars = ((int - cennes) / 100).toString();
 
@@ -68,7 +75,8 @@ function NombreVersPrix(str) {
     cennes = "0" + cennes;
   }
 
-  return dollars + "," + cennes + " $";
+  ret += dollars + "," + cennes + " $";
+  return ret;
 }
 
 function DisplayError(jqXHR, textStatus, errorThrown) {
