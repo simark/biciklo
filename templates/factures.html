@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-  <h1>factures en cours</h1>
+  <h1>factures ouvertes</h1>
 
   <div>
     <form class="form-inline" id="form-nouvelle-facture">
@@ -16,9 +16,7 @@
     </form>
   </div>
 
-  <div>
-    <a href="/factures-fermees">Voir les factures fermées</a>
-  </div>
+  <div><a href="/factures-fermees" class="btn btn-primary">Factures fermées &raquo;</a></div>
 
   <div id="loading" style="text-align: center">
     <img src="/static/loading.gif" />
