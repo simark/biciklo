@@ -640,7 +640,7 @@ def EcrirePrixTotalFacture(facture):
         t = int(ligne['prixusage'] * ligne['quantiteusage'])
         total = total + t
 
-  # Arrondir au 25 cents supérieur
+  # Arrondir au 25 cents
   rem = total % 25
   if rem >= 13:
     total = total - rem + 25
