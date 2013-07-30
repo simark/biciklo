@@ -825,10 +825,13 @@ def MettreAJourExpirationMembre(numero):
 
 
 # l'app web
+
+#appellé lorsqu'on va à la racine de la page web. C'est-à-dire http://0.0.0.0:8888/
 @app.route('/', methods=['GET'])
 def Index():
   return render_template('index.html')
 
+#appelé lorsqu'on va sur la page "Liste des membres"
 @app.route('/membres/', methods=['GET'])
 def ListeMembres():
   return render_template('membres.html')
@@ -838,6 +841,7 @@ def UnMembre(numero):
   membre =  db.DBConnection().membres.find_one({'numero': numero})
   return render_template('membre.html', numero=numero, membre=membre)
 
+#appelé lorsqu'on va sur la page "Liste des pièces"
 @app.route('/pieces/', methods=['GET'])
 def ListePieces():
   return render_template('pieces.html')
@@ -846,6 +850,7 @@ def ListePieces():
 def UnePiece():
   return render_template('piece.html')
 
+#appelé lorsqu'on va sur la page "Factures"
 @app.route('/factures', methods=['GET'])
 def Factures():
   return render_template('factures.html')
@@ -861,10 +866,12 @@ def FacturesFermees():
 
   return render_template('factures-fermees.html', factures = factures, membres = membres)
 
+#appelé lorsqu'on va sur la page correspondant à "Admin"
 @app.route('/admin', methods=['GET'])
 def Admin():
   return render_template('admin.html')
 
+#appelé lorsqu'on va sur la page "Ajout de pièce" (dans la page "Admin")
 @app.route('/admin/ajoutpiece', methods=['GET'])
 def AdminAjoutPiece():
   return render_template('admin-ajout-piece.html')
