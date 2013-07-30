@@ -2,10 +2,12 @@ var listePieces = null;
 
 function SubmitAjoutPiece() {
   var champNumeroPiece = $(this).find('.input-numero-piece');
-  var champQuantite = $(this).find('.input-quantite-piece');
+  var champQuantiteNeuf = $(this).find('.input-quantite-piece-neuf');
+  var champQuantiteUsage = $(this).find('.input-quantite-piece-usage');
 
   var numeroPiece = champNumeroPiece.val();
-  var quantite = champQuantite.val();
+  var quantiteNeuf = champQuantiteNeuf.val();
+  var quantiteUsage = champQuantiteUsage.val();
   var numeroFacture = CetteFacture(this);
 
   if (numeroPiece.length == 0) {
@@ -13,19 +15,29 @@ function SubmitAjoutPiece() {
     return false;
   }
 
-  if (quantite.length == 0) {
+  if (quantiteNeuf.length == 0 && quantiteUsage.length == 0) {
     AfficherErreur("Il faut une quantité.");
     return false;
   }
 
   $.get('/api/pieces/' + numeroPiece).done( function(piece) {
     var postUrl = '/api/factures/' + numeroFacture + '/pieces';
-    var postData = {numero: numeroPiece, quantiteneuf: quantite};
+    var postData = {numero: numeroPiece};
+
+    if (quantiteNeuf.length > 0) {
+      postData.quantiteneuf = quantiteNeuf;
+    }
+
+    if (quantiteUsage.length > 0) {
+      postData.quantiteusage = quantiteUsage;
+    }
+
     $.post(postUrl, postData).done(function (ligneFacture, textStatus, jqXHR) {
         AjouterLignePiece(numeroFacture, piece, ligneFacture);
 
         champNumeroPiece.val("");
-        champQuantite.val("");
+        champQuantiteNeuf.val("");
+        champQuantiteUsage.val("");
 
         CalculerPrixTotalFacture(numeroFacture);
       }).fail(DisplayError);
@@ -122,23 +134,28 @@ function ChargerFacture(facture) {
 }
 
 function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
-  function GetProp(obj, prop) {
-    return (prop in obj) ? obj[prop] : '?';
+  function GetProp(obj, prop, alt) {
+    alt = typeof alt !== 'undefined' ? alt : '?';
+    return (prop in obj) ? obj[prop] : alt;
   }
 
   html = $('<tr class="ligne-facture"></tr>');
-  html.attr('data-prixtotal', ligneFacture.prixneuf * ligneFacture.quantiteneuf);
+  html.attr('data-prixtotal', ligneFacture.prixtotal);
+  html.attr('data-numero-piece', piece.numero);
+
   html.append('<td>' + GetProp(piece, "numero") + '</td>');
   html.append('<td>' + GetProp(piece, "section") + '</td>');
   html.append('<td>' + GetProp(piece, "nom") + '</td>');
   html.append('<td>' + GetProp(piece, "reference") + '</td>');
 
-  html.append('<td>' + ligneFacture.quantiteneuf + '</td>');
-  html.append('<td>' + NombreVersPrix(ligneFacture.prixneuf) + '</td>');
-  html.append('<td>' + NombreVersPrix(ligneFacture.prixneuf * ligneFacture.quantiteneuf) + '</td>');
-  html.append('<td><i class="icon-remove"></i></td>');
+  html.append('<td>' + GetProp(ligneFacture, 'quantiteneuf', '') + '</td>');
+  html.append('<td>' + NombreVersPrix(GetProp(ligneFacture, 'prixneuf', '')) + '</td>');
+  html.append('<td>' + GetProp(ligneFacture, 'quantiteusage', '') + '</td>');
+  html.append('<td>' + NombreVersPrix(GetProp(ligneFacture, 'prixusage', '')) + '</td>');
 
-  html.attr('data-numero-piece', piece.numero);
+  html.append('<td>' + NombreVersPrix(ligneFacture.prixtotal) + '</td>');
+
+  html.append('<td><i class="icon-remove"></i></td>');
   html.find("i").click(SupprimerPiece);
 
   divfacture = $('#facture-' + numeroFacture);

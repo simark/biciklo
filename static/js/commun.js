@@ -63,6 +63,10 @@ function NombreVersPrix(str) {
   var int = parseInt(str);
   var ret = "";
 
+  if (!str) {
+    return "";
+  }
+
   if (int < 0) {
     int = -int;
     ret += "-";
