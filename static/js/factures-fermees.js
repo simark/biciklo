@@ -13,6 +13,14 @@ function InitTableauFacturesFermees() {
        sInfoFiltered: "(filtré de _MAX_ entrées en tout)",
        sSearch: "rechercher&nbsp;:",
      },
+     'fnRowCallback': function( nRow, aData, iDisplayIndex ) {
+       // Appliquer NombreVersPrix sur la colonne du montant total
+       var colonnePrix = 3;
+
+       $('td:eq(' + colonnePrix + ')', nRow).html( NombreVersPrix(aData[colonnePrix]) );
+
+       return nRow;
+		},
   });
 }
 
