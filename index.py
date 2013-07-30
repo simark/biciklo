@@ -601,6 +601,7 @@ def GetFacturesNumero(numero):
 
 def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
   entree_piece = {}
+  prix_total = 0
 
   if 'quantiteneuf' in valeurs:
     quantite_neuf = valeurs['quantiteneuf']
@@ -611,6 +612,7 @@ def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
 
     entree_piece['prixneuf'] = prix_neuf
     entree_piece['quantiteneuf'] = quantite_neuf
+    prix_total = prix_total + int(prix_neuf * quantite_neuf)
 
   if 'quantiteusage' in valeurs:
     quantite_usage = valeurs['quantiteusage']
@@ -621,6 +623,9 @@ def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
 
     entree_piece['prixusage'] = prix_usage
     entree_piece['quantiteusage'] = quantite_usage
+    prix_total = prix_total + int(prix_usage * quantite_usage)
+
+  entree_piece['prixtotal'] = prix_total
 
   return entree_piece
 
@@ -656,13 +661,7 @@ def EcrirePrixTotalFacture(facture):
     lignesFacture = facture['pieces']
 
     for ligne in lignesFacture:
-      if 'prixneuf' in ligne and 'quantiteneuf' in ligne:
-        t = int(ligne['prixneuf'] * ligne['quantiteneuf'])
-        total = total + t
-
-      if 'prixusage' in ligne and 'quantiteusage' in ligne:
-        t = int(ligne['prixusage'] * ligne['quantiteusage'])
-        total = total + t
+      total = total + ligne['prixtotal']
 
   # Arrondir au 25 cents
   rem = total % 25
