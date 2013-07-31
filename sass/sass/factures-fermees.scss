@@ -5,4 +5,12 @@
 	tbody td {
 		text-align: center;
 	}
+
+	i.reouvrir-facture {
+		color: #999;
+		cursor: pointer;
+		&:hover {
+			color: black;
+		}
+	}
 }
