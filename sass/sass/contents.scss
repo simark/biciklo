@@ -10,3 +10,11 @@
 		font-variant: small-caps;
 	}
 }
+
+.icon {
+	cursor: pointer;
+	color: #999;
+	&:hover {
+		color: black;
+	}
+}

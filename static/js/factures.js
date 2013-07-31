@@ -155,7 +155,7 @@ function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
 
   html.append('<td>' + NombreVersPrix(ligneFacture.prixtotal) + '</td>');
 
-  html.append('<td><i class="icon-remove"></i></td>');
+  html.append('<td><i class="icon icon-remove"></i></td>');
   html.find("i").click(SupprimerPiece);
 
   divfacture = $('#facture-' + numeroFacture);
