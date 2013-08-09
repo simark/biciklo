@@ -107,6 +107,7 @@ function Sauvegarder() {
     'listedenvoi': $('#listedenvoi input:checked').val(),
     'courriel': $('#courriel input').val(),
     'provenance': $('#provenance input').val(),
+    'estbenevole': $('#estbenevole input:checked').val(),
   };
 
   numero = $('#numero').text().trim();

@@ -61,6 +61,19 @@
           </td>
         </tr>
         <tr>
+          <td class="cle">Est bénévole</td>
+          <td class="valeur" id="estbenevole" data-edit="radio">
+            {% if membre.estbenevole %}
+              <span>oui</span>
+            {% else %}
+              <span>non</span>
+            {% endif %}
+
+            <label style="display: none;" class="radio inline"><input type="radio" class="radio" name="estbenevole" value="oui" id="estbenevole-oui" />oui</label>
+            <label style="display: none;" class="radio inline"><input type="radio" class="radio inline" name="estbenevole" value="non" id="estbenevole-non" />non</label>
+          </td>
+        </tr>
+        <tr>
           <td class="cle">Expiration</td>
           <td class="valeur" id="expiration">
             <span>
