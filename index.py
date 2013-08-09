@@ -145,6 +145,15 @@ validation = {
       'quantiteusage': ValidationQuantite,
     }
   },
+  'heuresbenevole': {
+    'req': ['numero', 'heures', 'raison'],
+    'opt': ['date'],
+    'valid': {
+      'numero': ValidationEntierPositif,
+      'heures': ValidationQuantite,    
+      'date': ValidationDate,
+    }
+  },
 }
 
 """
@@ -356,6 +365,38 @@ def GetMembresNumero(numero):
     status = httplib.INTERNAL_SERVER_ERROR
 
   return jsonify(result), status, headers
+
+@app.route('/api/membres/<int:numero>/heuresbenevoles', methods=['POST'])
+def PostHeuresBenevoles(numero):
+  result = {}
+  status = httplib.CREATED
+  headers = {'Content-type': 'application/json'}
+
+  try:
+    heures = ParseIncoming(request.form, 'heuresbenevole')
+
+    if not EstBenevole(heures['numero']):
+      raise RequestError(httplib.UNPROCESSABLE_ENTITY, 'Ce membre n\'est pas bénévole')
+
+    if 'date' not in heures:
+      heures['date'] = datetime.datetime.now()
+      
+    numero = heures.pop('numero')
+    
+    db.DBConnection().membres.update(
+                    { "numero":  numero},
+                    { '$push': { "heuresbenevole": heures } }
+                  )
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as ex:
+    status = httplib.INTERNAL_SERVER_ERROR
+    result = str(ex)
+
+  return jsonify(result), status, headers
+	
 
 # api pieces
 @app.route('/api/pieces', methods=['GET'])
