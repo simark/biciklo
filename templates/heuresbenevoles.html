@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<script src="/static/js/heuresbenevoles.js"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Heures Bénévoles</h1>
+<div>
+  <form class="form-inline" id="formulaireheuresbenevoles">
+    <select id='benevole'>
+      {% for benevole in benevoles %}
+      <option value="{{benevole.numero}}">{{benevole.prenom}} {{benevole.nom}}</option>
+    {% endfor %}
+    </select>
+    <input type='text' id='heures' class='input-mini' placeholder='heures' />
+    <input type='text' id='raison' class='input-large' placeholder='raison' value='Séance régulière atelier' />
+    <input type="submit" class="btn btn-small" value="OK" />
+  </form>
+</div>
+
+{% endblock %}

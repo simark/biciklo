@@ -146,11 +146,10 @@ validation = {
     }
   },
   'heuresbenevole': {
-    'req': ['numero', 'heures', 'raison'],
+    'req': ['heures', 'raison'],
     'opt': ['date'],
     'valid': {
-      'numero': ValidationEntierPositif,
-      'heures': ValidationQuantite,    
+      'heures': ValidationQuantite,
       'date': ValidationDate,
     }
   },
@@ -375,18 +374,14 @@ def PostHeuresBenevoles(numero):
   try:
     heures = ParseIncoming(request.form, 'heuresbenevole')
 
-    if not EstBenevole(heures['numero']):
+    if not EstBenevole(numero):
       raise RequestError(httplib.UNPROCESSABLE_ENTITY, 'Ce membre n\'est pas bénévole')
 
     if 'date' not in heures:
       heures['date'] = datetime.datetime.now()
-      
-    numero = heures.pop('numero')
-    
-    db.DBConnection().membres.update(
-                    { "numero":  numero},
-                    { '$push': { "heuresbenevole": heures } }
-                  )
+
+    db.DBConnection().membres.update({"numero":  numero},
+        {'$push': {"heuresbenevole": heures}})
 
   except RequestError as ex:
     status = ex.status
@@ -396,7 +391,7 @@ def PostHeuresBenevoles(numero):
     result = str(ex)
 
   return jsonify(result), status, headers
-	
+
 
 # api pieces
 @app.route('/api/pieces', methods=['GET'])
@@ -905,6 +900,13 @@ def FacturesFermees():
       membres[facture['membre']] = ObtenirMembre(facture['membre'])
 
   return render_template('factures-fermees.html', factures = factures, membres = membres)
+
+#appelé lorsqu'on va sur la page correspondant à h
+@app.route('/heuresbenevoles', methods=['GET'])
+def HeuresBenevoles():
+  benevoles = list(db.DBConnection().membres.find({'estbenevole': True}).sort('prenom', pymongo.ASCENDING))
+
+  return render_template('heuresbenevoles.html', benevoles = benevoles)
 
 #appelé lorsqu'on va sur la page correspondant à "Admin"
 @app.route('/admin', methods=['GET'])
