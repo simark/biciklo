@@ -901,12 +901,17 @@ def FacturesFermees():
 
   return render_template('factures-fermees.html', factures = factures, membres = membres)
 
-#appelé lorsqu'on va sur la page correspondant à h
+#appelé lorsqu'on va sur la page correspondant à heuresbenevoles
 @app.route('/heuresbenevoles', methods=['GET'])
 def HeuresBenevoles():
   benevoles = list(db.DBConnection().membres.find({'estbenevole': True}).sort('prenom', pymongo.ASCENDING))
 
   return render_template('heuresbenevoles.html', benevoles = benevoles)
+
+#appelé lorsqu'on va sur la page "Liste heures bénévoles"
+@app.route('/listeheuresbenevoles', methods=['GET'])
+def ListeHeuresBenevoles():
+  return render_template('listeheuresbenevoles.html')
 
 #appelé lorsqu'on va sur la page correspondant à "Admin"
 @app.route('/admin', methods=['GET'])
