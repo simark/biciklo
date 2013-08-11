@@ -392,6 +392,21 @@ def PostHeuresBenevoles(numero):
 
   return jsonify(result), status, headers
 
+# api listeheuresbenevoles
+@app.route('/api/listeheuresbenevoles', methods=['GET'])
+def GetHeuresBenevoles():
+  result = {}
+  status = httplib.OK
+  headers = {'Content-type': 'application/json'}
+
+  try:
+    result = list(db.DBConnection().membres.find({'estbenevole': True}))
+
+  except Exception as e:
+    result = str(e)
+    status = httplib.INTERNAL_SERVER_ERROR
+
+  return jsonify(result), status, headers
 
 # api pieces
 @app.route('/api/pieces', methods=['GET'])
