@@ -540,6 +540,7 @@ def PostFactures():
 
     facture['numero'] = ObtenirProchainNumeroDeFacture()
     facture['pieces'] = []
+    facture['complete'] = False
     facture['prixtotal'] = 0
     if 'date' not in facture:
       facture['date'] = datetime.datetime.now()
