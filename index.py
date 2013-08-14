@@ -153,6 +153,12 @@ validation = {
       'date': ValidationDate,
     }
   },
+  'getfactures': {
+    'opt': ['complete'],
+    'valid': {
+      'complete': api_boolean
+    }
+  }
 }
 
 """
@@ -504,7 +510,9 @@ def GetFactures():
   headers = {'Content-type': 'application/json'}
 
   try:
-    result = list(db.DBConnection().factures.find().sort('numero', 1))
+    filters = ParseIncoming(request.args, 'getfactures')
+
+    result = list(db.DBConnection().factures.find(filters).sort('numero', 1))
 
   except Exception as e:
     result = str(e)
