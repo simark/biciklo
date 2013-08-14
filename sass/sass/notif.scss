@@ -1,7 +1,7 @@
 #conteneur-messages {
 	$gutter: 30px;
 	$width: 400px;
-	
+
 	display: none;
 	position: fixed;
 	right: $gutter;
@@ -9,7 +9,7 @@
 	width: $width;
 	padding: 15px 15px 5px 15px;
 	background-color: #2c2c2c;
-	z-index: 1003;
+	z-index: 1050;
 	> div {
 		margin-bottom: 10px;
 		padding: 10px;
