@@ -259,12 +259,10 @@ $(document).ready(function () {
   $('#form-nouvelle-facture').submit(SubmitAjoutFacture);
 
   // Aller chercher les factures existantes
-  $.get('/api/factures', {})
+  $.get('/api/factures?complete=non', {})
     .done(function (data, textStatus, jqXHR) {
       $.each(data, function(key, facture) {
-        if (!facture['complete']) {
-          ChargerFacture(facture);
-        }
+        ChargerFacture(facture);
       });
 
       $('#loading').hide();
