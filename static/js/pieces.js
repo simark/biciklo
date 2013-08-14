@@ -1,3 +1,79 @@
+function AfficherAjouterPieceAFacture(numeroPiece) {
+  $.get("/api/factures?complete=non").done(function (factures, textStatus, jqXHR) {
+    if (factures.length == 0) {
+      AfficherInfo("Il n'y a aucune facture ouverte.");
+      return;
+    }
+
+    var gets = [];
+
+    $.each(factures, function (k, facture) {
+      gets.push($.get('/api/membres/' + facture.membre));
+    });
+
+    $.when.apply($, gets).done(function () {
+      var html = "";
+      var membres;
+
+      if (gets.length > 1) {
+        membres = $.map(arguments, function (e) { return e[0]; });
+      } else if (gets.length == 1) {
+        membres = [arguments[0]];
+      }
+
+      for (var i = 0; i < gets.length; i++) {
+        facture = factures[i];
+        membre = membres[i];
+
+        html += "<button type=\"button\" class=\"btn\" data-numerofacture=\"" + facture.numero + "\">" + facture.numero + " - " + membre.prenom + " " + membre.nom + "</button><br>"
+      }
+      console.log("boom");
+
+      $('#ajout-a-facture #boutons-factures').html(html);
+      $('#ajout-a-facture').modal("show");
+      $('#ajout-a-facture').attr('data-numeropiece', numeroPiece);
+
+    }).fail(DisplayError);
+  }).fail(DisplayError);
+}
+
+function ClickAjouterPiece() {
+  var quantiteNeuf = $('#quantiteneuf').val();
+  var quantiteUsage = $('#quantiteusage').val();
+  var numeroPiece = $('#ajout-a-facture').attr('data-numeropiece');
+  var checkedBtn = $('#ajout-a-facture #boutons-factures button.active');
+
+  if (checkedBtn.length != 1) {
+    AfficherErreur("Il faut choisir une facture");
+    return;
+  }
+
+  var numeroFacture = checkedBtn.attr('data-numerofacture');
+  var quantiteOk = false;
+
+  params = {'numero': numeroPiece};
+
+  if (quantiteNeuf.length > 0) {
+    params['quantiteneuf'] = quantiteNeuf;
+    quantiteOk = true;
+  }
+
+  if (quantiteUsage.length > 0) {
+    params['quantiteusage'] = quantiteUsage;
+    quantiteOk = true;
+  }
+
+  if (!quantiteOk) {
+    AfficherErreur("Il faut au moins une quantité");
+    return;
+  }
+
+  $.post('/api/factures/' + numeroFacture + '/pieces', params).done(function() {
+    AfficherSucces("Fait!");
+    $('#ajout-a-facture').modal('hide');
+    $('#ajout-a-facture input').val("");
+  }).fail(DisplayError);
+}
 
 function InitTableauPieces() {
   // Initialiser le tableau datatables.
@@ -12,6 +88,13 @@ function InitTableauPieces() {
        sInfoEmpty: "0 à 0 d'aucune entrée",
        sInfoFiltered: "(filtré de _MAX_ entrées en tout)",
        sSearch: "rechercher&nbsp;:",
+     },
+    'fnCreatedRow': function (nRow, aData, iDataIndex) {
+        $(nRow).click(function() {
+          // Le numero du membre est dans la premiere cellule de la ligne.
+          numero = aData[0];
+          AfficherAjouterPieceAFacture(numero);
+        });
      },
   });
 }
@@ -48,4 +131,6 @@ function RechargerTableauPieces() {
 $(document).ready(function() {
   InitTableauPieces();
   RechargerTableauPieces();
+
+  $('#ajout-a-facture #ajouter').click(ClickAjouterPiece);
 });

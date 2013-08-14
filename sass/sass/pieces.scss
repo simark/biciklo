@@ -5,3 +5,20 @@ table#pieces.dataTable {
 		text-align: center;
 	}
 }
+
+#ajout-a-facture {
+  text-align: center;
+  width: auto;
+
+  #boutons-factures {
+    text-align: left;
+    padding: 5px;
+    button {
+      margin: 4px;
+    }
+  }
+
+  #controles {
+    padding: 4px;
+  }
+}

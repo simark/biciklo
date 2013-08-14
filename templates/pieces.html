@@ -6,8 +6,29 @@
 {% block content %}
   <h1>Liste des pièces</h1>
 
+  <div><i class="icon-info-sign"></i> Cliquer sur une pièce pour l'ajouter à une facture ouverte.</div>
+
   <div id="loading" style="text-align: center">
     <img src="/static/loading.gif" />
+  </div>
+
+  <div id="ajout-a-facture" class="modal hide" tabindex='-1'>
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+      <h3>Ajout de pièce</h3>
+    </div>
+    <div class="modal-body">
+      <div id="boutons-factures" class="btn-group well" data-toggle="buttons-radio">
+
+      </div>
+      <div id="controles">
+        <form class="form-inline">
+          <input class="input-mini" type="text" id="quantiteneuf" placeholder="# neuf">
+          <input class="input-mini" type="text" id="quantiteusage" placeholder="# usagé">
+          <button type="button" class="btn btn-primary" id="ajouter">OK</button>
+        </form>
+      </div>
+    </div>
   </div>
 
   <div>
