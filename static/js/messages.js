@@ -1,38 +1,21 @@
 function AfficherGenerique(texte, classe) {
-  conteneur = $('#conteneur-messages');
-
-  conteneur.show();
-
-  enfant = $('<div class="alert ' + classe + '"></div>');
-  enfant.css('display', 'none');
-  enfant.text(texte);
-
-  conteneur.append(enfant);
-
-  enfant.slideDown();
-
-  window.setTimeout(EnleverPremierMessage, 5000);
+  $.pnotify({
+    text: texte,
+    type: classe,
+    shadow: false,
+    delay: 3000
+  });
 }
 
 function AfficherSucces(texte) {
-  AfficherGenerique(texte, 'alert-success');
+  AfficherGenerique(texte, 'success');
 }
 
 function AfficherInfo(texte) {
-  AfficherGenerique(texte, '');
+  AfficherGenerique(texte, 'info');
 }
 
 function AfficherErreur(texte) {
-  AfficherGenerique(texte, 'alert-error');
+  AfficherGenerique(texte, 'error');
 }
 
-function EnleverPremierMessage() {
-  conteneur = $('#conteneur-messages');
-  conteneur.children(':not(:animated)').first().slideUp('normal', function () {
-    $(this).remove();
-
-    if (conteneur.children().length == 0) {
-      conteneur.hide();
-    }
-  });
-}
