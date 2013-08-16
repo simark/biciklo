@@ -138,11 +138,12 @@ validation = {
   },
   'factureajoutpiece': {
     'req': ['numero'],
-    'opt': ['quantiteneuf', 'quantiteusage'],
+    'opt': ['quantiteneuf', 'quantiteusage', 'fusionsiexiste'],
     'valid': {
       'numero': ValidationEntierPositif,
       'quantiteneuf': ValidationQuantite,
       'quantiteusage': ValidationQuantite,
+      'fusionsiexiste': api_boolean,
     }
   },
   'heuresbenevole': {
@@ -649,30 +650,52 @@ def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
   prix_total = 0
 
   if 'quantiteneuf' in valeurs:
-    quantite_neuf = valeurs['quantiteneuf']
     if 'prixneuf' not in piece:
       raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix neuf.")
 
-    prix_neuf = piece['prixneuf']
-
-    entree_piece['prixneuf'] = prix_neuf
-    entree_piece['quantiteneuf'] = quantite_neuf
-    prix_total = prix_total + int(prix_neuf * quantite_neuf)
+    entree_piece['prixneuf'] = piece['prixneuf']
+    entree_piece['quantiteneuf'] = valeurs['quantiteneuf']
 
   if 'quantiteusage' in valeurs:
-    quantite_usage = valeurs['quantiteusage']
     if 'prixusage' not in piece:
       raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix usagé.")
 
-    prix_usage = piece['prixusage']
+    entree_piece['prixusage'] = piece['prixusage']
+    entree_piece['quantiteusage'] = valeurs['quantiteusage']
 
-    entree_piece['prixusage'] = prix_usage
-    entree_piece['quantiteusage'] = quantite_usage
-    prix_total = prix_total + int(prix_usage * quantite_usage)
-
-  entree_piece['prixtotal'] = prix_total
+  entree_piece['prixtotal'] = CalculerPrixTotalEntreePiece(entree_piece)
+  entree_piece['numero'] = piece['numero']
 
   return entree_piece
+
+def FusionEntreesPieces(entree_piece_existante, entree_piece):
+  assert entree_piece_existante['numero'] == entree_piece['numero']
+
+  if 'prixneuf' in entree_piece:
+    if 'prixneuf' in entree_piece_existante:
+      # Vérifier que le prix n'a pas changé
+      if entree_piece_existante['prixneuf'] != entree_piece['prixneuf']:
+        raise RequestError(httplib.CONFLICT, "Cette facture contient déjà cette pièce, mais avec un prix différent")
+
+      entree_piece_existante['quantiteneuf'] +=  entree_piece['quantiteneuf']
+    else:
+      # La facture actuelle ne contient pas de quantité neuf
+      entree_piece_existante['quantiteneuf'] = entree_piece['quantiteneuf']
+      entree_piece_existante['prixneuf'] = entree_piece['prixneuf']
+
+  if 'prixusage' in entree_piece:
+    if 'prixusage' in entree_piece_existante:
+      # Vérifier que le prix n'a pas changé
+      if entree_piece_existante['prixusage'] != entree_piece['prixusage']:
+        raise RequestError(httplib.CONFLICT, "Cette facture contient déjà cette pièce, mais avec un prix différent")
+
+      entree_piece_existante['quantiteusage'] +=  entree_piece['quantiteusage']
+    else:
+      # La facture actuelle ne contient pas de quantité usage
+      entree_piece_existante['quantiteusage'] = entree_piece['quantiteusage']
+      entree_piece_existante['prixusage'] = entree_piece['prixusage']
+
+  entree_piece_existante['prixtotal'] = CalculerPrixTotalEntreePiece(entree_piece_existante)
 
 # Ajoute les quantités à l'inventaire à partir d'une entrée pièce d'une facture
 def AjouterQuantitePieces(entree_piece):
@@ -696,17 +719,16 @@ def SoustraireQuantitePieces(entree_piece):
     quantiteusage = entree_piece['quantiteusage']
     db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': -quantiteusage}})
 
-# Calcule et écris le prix total de la facture, en cents, dans l'objet
-# facture directement. Arrondit le montant final au 25 cents le plus
-# près.
-def EcrirePrixTotalFacture(facture):
+# Calcule le prix total de la facture, en cents. Arrondit le montant
+# final au 25 cents le plus près.
+def CalculerPrixTotalFacture(facture):
   total = 0
 
   if 'pieces' in facture:
     lignesFacture = facture['pieces']
 
     for ligne in lignesFacture:
-      total = total + ligne['prixtotal']
+      total += ligne['prixtotal']
 
   # Arrondir au 25 cents
   rem = total % 25
@@ -715,7 +737,19 @@ def EcrirePrixTotalFacture(facture):
   else:
     total = total - rem
 
-  facture['prixtotal'] = total
+  return total
+
+# Calcule le prix total d'une entrée d'une pièce dans une facture.
+def CalculerPrixTotalEntreePiece(entree_piece):
+  total = 0
+
+  if 'quantiteneuf' in entree_piece:
+    total += int(entree_piece['quantiteneuf'] * entree_piece['prixneuf'])
+
+  if 'quantiteusage' in entree_piece:
+    total += int(entree_piece['quantiteusage'] * entree_piece['prixusage'])
+
+  return total
 
 @app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
 def PostPieceInFacture(numero_facture):
@@ -735,21 +769,32 @@ def PostPieceInFacture(numero_facture):
     if not PieceExiste(numero_piece):
       raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce n'existe pas.")
 
+    entree_piece_existante = None
+
     if 'pieces' in facture:
       for ep in facture['pieces']:
         if ep['numero'] == numero_piece:
-          raise RequestError(httplib.CONFLICT, "Cette pièce fait déjà partie de cette facture.")
+          if 'fusionsiexiste' in val and val['fusionsiexiste']:
+            entree_piece_existante = ep
+          else:
+            raise RequestError(httplib.CONFLICT, "Cette pièce est déjà présente dans cette facture.")
 
     piece = ObtenirPiece(numero_piece)
 
     entree_piece = TraiterQuantitesAjoutPieceFacture(val, piece)
-    entree_piece['numero'] = numero_piece
 
-    # Ajouter la pièce dans la facture
-    facture['pieces'].append(entree_piece)
+    if entree_piece_existante is None:
+      # Ajouter la pièce dans la facture
+      facture['pieces'].append(entree_piece)
+      result = entree_piece
+    else:
+      # Ajouter les quantités à l'entrée existante
+      # entree_piece_existante étant une référence, ça modifie directement dans la liste facture['pieces']
+      FusionEntreesPieces(entree_piece_existante, entree_piece)
+      result = entree_piece_existante
 
     # Ajuster le prix total de la facture
-    EcrirePrixTotalFacture(facture)
+    facture['prixtotal'] = CalculerPrixTotalFacture(facture)
 
     # Écrire la facture dans la BD
     db.DBConnection().factures.update({'numero': numero_facture}, facture)
@@ -761,7 +806,7 @@ def PostPieceInFacture(numero_facture):
     if numero_piece in abonnements:
       MettreAJourExpirationMembre(facture['membre'])
 
-    result = entree_piece
+
 
   except RequestError as ex:
     status = ex.status
@@ -800,7 +845,7 @@ def DeletePieceFromFacture(numero_facture, numero_piece):
     facture['pieces'] = [x for x in facture['pieces'] if x['numero'] != numero_piece]
 
     # Ajuster le prix total de la facture
-    EcrirePrixTotalFacture(facture)
+    facture['prixtotal'] = CalculerPrixTotalFacture(facture)
 
     # Écrire la facture dans la BD
     db.DBConnection().factures.update({'numero': numero_facture}, facture)
