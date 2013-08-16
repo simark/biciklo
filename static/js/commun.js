@@ -17,10 +17,10 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
   tableau.dataTable().fnClearTable();
 
   // Info sur les colonnes
-  colonnes = []
+  var colonnes = []
 
   // Les lignes qui seront envoyées à datatable
-  lignes = new Array();
+  var lignes = new Array();
 
   // Aller chercher les infos sur les colonnes
   tableau.find('th').each(function(i) {
@@ -34,19 +34,22 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
 
   // Créer les lignes une par une
   for (i in liste_lignes) {
-    ligne_data = liste_lignes[i];
-    ligne = new Array();
+    var ligne_data = liste_lignes[i];
+    var ligne = new Array();
 
     // Créer le tableau de cellules pour cette ligne
     for (col in colonnes) {
-      colname = colonnes[col].source;
-      transform = colonnes[col].transform;
+      var colname = colonnes[col].source;
+      var transform = colonnes[col].transform;
 
       if (colname in ligne_data) {
-        valeur = ligne_data[colname];
+        var valeur = ligne_data[colname];
         if (transform && transform in window && typeof(window[transform] == "function")) {
           valeur = window[transform](valeur);
         }
+        ligne.push(valeur);
+      } else if (transform && transform in window && typeof(window[transform] == "function")) {
+        var valeur = window[transform]();
         ligne.push(valeur);
       } else {
         ligne.push('?');

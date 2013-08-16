@@ -27,7 +27,6 @@ function AfficherAjouterPieceAFacture(numeroPiece) {
 
         html += "<button type=\"button\" class=\"btn\" data-numerofacture=\"" + facture.numero + "\">" + facture.numero + " - " + membre.prenom + " " + membre.nom + "</button><br>"
       }
-      console.log("boom");
 
       $('#ajout-a-facture #boutons-factures').html(html);
       $('#ajout-a-facture').modal("show");
@@ -37,7 +36,7 @@ function AfficherAjouterPieceAFacture(numeroPiece) {
   }).fail(DisplayError);
 }
 
-function ClickAjouterPiece() {
+function SubmitAjouterPiece() {
   var quantiteNeuf = $('#quantiteneuf').val();
   var quantiteUsage = $('#quantiteusage').val();
   var numeroPiece = $('#ajout-a-facture').attr('data-numeropiece');
@@ -45,13 +44,13 @@ function ClickAjouterPiece() {
 
   if (checkedBtn.length != 1) {
     AfficherErreur("Il faut choisir une facture");
-    return;
+    return false;
   }
 
   var numeroFacture = checkedBtn.attr('data-numerofacture');
   var quantiteOk = false;
 
-  params = {'numero': numeroPiece};
+  var params = {'numero': numeroPiece};
 
   if (quantiteNeuf.length > 0) {
     params['quantiteneuf'] = quantiteNeuf;
@@ -71,8 +70,10 @@ function ClickAjouterPiece() {
   $.post('/api/factures/' + numeroFacture + '/pieces', params).done(function() {
     AfficherSucces("Fait!");
     $('#ajout-a-facture').modal('hide');
-    $('#ajout-a-facture input').val("");
+    $('#ajout-a-facture input[type=text]').val("");
   }).fail(DisplayError);
+
+  return false;
 }
 
 function InitTableauPieces() {
@@ -132,5 +133,5 @@ $(document).ready(function() {
   InitTableauPieces();
   RechargerTableauPieces();
 
-  $('#ajout-a-facture #ajouter').click(ClickAjouterPiece);
+  $('#form-ajouter-a-facture').submit(SubmitAjouterPiece);
 });
