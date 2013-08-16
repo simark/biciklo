@@ -2,7 +2,6 @@ function AfficherGenerique(texte, classe) {
   $.pnotify({
     text: texte,
     type: classe,
-    shadow: false,
     delay: 3000
   });
 }
