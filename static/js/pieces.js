@@ -76,6 +76,10 @@ function SubmitAjouterPiece() {
   return false;
 }
 
+function ColonneAjouterPiece() {
+  return '<i style="inline-block" class="icon icon-plus icone-ajouter-a-facture"></i>';
+}
+
 function InitTableauPieces() {
   // Initialiser le tableau datatables.
   $('#pieces').dataTable({
@@ -91,11 +95,9 @@ function InitTableauPieces() {
        sSearch: "rechercher&nbsp;:",
      },
     'fnCreatedRow': function (nRow, aData, iDataIndex) {
-        $(nRow).click(function() {
-          // Le numero du membre est dans la premiere cellule de la ligne.
-          numero = aData[0];
-          AfficherAjouterPieceAFacture(numero);
-        });
+        // Le numero du membre est dans la premiere cellule de la ligne.
+        numero = aData[0];
+        $(nRow).find('i.icone-ajouter-a-facture').click(AfficherAjouterPieceAFacture.bind(undefined, numero));
      },
   });
 }
