@@ -54,7 +54,7 @@ function SubmitAjouterPiece() {
   var numeroFacture = checkedBtn.attr('data-numerofacture');
   var quantiteOk = false;
 
-  var params = {'numero': numeroPiece};
+  var params = {'numero': numeroPiece, 'fusionsiexiste': 'oui'};
 
   if (quantiteNeuf.length > 0) {
     params['quantiteneuf'] = quantiteNeuf;

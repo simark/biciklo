@@ -22,7 +22,7 @@ function SubmitAjoutPiece() {
 
   $.get('/api/pieces/' + numeroPiece).done( function(piece) {
     var postUrl = '/api/factures/' + numeroFacture + '/pieces';
-    var postData = {numero: numeroPiece};
+    var postData = {numero: numeroPiece, fusionsiexiste: "oui"};
 
     if (quantiteNeuf.length > 0) {
       postData.quantiteneuf = quantiteNeuf;
@@ -33,6 +33,7 @@ function SubmitAjoutPiece() {
     }
 
     $.post(postUrl, postData).done(function (ligneFacture, textStatus, jqXHR) {
+	SupprimerLignePiece(numeroFacture, numeroPiece);
         AjouterLignePiece(numeroFacture, piece, ligneFacture);
 
         champNumeroPiece.val("");
@@ -40,6 +41,8 @@ function SubmitAjoutPiece() {
         champQuantiteUsage.val("");
 
         CalculerPrixTotalFacture(numeroFacture);
+
+        AfficherSucces("Fait !");
       }).fail(DisplayError);
   }).fail(DisplayError);
 
@@ -162,6 +165,10 @@ function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
   divfacture.find('.contenu table tbody tr').last().before(html);
 }
 
+function SupprimerLignePiece(numeroFacture, numeroPiece) {
+	$('#facture-' + numeroFacture).find('tr[data-numero-piece=' + numeroPiece + ']').remove();
+}
+
 function CetteFacture(zis) {
   return $(zis).closest('.facture-container').attr('data-numero-facture');
 }
@@ -206,7 +213,7 @@ function SupprimerPiece() {
     'type': 'DELETE'
   }).done(function (data, textStatus, jqXHR) {
     AfficherSucces('Pièce supprimée');
-    $('#facture-' + numeroFacture).find('tr[data-numero-piece=' + numeroPiece + ']').remove();
+    SupprimerLignePiece(numeroFacture, numeroPiece);
     CalculerPrixTotalFacture(numeroFacture);
   }).fail(DisplayError);
 }
