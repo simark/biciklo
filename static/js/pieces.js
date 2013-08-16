@@ -129,14 +129,33 @@ function RechargerTableauPieces() {
     dataType: 'json',
   }).done(function(data, textStatus, jqXHR) {
     RemplirTableauPieces(data);
+    InitialiserFiltres();
+
   }).fail(function(jqXHR, textStatus, errorThrown) {
     AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + errorThrown);
   });
+
+
+}
+
+function InitialiserFiltres() {
+  $('#pieces').dataTable().columnFilter({
+    sPlaceHolder: "head:after",
+    aoColumns: [
+      {type: 'number', sSelector: '#filtre-numero'},
+      {type: 'select', sSelector: '#filtre-section'},
+      {sSelector: '#filtre-nom'},
+    ]
+  });
+
+  $('#filtre-numero input').addClass('input-mini');
+  $('#filtre-nom input').addClass('input-small');
 }
 
 $(document).ready(function() {
   InitTableauPieces();
   RechargerTableauPieces();
+
 
   $('#form-ajouter-a-facture').submit(SubmitAjouterPiece);
 });
