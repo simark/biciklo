@@ -28,9 +28,13 @@ function AfficherAjouterPieceAFacture(numeroPiece) {
         html += "<button type=\"button\" class=\"btn\" data-numerofacture=\"" + facture.numero + "\">" + facture.numero + " - " + membre.prenom + " " + membre.nom + "</button><br>"
       }
 
-      $('#ajout-a-facture #boutons-factures').html(html);
-      $('#ajout-a-facture').modal("show");
-      $('#ajout-a-facture').attr('data-numeropiece', numeroPiece);
+      var modal = $('#ajout-a-facture');
+
+      modal.find('h3').text(Mustache.render("Pièce #{{numero}}", {numero: numeroPiece }));
+      modal.find('#boutons-factures').html(html);
+      modal.find('input[type=text]').val("");
+      modal.attr('data-numeropiece', numeroPiece);
+      modal.modal("show");
 
     }).fail(DisplayError);
   }).fail(DisplayError);
@@ -70,7 +74,6 @@ function SubmitAjouterPiece() {
   $.post('/api/factures/' + numeroFacture + '/pieces', params).done(function() {
     AfficherSucces("Fait!");
     $('#ajout-a-facture').modal('hide');
-    $('#ajout-a-facture input[type=text]').val("");
   }).fail(DisplayError);
 
   return false;
