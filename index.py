@@ -372,6 +372,24 @@ def GetMembresNumero(numero):
 
   return jsonify(result), status, headers
 
+@app.route('/api/benevoles', methods=['GET'])
+def GetBenevoles():
+  result = {}
+  status = httplib.OK
+  headers = {'Content-type': 'application/json'}
+
+  try:
+    result = list(db.DBConnection().membres.find({'estbenevole': True}))
+
+  except RequestError as ex:
+    status = ex.status
+    result = ex.msg
+  except Exception as e:
+    result = str(e)
+    status = httplib.INTERNAL_SERVER_ERROR
+
+  return jsonify(result), status, headers
+
 @app.route('/api/membres/<int:numero>/heuresbenevoles', methods=['POST'])
 def PostHeuresBenevoles(numero):
   result = {}

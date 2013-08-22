@@ -16,6 +16,23 @@
     <input type='text' id='raison' class='input-large' placeholder='raison' value='Séance régulière atelier' />
     <input type="submit" class="btn btn-small" value="OK" />
   </form>
+
+  <div id="loading" style="text-align: center">
+    <img src="/static/loading.gif" />
+  </div>
+
+  <table id="heuresbenevoles">
+      <thead>
+         <tr>
+           <th data-column="nom">Nom</th>
+           <th data-column="date"  data-transform="FormatDate">Date</th>
+           <th data-column="heures">Heures</th>
+           <th data-column="activite">Activité</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
 </div>
 
 {% endblock %}
