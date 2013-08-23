@@ -230,7 +230,7 @@ function CalculerPrixTotalFacture(numeroFacture) {
 
   prixtotal = Math.round(prixtotal/25)*25; //arrondi au 25 cent le plus pres
 
-  facture.find('.total').text("Total: " + NombreVersPrix(prixtotal));
+  facture.find('.total').html("Total: " + NombreVersPrix(prixtotal));
 }
 
 $(document).ready(function () {
