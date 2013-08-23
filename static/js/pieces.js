@@ -163,7 +163,6 @@ $(document).ready(function() {
   RechargerTableauPieces();
 
   $('#filtre-reset').click(function () {
-    console.log("prout");
     $('#filtre-numero input').val('').keyup();
     $('#filtre-section select').val('').change();
     $('#filtre-nom input').val('').keyup();
