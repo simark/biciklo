@@ -151,6 +151,11 @@ function InitialiserFiltres() {
 
   $('#filtre-numero input').addClass('input-mini');
   $('#filtre-nom input').addClass('input-small');
+
+  if (window.location.hash) {
+    hash = window.location.hash.substring(1);
+    $('#filtre-numero input').val(hash).keyup();
+  }
 }
 
 $(document).ready(function() {

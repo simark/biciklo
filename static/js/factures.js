@@ -146,7 +146,9 @@ function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
   html.attr('data-prixtotal', ligneFacture.prixtotal);
   html.attr('data-numero-piece', piece.numero);
 
-  html.append('<td>' + GetProp(piece, "numero") + '</td>');
+  numero = GetProp(piece, "numero");
+
+  html.append(Mustache.render('<td><a href="/pieces#{{numero}}">{{numero}}</a></td>', {numero: numero}));
   html.append('<td>' + GetProp(piece, "section") + '</td>');
   html.append('<td>' + GetProp(piece, "nom") + '</td>');
   html.append('<td>' + GetProp(piece, "reference") + '</td>');
