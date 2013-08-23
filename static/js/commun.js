@@ -66,7 +66,7 @@ function NombreVersPrix(str) {
   var int = parseInt(str);
   var ret = "";
 
-  if (str === "") {
+  if (!str || str === "") {
     return "";
   }
 
@@ -82,7 +82,7 @@ function NombreVersPrix(str) {
     cennes = "0" + cennes;
   }
 
-  ret += dollars + "," + cennes + " $";
+  ret += dollars + "," + cennes + "&nbsp;$";
   return ret;
 }
 
