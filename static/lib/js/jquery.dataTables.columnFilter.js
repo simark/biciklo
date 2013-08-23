@@ -22,8 +22,6 @@
 
 
     $.fn.columnFilter = function (options) {
-        console.log("CALLED");
-
         var asInitVals, i, label, th;
 
         //var sTableId = "table";
