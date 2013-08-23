@@ -1,4 +1,7 @@
 @import "cfg";
+@import "compass/css3/font-face";
+
+@include font-face("Open Sans", font-files("/static/font/OpenSans-Regular.ttf"));
 
 body {
 	background: #eee;
