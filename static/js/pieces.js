@@ -145,6 +145,7 @@ function InitialiserFiltres() {
       {type: 'number', sSelector: '#filtre-numero'},
       {type: 'select', sSelector: '#filtre-section'},
       {sSelector: '#filtre-nom'},
+      {sSelector: '#filtre-reference'},
     ]
   });
 
@@ -156,6 +157,13 @@ $(document).ready(function() {
   InitTableauPieces();
   RechargerTableauPieces();
 
+  $('#filtre-reset').click(function () {
+    console.log("prout");
+    $('#filtre-numero input').val('').keyup();
+    $('#filtre-section select').val('').change();
+    $('#filtre-nom input').val('').keyup();
+    $('#filtre-reference input').val('').keyup();
 
+  });
   $('#form-ajouter-a-facture').submit(SubmitAjouterPiece);
 });

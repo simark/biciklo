@@ -113,7 +113,7 @@
                 search_init = '';
             }
 
-            var input = $('<input type="text" class="' + search_init + sCSSClass + '" value="' + inputvalue + '"/>');
+            var input = $('<input type="text" class="' + search_init + sCSSClass + '" placeholder="' + inputvalue + '"/>');
             if (iMaxLenght != undefined && iMaxLenght != -1) {
                 input.attr('maxlength', iMaxLenght);
             }
