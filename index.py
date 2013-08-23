@@ -238,15 +238,6 @@ def ParseIncoming(data, collection_name, throw_if_required_missing = True):
 
   return ret
 
-# dev
-@app.route('/api/dev/drop', methods=['GET'])
-def Drop():
-  db.DBConnection().membres.remove()
-  db.DBConnection().pieces.remove()
-  db.DBConnection().factures.remove()
-
-  return "ok"
-
 # api
 
 """
