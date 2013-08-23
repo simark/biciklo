@@ -122,8 +122,8 @@ validation = {
       'prixneuf': ValidationEntierPositif,
       'prixusage': ValidationEntierPositif,
       'prixbabac': ValidationEntierPositif,
-      'quantiteneuf': ValidationEntierPositif,
-      'quantiteusage': ValidationEntierPositif,
+      'quantiteneuf': ValidationQuantite,
+      'quantiteusage': ValidationQuantite,
     }
   },
   'factures': {
