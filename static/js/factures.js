@@ -33,7 +33,7 @@ function SubmitAjoutPiece() {
     }
 
     $.post(postUrl, postData).done(function (ligneFacture, textStatus, jqXHR) {
-	SupprimerLignePiece(numeroFacture, numeroPiece);
+        SupprimerLignePiece(numeroFacture, numeroPiece);
         AjouterLignePiece(numeroFacture, piece, ligneFacture);
 
         champNumeroPiece.val("");
@@ -43,6 +43,11 @@ function SubmitAjoutPiece() {
         CalculerPrixTotalFacture(numeroFacture);
 
         AfficherSucces("Fait !");
+
+        $.get("/api/membres/" + $('#facture-' + numeroFacture).attr('data-numero-membre')).done(function (membre) {
+          VerifierAbonnement(membre, numeroFacture);
+        }).fail(DisplayError);
+
       }).fail(DisplayError);
   }).fail(DisplayError);
 
@@ -75,6 +80,7 @@ function ChargerFacture(facture) {
 
   divfacture.attr('id', 'facture-' + facture.numero);
   divfacture.attr('data-numero-facture', facture.numero);
+  divfacture.attr('data-numero-membre', facture.membre);
   divfacture.find('.input-numero-piece').typeahead({
     source: listePieces,
     updater: parseInt, // Ça ne retient que le nombre du début
@@ -121,19 +127,28 @@ function ChargerFacture(facture) {
     nom = membre.prenom + " " + membre.nom;
     divfacture.find('.titre').html('<a href="/membres/' + membre.numero + '">' + nom + "</a> - membre #" + membre.numero + " - facture #" + facture.numero + " - " + FormatDate(facture.date));
 
-    if (membre.expiration && membre.expiration['$date']) {
-      exp = new Date(membre.expiration['$date']);
-      now = new Date();
-      if (exp < now) {
-        divfacture.find('.titre').addClass('abonnement-expire');
-      }
-    } else {
-      divfacture.find('.titre').addClass('abonnement-absent');
-    }
+    VerifierAbonnement(membre, facture.numero);
 
   }).fail(function () {
     AfficherErreur(DisplayError);
   });
+}
+
+function VerifierAbonnement(membre, numeroFacture) {
+  var divfacture = $('#facture-' + numeroFacture);
+
+  divfacture.find('.titre').removeClass('abonnement-expire');
+  divfacture.find('.titre').removeClass('abonnement-absent');
+
+  if (membre.expiration && membre.expiration['$date']) {
+    exp = new Date(membre.expiration['$date']);
+    now = new Date();
+    if (exp < now) {
+      divfacture.find('.titre').addClass('abonnement-expire');
+    }
+  } else {
+    divfacture.find('.titre').addClass('abonnement-absent');
+  }
 }
 
 function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
@@ -217,6 +232,11 @@ function SupprimerPiece() {
     AfficherSucces('Pièce supprimée');
     SupprimerLignePiece(numeroFacture, numeroPiece);
     CalculerPrixTotalFacture(numeroFacture);
+
+    $.get("/api/membres/" + $('#facture-' + numeroFacture).attr('data-numero-membre')).done(function (membre) {
+          VerifierAbonnement(membre, numeroFacture);
+    }).fail(DisplayError);
+
   }).fail(DisplayError);
 }
 
