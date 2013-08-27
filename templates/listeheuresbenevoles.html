@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<!--
+<script src="/static/js/pieces.js"></script>
+-->
+{% endblock %}
+
+{% block content %}
+  <h1>Liste des heures des bénévoles</h1>
+
+  <div id="loading" style="text-align: center">
+    <img src="/static/loading.gif" />
+  </div>
+
+  <div>
+    <table id="heuresbenevoles">
+      <thead>
+         <tr>
+           <th data-column="numero">#</th>
+           <th data-column="benevole">Bénévole</th>
+           <th data-column="heures">Heures</th>
+           <th data-column="raison">Raison</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}
