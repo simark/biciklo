@@ -108,6 +108,7 @@ function Sauvegarder() {
     'courriel': $('#courriel input').val(),
     'provenance': $('#provenance input').val(),
     'estbenevole': $('#estbenevole input:checked').val(),
+    'notes': $('#notes input').val(),
   };
 
   numero = $('#numero').text().trim();

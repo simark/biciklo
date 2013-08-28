@@ -11,6 +11,7 @@ function LireChampsAjoutMembre() {
   request_data.courriel = $('#ajoutcourriel').val();
   request_data.provenance = $('#ajoutprovenance').val();
   request_data.listedenvoi = ($('#ajoutlistedenvoi').prop('checked')) ? 'oui' : 'non';
+  request_data.notes = $('#ajoutnotes').val();
 
   return request_data;
 }
@@ -152,6 +153,15 @@ function InitFormulaireAjoutMembre() {
     minLength: 0,
     delay: 0,
   });
+  $("#ajoutprovenance").focus($("#ajoutprovenance").typeahead.bind($("#ajoutprovenance"), 'lookup'));
+
+  // Champ remarques
+  $('#ajoutnotes').typeahead({
+    source: ["Bouche à oreille", "Affiche", "Ma santé au sommet", "Site web"],
+    minLength: 0,
+    delay: 0,
+  });
+  $("#ajoutnotes").focus($("#ajoutnotes").typeahead.bind($("#ajoutnotes"), 'lookup'));
 
   // Bouton submit
   $('#ajoutenvoyer').click(function (event) {

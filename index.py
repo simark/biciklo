@@ -106,7 +106,7 @@ Pour chaque clé (p.e. 'membres'), on a:
 validation = {
   'membres': {
     'req': ['prenom', 'nom'],
-    'opt': ['numero', 'courriel', 'listedenvoi', 'provenance', 'estbenevole', 'telephone'],
+    'opt': ['numero', 'courriel', 'listedenvoi', 'provenance', 'estbenevole', 'telephone', 'notes'],
     'valid': {
       'numero': ValidationEntierPositif,
       'listedenvoi': ['non', 'oui', 'fait'],
