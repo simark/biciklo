@@ -65,6 +65,7 @@ function SubmitAjoutFacture() {
   $.post('/api/factures', {'membre': numeroMembre})
     .done(function (facture, textStatus, jqXHR) {
       ChargerFacture(facture);
+      InstallerTypeaheadPieces();
       AfficherSucces("Facture ajoutée");
 
       $('#input-nouvelle-facture').val("");
@@ -81,10 +82,6 @@ function ChargerFacture(facture) {
   divfacture.attr('id', 'facture-' + facture.numero);
   divfacture.attr('data-numero-facture', facture.numero);
   divfacture.attr('data-numero-membre', facture.membre);
-  divfacture.find('.input-numero-piece').typeahead({
-    source: listePieces,
-    updater: parseInt, // Ça ne retient que le nombre du début
-  });
   divfacture.find('.form-ajout-piece-facture').submit(SubmitAjoutPiece);
 
   divfacture.appendTo( $('#factures-container') );
@@ -253,6 +250,15 @@ function CalculerPrixTotalFacture(numeroFacture) {
   facture.find('.total').html("Total: " + NombreVersPrix(prixtotal));
 }
 
+function InstallerTypeaheadPieces() {
+  $('.input-numero-piece').removeData('typeahead');
+  $('.input-numero-piece').unbind();
+  $('.input-numero-piece').typeahead({
+    source: listePieces,
+    updater: parseInt, // Ça ne retient que le nombre du début
+  });
+}
+
 $(document).ready(function () {
   // Batir liste de pieces pour autocomplete
   $.get('/api/pieces', null, function (data, textStatus, jqXHR) {
@@ -267,6 +273,8 @@ $(document).ready(function () {
         + NombreVersPrix(piece.prixusage) + ")" ;
       listePieces.push(s);
     });
+
+    InstallerTypeaheadPieces();
   });
 
   // Batir liste de membres pour autocomplete
@@ -293,6 +301,8 @@ $(document).ready(function () {
       $.each(data, function(key, facture) {
         ChargerFacture(facture);
       });
+
+      InstallerTypeaheadPieces();
 
       $('#loading').hide();
     })
