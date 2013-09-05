@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
+import sys
+python_major = sys.version_info.major
+
 import datetime
 import json
 import os
 import time
-import httplib
+
+if python_major == 2:
+  import httplib
+elif python_major == 3:
+  import http.client as httplib
+
 import traceback
 
 import pymongo
