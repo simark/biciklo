@@ -467,7 +467,8 @@ def PutPieces(numero):
 
     piece = ParseIncoming(request.form, 'pieces', False)
 
-    if PieceExiste(piece['numero']) and numero != piece['numero']:
+    # Si changement de numéro, vérifier que le numéro n'est pas déjà pris
+    if 'numero' in piece and PieceExiste(piece['numero']) and numero != piece['numero']:
       raise RequestError(httplib.CONFLICT, 'Ce numero de piece est deja pris')
 
     update_result = db.DBConnection().pieces.update(
