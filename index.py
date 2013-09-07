@@ -720,6 +720,10 @@ def FusionEntreesPieces(entree_piece_existante, entree_piece):
 # Ajoute les quantités à l'inventaire à partir d'une entrée pièce d'une facture
 def AjouterQuantitePieces(entree_piece):
   numero_piece = entree_piece['numero']
+
+  if numero_piece in abonnements:
+    return
+
   if 'quantiteneuf' in entree_piece:
     quantiteneuf = entree_piece['quantiteneuf']
     db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': quantiteneuf}})
@@ -731,6 +735,10 @@ def AjouterQuantitePieces(entree_piece):
 # Soustrait les quantités de l'inventaire à partir d'une entrée pièce d'une facture
 def SoustraireQuantitePieces(entree_piece):
   numero_piece = entree_piece['numero']
+
+  if numero_piece in abonnements:
+    return
+
   if 'quantiteneuf' in entree_piece:
     quantiteneuf = entree_piece['quantiteneuf']
     db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': -quantiteneuf}})
