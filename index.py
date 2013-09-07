@@ -964,8 +964,9 @@ def ListePieces():
   return render_template('pieces.html')
 
 @app.route('/pieces/<int:numero>', methods=['GET'])
-def UnePiece():
-  return render_template('piece.html')
+def UnePiece(numero):
+  piece = ObtenirPiece(numero)
+  return render_template('piece.html', piece = piece)
 
 #appelé lorsqu'on va sur la page "Factures"
 @app.route('/factures', methods=['GET'])
