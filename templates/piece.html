@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<script src="/static/js/piece.js"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Pièce {{piece.numero}}</h1>
+  <p>
+    <a class="btn btn-primary" href="/pieces" id="retourliste">&#8592; Retour à la liste</a>
+    <button type="button" class="btn btn-success" id="sauvegarder">Sauvegarder</button>
+  </p>
+  <p>
+    <table class="table table-striped" id="detailspiece" style="width: auto;">
+      <tbody>
+        <tr>
+         <td class="cle">Numéro</td>
+         <td class="valeur" id="numero">
+           {{ piece.numero }}
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Section</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="section" value="{{ piece.section }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Nom</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="nom" value="{{ piece.nom }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Référence</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="reference" value="{{ piece.reference }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Caractéristique</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="caracteristique" value="{{ piece.caracteristique }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Quantité neuf</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="quantiteneuf" value="{{ piece.quantiteneuf }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Prix neuf</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="prixneuf" value="{{ piece.prixneuf }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Quantité usagé</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="quantiteusage" value="{{ piece.quantiteusage }}">
+         </td>
+        </tr>
+         <td class="cle">Prix usagé</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="prixusage" value="{{ piece.prixusage }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">Remarques</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="remarques" value="{{ piece.remarques }}">
+         </td>
+        </tr>
+      </tbody>
+    </table>
+  </p>
+{% endblock %}

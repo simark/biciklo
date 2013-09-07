@@ -1,0 +1,22 @@
+#detailspiece {
+	$border: 1px #999 solid;
+	$padding-small: 8px;
+	$padding-big: 50px;
+
+	td.cle, td.valeur {
+		border-top: $border;
+		border-bottom: $border;
+	}
+	td.cle {
+		text-align: right;
+		padding: $padding-small $padding-small $padding-small $padding-big;
+		border-left: $border;
+	}
+	td.valeur {
+		font-weight: bold;
+		padding: $padding-small $padding-big $padding-small $padding-small;
+		border-right: $border;
+	}
+}
+
+

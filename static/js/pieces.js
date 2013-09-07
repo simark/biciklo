@@ -79,8 +79,8 @@ function SubmitAjouterPiece() {
   return false;
 }
 
-function ColonneAjouterPiece() {
-  return '<i style="inline-block" class="icon icon-plus icone-ajouter-a-facture"></i>';
+function ColonneIcones() {
+  return '<i style="inline-block" class="icon icon-plus icone-ajouter-a-facture"></i>&nbsp;&nbsp;<a href="#"><i class="icon icon-edit icone-modifier-piece"></i></a>';
 }
 
 function InitTableauPieces() {
@@ -101,6 +101,7 @@ function InitTableauPieces() {
         // Le numero du membre est dans la premiere cellule de la ligne.
         numero = aData[0];
         $(nRow).find('i.icone-ajouter-a-facture').click(AfficherAjouterPieceAFacture.bind(undefined, numero));
+        $(nRow).find('i.icone-modifier-piece').parent().attr('href', '/pieces/' + numero);
      },
   });
 }
