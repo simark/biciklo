@@ -190,6 +190,7 @@ function ReinitialiserFormulaireAjoutMembre() {
   $('#ajoutnom').val("");
   $('#ajoutcourriel').val("");
   $('#ajoutprovenance').val("");
+  $('#ajoutnotes').val("");
   $('#ajoutlistedenvoi').prop('checked', false);
 }
 
