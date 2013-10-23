@@ -9,11 +9,10 @@ dépendances
 * Ruby (pour Compass ci-dessous)
 * Compass (`gem install compass`)
 * MongoDB
-* Python 2
- * `python2-httplib2`
- * `python2-flask` (<http://flask.pocoo.org/>)
- * `python2-pymongo` (<http://api.mongodb.org/python/current/>)
-
+* Python 2 et quelques modules:
+ * `flask` (<http://flask.pocoo.org/>)
+ * `pymongo` (<http://api.mongodb.org/python/current/>)
+ * Si j'en ai oublié, dites moi le.
 
 lancement
 ---------
