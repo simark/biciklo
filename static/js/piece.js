@@ -4,7 +4,10 @@ function Sauvegarder() {
   $('#detailspiece input').each(function () {
     var val = $(this).val();
     var key = $(this).attr('id');
-    donnees[key] = val;
+
+    if (val.length > 0) {
+      donnees[key] = val;
+    }
   });
 
   numero = $('#numero').text().trim();

@@ -4,7 +4,25 @@
 {% endblock %}
 
 {% block content %}
-  <h1>Liste des pièces</h1>
+  <h1>Liste des pièces
+	    <button type="button" data-toggle="modal" data-target="#ajoutpiece" class="btn btn-primary btn-mini">Nouvelle pièce</button>
+  </h1>
+
+  <div id="ajoutpiece" class="modal">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+      <h3>Nouvelle pièce</h3>
+    </div>
+    <div class="modal-body" style="padding-bottom: 100px;">
+      <p>
+        <input type="text" id="ajoutnumero" placeholder="Numéro" />
+      </p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" data-dismiss="modal">Annuler</a>
+      <a href="#" class="btn btn-primary" id="ajoutenvoyer">Sauvegarder</a>
+    </div>
+  </div>
 
   <div id="loading" style="text-align: center">
     <img src="/static/loading.gif" />

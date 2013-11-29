@@ -118,7 +118,7 @@ function RemplirTableauPieces(liste_pieces) {
 }
 
 /**
- * Charge la liste de membres et remplit le tableau.
+ * Charge la liste de pièces et remplit le tableau.
  */
 function RechargerTableauPieces() {
   $('#pieces').hide();
@@ -159,9 +159,47 @@ function InitialiserFiltres() {
   }
 }
 
+function InitFormulaireAjoutPiece() {
+  // Bouton submit
+  $('#ajoutenvoyer').click(function (event) {
+    EnvoyerAjoutPiece();
+  });
+
+  $('#ajoutpiece').on('hide', function() {
+    $('#ajoutnumero').val("");
+  });
+
+  $('#ajoutpiece').on('shown', function() {
+    $('#ajoutpiece').find('input').first().focus();
+  });
+}
+
+function EnvoyerAjoutPiece() {
+  numero = $('#ajoutnumero').val();
+
+  if (numero.length == 0) {
+    AfficherErreur("Il manque le numéro");
+    return;
+  }
+
+  // Envoyer la requête au serveur.
+  $.ajax({
+    url: '/api/pieces',
+    type: 'POST',
+    data: {numero: numero},
+    dataType: 'json',
+  }).done(function (data, textStatus, jqXHR) {
+    // Fermer le dialogue et réinitialiser le formulaire.
+    $('#ajoutpiece').modal('hide');
+
+    window.location.href = "/pieces/" + numero;
+  }).fail(DisplayError);
+}
+
 $(document).ready(function() {
   InitTableauPieces();
   RechargerTableauPieces();
+  InitFormulaireAjoutPiece();
 
   $('#filtre-reset').click(function () {
     $('#filtre-numero input').val('').keyup();
