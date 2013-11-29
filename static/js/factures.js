@@ -69,8 +69,7 @@ function SubmitAjoutFacture() {
       AfficherSucces("Facture ajoutée");
 
       $('#input-nouvelle-facture').val("");
-    })
-    .fail(DisplayError);
+    }).fail(DisplayError);
   return false;
 }
 
@@ -126,9 +125,7 @@ function ChargerFacture(facture) {
 
     VerifierAbonnement(membre, facture.numero);
 
-  }).fail(function () {
-    AfficherErreur(DisplayError);
-  });
+  }).fail(DisplayError);
 }
 
 function VerifierAbonnement(membre, numeroFacture) {
@@ -305,6 +302,5 @@ $(document).ready(function () {
       InstallerTypeaheadPieces();
 
       $('#loading').hide();
-    })
-    .fail(DisplayError);
+    }).fail(DisplayError);
 });
