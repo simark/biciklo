@@ -1,3 +1,5 @@
+var cache_categories = null;
+
 function Sauvegarder() {
   donnees = {};
 
@@ -22,6 +24,26 @@ function Sauvegarder() {
     }).fail(DisplayError);
 }
 
+function InitChampCategorie() {
+  var champ = $('#section');
+
+  champ.typeahead({
+    source: function (query, process) {
+      if (cache_categories != null) {
+        process(cache_categories);
+        return;
+      }
+
+      $.get('/api/categoriespieces').done(function( data ) {
+        cache_categories = data;
+        process(cache_categories);
+      });
+    }
+  });
+}
+
 $(document).ready(function() {
   $('#sauvegarder').click(Sauvegarder);
+
+  InitChampCategorie()
 });

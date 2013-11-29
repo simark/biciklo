@@ -520,6 +520,24 @@ def GetPiecesNumero(numero):
 
   return jsonify(result), status, headers
 
+@app.route('/api/categoriespieces', methods=['GET'])
+def GetCategoriesPieces():
+  result = {}
+  status = httplib.OK
+  headers = {'Content-type': 'application/json'}
+
+  try:
+    categories = list(db.DBConnection().pieces.distinct('section'));
+    categories.sort()
+
+    result = categories
+
+  except Exception as e:
+    result = str(e)
+    status = httplib.INTERNAL_SERVER_ERROR
+
+  return jsonify(result), status, headers
+
 @app.route('/api/factures', methods=['GET'])
 def GetFactures():
   result = {}
