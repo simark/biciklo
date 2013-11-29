@@ -19,9 +19,7 @@ function Sauvegarder() {
     data: donnees,
     }).done(function (data, textStatus, jqXHR) {
       AfficherSucces('Sauvegardé !');
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      AfficherErreur('Erreur lors de la sauvegarde: ' + errorThrown);
-  });
+    }).fail(DisplayError);
 }
 
 $(document).ready(function() {

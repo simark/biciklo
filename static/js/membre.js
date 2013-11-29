@@ -121,9 +121,7 @@ function Sauvegarder() {
     }).done(function (data, textStatus, jqXHR) {
       ModeNormal(true);
       AfficherSucces('Sauvegardé !');
-    }).fail(function (jqXHR, textStatus, errorThrown) {
-      AfficherErreur('Erreur lors de la sauvegarde: ' + errorThrown);
-  });
+    }).fail(DisplayError);
 }
 
 function Annuler() {

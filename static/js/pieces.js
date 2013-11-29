@@ -132,9 +132,7 @@ function RechargerTableauPieces() {
     RemplirTableauPieces(data);
     InitialiserFiltres();
 
-  }).fail(function(jqXHR, textStatus, errorThrown) {
-    AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + errorThrown);
-  });
+  }).fail(DisplayError);
 
 
 }

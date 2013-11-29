@@ -37,9 +37,7 @@ function EnvoyerAjoutMembre() {
 
     // Recharger la liste de membres.
     RechargerListeMembres();
-  }).fail(function (jqXHR, textStatus, errorThrown) {
-    AfficherErreur('Erreur lors de la connexion au serveur: ' + errorThrown);
-  });
+  }).fail(DisplayError);
 }
 
 /**
@@ -99,9 +97,7 @@ function RechargerListeMembres() {
     dataType: 'json',
   }).done(function(data, textStatus, jqXHR) {
     RemplirTableauMembres(data);
-  }).fail(function(jqXHR, textStatus, errorThrown) {
-    AfficherErreur('Erreur lors du téléchargement de la liste de membres: ' + errorThrown);
-  });
+  }).fail(DisplayError);
 }
 
 /**
