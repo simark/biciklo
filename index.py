@@ -12,8 +12,6 @@ if python_major == 2:
 elif python_major == 3:
   import http.client as httplib
 
-import traceback
-
 import pymongo
 from bson import json_util
 
