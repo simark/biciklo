@@ -92,7 +92,7 @@ Ce tableau est utilisé principalement par ParseIncoming().
 Pour chaque clé (p.e. 'membres'), on a:
   * req: liste de clés nécessaires lors de la création (POST)
   * opt: liste de clés optionnelles
-  * valid: Effecture la validation et la transformation des valeurs
+  * valid: Effectue la validation et la transformation des valeurs
            en entrée. Il doit s'agir d'un dict avec les noms de
            paramètres comme clés. Les valeurs peuvent être les
            suivantes:
