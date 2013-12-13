@@ -2,12 +2,10 @@ var listePieces = null;
 
 function SubmitAjoutPiece() {
   var champNumeroPiece = $(this).find('.input-numero-piece');
-  var champQuantiteNeuf = $(this).find('.input-quantite-piece-neuf');
-  var champQuantiteUsage = $(this).find('.input-quantite-piece-usage');
+  var champQuantite = $(this).find('.input-quantite-piece');
 
   var numeroPiece = champNumeroPiece.val();
-  var quantiteNeuf = champQuantiteNeuf.val();
-  var quantiteUsage = champQuantiteUsage.val();
+  var quantite = champQuantite.val();
   var numeroFacture = CetteFacture(this);
 
   if (numeroPiece.length == 0) {
@@ -15,30 +13,21 @@ function SubmitAjoutPiece() {
     return false;
   }
 
-  if (quantiteNeuf.length == 0 && quantiteUsage.length == 0) {
+  if (quantite.length == 0) {
     AfficherErreur("Il faut une quantité.");
     return false;
   }
 
   $.get('/api/pieces/' + numeroPiece).done( function(piece) {
     var postUrl = '/api/factures/' + numeroFacture + '/pieces';
-    var postData = {numero: numeroPiece, fusionsiexiste: "oui"};
-
-    if (quantiteNeuf.length > 0) {
-      postData.quantiteneuf = quantiteNeuf;
-    }
-
-    if (quantiteUsage.length > 0) {
-      postData.quantiteusage = quantiteUsage;
-    }
+    var postData = {'numero': numeroPiece, 'fusionsiexiste': "oui", 'quantite': quantite};
 
     $.post(postUrl, postData).done(function (ligneFacture, textStatus, jqXHR) {
         SupprimerLignePiece(numeroFacture, numeroPiece);
         AjouterLignePiece(numeroFacture, piece, ligneFacture);
 
         champNumeroPiece.val("");
-        champQuantiteNeuf.val("");
-        champQuantiteUsage.val("");
+        champQuantite.val("");
 
         CalculerPrixTotalFacture(numeroFacture);
 
@@ -162,10 +151,8 @@ function AjouterLignePiece(numeroFacture, piece, ligneFacture) {
   html.append('<td>' + GetProp(piece, "nom") + '</td>');
   html.append('<td>' + GetProp(piece, "reference") + '</td>');
 
-  html.append('<td>' + GetProp(ligneFacture, 'quantiteneuf', '') + '</td>');
-  html.append('<td>' + NombreVersPrix(GetProp(ligneFacture, 'prixneuf', '')) + '</td>');
-  html.append('<td>' + GetProp(ligneFacture, 'quantiteusage', '') + '</td>');
-  html.append('<td>' + NombreVersPrix(GetProp(ligneFacture, 'prixusage', '')) + '</td>');
+  html.append('<td>' + GetProp(ligneFacture, 'quantite', '') + '</td>');
+  html.append('<td>' + NombreVersPrix(GetProp(ligneFacture, 'prix', '')) + '</td>');
 
   html.append('<td>' + NombreVersPrix(ligneFacture.prixtotal) + '</td>');
 
@@ -266,8 +253,7 @@ $(document).ready(function () {
         + piece.section + " - "
         + piece.nom + " - "
         + piece.reference + " ("
-        + NombreVersPrix(piece.prixneuf) + "/"
-        + NombreVersPrix(piece.prixusage) + ")" ;
+        + NombreVersPrix(piece.prix) + ")" ;
       listePieces.push(s);
     });
 

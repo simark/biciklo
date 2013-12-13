@@ -41,8 +41,7 @@ function AfficherAjouterPieceAFacture(numeroPiece) {
 }
 
 function SubmitAjouterPiece() {
-  var quantiteNeuf = $('#quantiteneuf').val();
-  var quantiteUsage = $('#quantiteusage').val();
+  var quantite = $('#quantite').val();
   var numeroPiece = $('#ajout-a-facture').attr('data-numeropiece');
   var checkedBtn = $('#ajout-a-facture #boutons-factures button.active');
 
@@ -51,25 +50,13 @@ function SubmitAjouterPiece() {
     return false;
   }
 
-  var numeroFacture = checkedBtn.attr('data-numerofacture');
-  var quantiteOk = false;
-
-  var params = {'numero': numeroPiece, 'fusionsiexiste': 'oui'};
-
-  if (quantiteNeuf.length > 0) {
-    params['quantiteneuf'] = quantiteNeuf;
-    quantiteOk = true;
-  }
-
-  if (quantiteUsage.length > 0) {
-    params['quantiteusage'] = quantiteUsage;
-    quantiteOk = true;
-  }
-
-  if (!quantiteOk) {
+  if (quantite.length == 0) {
     AfficherErreur("Il faut au moins une quantité");
-    return;
+    return false;
   }
+
+  var numeroFacture = checkedBtn.attr('data-numerofacture');
+  var params = {'numero': numeroPiece, 'fusionsiexiste': 'oui', 'quantite': quantite};
 
   $.post('/api/factures/' + numeroFacture + '/pieces', params).done(function() {
     AfficherSucces("Fait!");
