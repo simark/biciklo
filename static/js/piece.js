@@ -7,9 +7,7 @@ function Sauvegarder() {
     var val = $(this).val();
     var key = $(this).attr('id');
 
-    if (val.length > 0) {
-      donnees[key] = val;
-    }
+    donnees[key] = val;
   });
 
   numero = $('#numero').text().trim();
