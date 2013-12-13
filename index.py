@@ -123,15 +123,13 @@ validation = {
   },
   'pieces': {
     'req': ['numero'],
-    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantiteneuf', 'prixneuf', 'quantiteusage', 'prixusage', 'remarques'],
+    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'prix', 'remarques'],
     'valid': {
       'numero': ValidationEntierPositif,
       'numerobabac': ValidationEntierPositif,
-      'prixneuf': ValidationEntierPositif,
-      'prixusage': ValidationEntierPositif,
+      'prix': ValidationEntierPositif,
       'prixbabac': ValidationEntierPositif,
-      'quantiteneuf': ValidationQuantite,
-      'quantiteusage': ValidationQuantite,
+      'quantite': ValidationQuantite,
     }
   },
   'factures': {
@@ -146,11 +144,10 @@ validation = {
   },
   'factureajoutpiece': {
     'req': ['numero'],
-    'opt': ['quantiteneuf', 'quantiteusage', 'fusionsiexiste'],
+    'opt': ['quantite', 'fusionsiexiste'],
     'valid': {
       'numero': ValidationEntierPositif,
-      'quantiteneuf': ValidationQuantite,
-      'quantiteusage': ValidationQuantite,
+      'quantite': ValidationQuantite,
       'fusionsiexiste': api_boolean,
     }
   },
@@ -687,51 +684,26 @@ def TraiterQuantitesAjoutPieceFacture(valeurs, piece):
   entree_piece = {}
   prix_total = 0
 
-  if 'quantiteneuf' in valeurs:
-    if 'prixneuf' not in piece:
-      raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix neuf.")
+  if 'prix' not in piece:
+    raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Impossible d'ajouter la pièce à la facture, elle ne possède pas de prix.")
 
-    entree_piece['prixneuf'] = piece['prixneuf']
-    entree_piece['quantiteneuf'] = valeurs['quantiteneuf']
-
-  if 'quantiteusage' in valeurs:
-    if 'prixusage' not in piece:
-      raise RequestError(httplib.UNPROCESSABLE_ENTITY, "Cette pièce ne possède pas de prix usagé.")
-
-    entree_piece['prixusage'] = piece['prixusage']
-    entree_piece['quantiteusage'] = valeurs['quantiteusage']
+  entree_piece['prix'] = piece['prix']
+  entree_piece['quantite'] = valeurs['quantite']
 
   entree_piece['prixtotal'] = CalculerPrixTotalEntreePiece(entree_piece)
   entree_piece['numero'] = piece['numero']
 
   return entree_piece
 
+# Ajoute le contenu de entree_piece à celui de entree_piece_existante
 def FusionEntreesPieces(entree_piece_existante, entree_piece):
   assert entree_piece_existante['numero'] == entree_piece['numero']
 
-  if 'prixneuf' in entree_piece:
-    if 'prixneuf' in entree_piece_existante:
-      # Vérifier que le prix n'a pas changé
-      if entree_piece_existante['prixneuf'] != entree_piece['prixneuf']:
-        raise RequestError(httplib.CONFLICT, "Cette facture contient déjà cette pièce, mais avec un prix différent")
+  # Vérifier que le prix n'a pas changé
+  if entree_piece_existante['prix'] != entree_piece['prix']:
+    raise RequestError(httplib.CONFLICT, "Cette facture contient déjà cette pièce, mais avec un prix différent")
 
-      entree_piece_existante['quantiteneuf'] +=  entree_piece['quantiteneuf']
-    else:
-      # La facture actuelle ne contient pas de quantité neuf
-      entree_piece_existante['quantiteneuf'] = entree_piece['quantiteneuf']
-      entree_piece_existante['prixneuf'] = entree_piece['prixneuf']
-
-  if 'prixusage' in entree_piece:
-    if 'prixusage' in entree_piece_existante:
-      # Vérifier que le prix n'a pas changé
-      if entree_piece_existante['prixusage'] != entree_piece['prixusage']:
-        raise RequestError(httplib.CONFLICT, "Cette facture contient déjà cette pièce, mais avec un prix différent")
-
-      entree_piece_existante['quantiteusage'] +=  entree_piece['quantiteusage']
-    else:
-      # La facture actuelle ne contient pas de quantité usage
-      entree_piece_existante['quantiteusage'] = entree_piece['quantiteusage']
-      entree_piece_existante['prixusage'] = entree_piece['prixusage']
+  entree_piece_existante['quantite'] +=  entree_piece['quantite']
 
   entree_piece_existante['prixtotal'] = CalculerPrixTotalEntreePiece(entree_piece_existante)
 
@@ -742,13 +714,8 @@ def AjouterQuantitePieces(entree_piece):
   if numero_piece in abonnements:
     return
 
-  if 'quantiteneuf' in entree_piece:
-    quantiteneuf = entree_piece['quantiteneuf']
-    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': quantiteneuf}})
-
-  if 'quantiteusage' in entree_piece:
-    quantiteusage = entree_piece['quantiteusage']
-    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': quantiteusage}})
+  quantite = entree_piece['quantite']
+  db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantite': quantite}})
 
 # Soustrait les quantités de l'inventaire à partir d'une entrée pièce d'une facture
 def SoustraireQuantitePieces(entree_piece):
@@ -757,13 +724,8 @@ def SoustraireQuantitePieces(entree_piece):
   if numero_piece in abonnements:
     return
 
-  if 'quantiteneuf' in entree_piece:
-    quantiteneuf = entree_piece['quantiteneuf']
-    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteneuf': -quantiteneuf}})
-
-  if 'quantiteusage' in entree_piece:
-    quantiteusage = entree_piece['quantiteusage']
-    db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantiteusage': -quantiteusage}})
+  quantite = entree_piece['quantite']
+  db.DBConnection().pieces.update({'numero': numero_piece}, {'$inc': {'quantite': -quantite}})
 
 # Calcule le prix total de la facture, en cents. Arrondit le montant
 # final au 25 cents le plus près.
@@ -787,15 +749,7 @@ def CalculerPrixTotalFacture(facture):
 
 # Calcule le prix total d'une entrée d'une pièce dans une facture.
 def CalculerPrixTotalEntreePiece(entree_piece):
-  total = 0
-
-  if 'quantiteneuf' in entree_piece:
-    total += int(entree_piece['quantiteneuf'] * entree_piece['prixneuf'])
-
-  if 'quantiteusage' in entree_piece:
-    total += int(entree_piece['quantiteusage'] * entree_piece['prixusage'])
-
-  return total
+  return int(entree_piece['quantite'] * entree_piece['prix'])
 
 @app.route('/api/factures/<int:numero_facture>/pieces', methods=['POST'])
 def PostPieceInFacture(numero_facture):
