@@ -158,9 +158,10 @@ validation = {
     }
   },
   'getfactures': {
-    'opt': ['complete'],
+    'opt': ['complete', 'membre'],
     'valid': {
-      'complete': api_boolean
+      'complete': api_boolean,
+      'membre': ValidationEntierPositif,
     }
   }
 }
