@@ -967,11 +967,6 @@ def HeuresBenevoles():
 def Admin():
   return render_template('admin.html')
 
-#appelé lorsqu'on va sur la page "Ajout de pièce" (dans la page "Admin")
-@app.route('/admin/ajoutpiece', methods=['GET'])
-def AdminAjoutPiece():
-  return render_template('admin-ajout-piece.html')
-
 # TODO: replace by http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""
