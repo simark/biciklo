@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+
+{% endblock %}
+
+{% block content %}
+  <h1>Rapport</h1>
+  <table id="rapport">
+    <thead>
+      <tr>
+        <th>Mois</th>
+        <th>Ventes pièces</th>
+        <th>Ventes abonn.</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mois, (pieces, abonn) in somme_ventes %}
+        <tr>
+          <td>{{ mois }}</td>
+          <td>{{ pieces | formatprix }}</td>
+          <td>{{ abonn | formatprix }}</td>
+        </tr>
+      {% endfor %}
+
+    </tbody>
+  </table>
+{% endblock %}

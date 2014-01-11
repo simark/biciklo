@@ -51,6 +51,13 @@ def RemoveIds(data):
 
     return data
 
+def FormatPrix(prix_cennes):
+  piasses = prix_cennes / 100
+  cennes = prix_cennes % 100
+  return "%d.%02d $" % (piasses, cennes)
+
+app.jinja_env.filters['formatprix'] = FormatPrix
+
 class RequestError(Exception):
   def __init__(self, status, msg):
     self.status = status
@@ -966,6 +973,31 @@ def HeuresBenevoles():
 @app.route('/admin', methods=['GET'])
 def Admin():
   return render_template('admin.html')
+
+@app.route('/admin/rapport', methods=['GET'])
+def AdminRapport():
+  # (année, mois) -> ($ pièces, $ abonnements)
+  somme_ventes = {}
+
+  factures = db.DBConnection().factures.find()
+
+  for facture in factures:
+    mois = (facture['date'].year, facture['date'].month)
+    somme_pieces = facture['prixtotal']
+    somme_abonnements = 0
+
+    for piece in facture['pieces']:
+
+      if piece['numero'] in abonnements:
+        somme_pieces -= piece['prixtotal']
+        somme_abonnements += piece['prixtotal']
+
+    ancien = somme_ventes.get(mois, (0, 0))
+    somme_ventes[mois] = (ancien[0] + somme_pieces, ancien[1] + somme_abonnements)
+
+  somme_ventes = sorted(somme_ventes.items())
+
+  return render_template('admin-rapport.html', somme_ventes = somme_ventes)
 
 # TODO: replace by http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
 def ObtenirProchainNumeroDeMembre():
