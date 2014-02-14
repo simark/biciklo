@@ -131,7 +131,6 @@ validation = {
     'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'prix', 'remarques'],
     'valid': {
       'numero': ValidationEntierPositif,
-      'numerobabac': ValidationEntierPositif,
       'prix': ValidationEntierPositif,
       'prixbabac': ValidationEntierPositif,
       'quantite': ValidationQuantite,
