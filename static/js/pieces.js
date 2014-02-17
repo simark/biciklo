@@ -198,7 +198,7 @@ function EnvoyerAjoutPiece() {
   $.ajax({
     url: '/api/pieces',
     type: 'POST',
-    data: {numero: numero},
+    data: {numero: numero, active: "oui"},
     dataType: 'json',
   }).done(function (data, textStatus, jqXHR) {
     // Fermer le dialogue et réinitialiser le formulaire.
