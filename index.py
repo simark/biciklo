@@ -128,12 +128,13 @@ validation = {
   },
   'pieces': {
     'req': ['numero'],
-    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'prix', 'remarques'],
+    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'prix', 'remarques', 'active'],
     'valid': {
       'numero': ValidationEntierPositif,
       'prix': ValidationEntierPositif,
       'prixbabac': ValidationEntierPositif,
       'quantite': ValidationQuantite,
+      'active': api_boolean,
     }
   },
   'factures': {

@@ -1,9 +1,17 @@
 table#pieces.dataTable {
-	display: none;
+  display: none;
 
-	tbody tr td {
-		text-align: center;
-	}
+  tbody tr td {
+    text-align: center;
+  }
+}
+
+table#pieces tr.inactive {
+  color: #777;
+}
+
+table#pieces td.liste-pieces-cellule-colonne-icones {
+  white-space: nowrap;
 }
 
 #ajout-a-facture {

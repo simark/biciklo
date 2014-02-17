@@ -52,12 +52,17 @@
       <span id="filtre-section"></span>
       <span id="filtre-nom"></span>
       <span id="filtre-reference"></span>
+      <label class="checkbox">
+        <input type="checkbox" id="pieces-actives-seulement" checked="checked">
+        Pièces actives seulement
+      </label>
       <button id="filtre-reset" class="btn">Reset !</button>
+      </div>
     </form>
   </div>
 
   <div>
-    <table id="pieces">
+    <table id="pieces" data-row-class-callback="ListePiecesRowClass">
       <thead>
          <tr>
            <th data-column="numero">#</th>
@@ -68,7 +73,7 @@
            <th data-column="prix" data-transform="NombreVersPrix">Prix</th>
            <th data-column="quantite">Quantité</th>
            <th data-column="remarques">Remarques</th>
-           <th data-transform="ColonneIcones"></th>
+           <th data-transform="ListePiecesColonneIconesData"></th>
         </tr>
       </thead>
       <tbody>

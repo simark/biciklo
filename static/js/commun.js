@@ -32,29 +32,53 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
     });
   });
 
+  // Obtenir les fonctions de génération des classes et id
+  rowClassCallback = tableau.attr('data-row-class-callback');
+  if (rowClassCallback)
+    rowClassCallback = window[rowClassCallback]
+
+  rowIdCallback = tableau.attr('data-row-id-callback');
+  if (rowIdCallback)
+    rowIdCallback = window[rowIdCallback]
+
   // Créer les lignes une par une
   for (i in liste_lignes) {
     var ligne_data = liste_lignes[i];
-    var ligne = new Array();
+    var ligne = {};
 
     // Créer le tableau de cellules pour cette ligne
+    idx = 0;
     for (col in colonnes) {
       var colname = colonnes[col].source;
       var transform = colonnes[col].transform;
+      var valeur = null;
 
       if (colname in ligne_data) {
-        var valeur = ligne_data[colname];
-        if (transform && transform in window && typeof(window[transform] == "function")) {
-          valeur = window[transform](valeur);
-        }
-        ligne.push(valeur);
-      } else if (transform && transform in window && typeof(window[transform] == "function")) {
-        var valeur = window[transform]();
-        ligne.push(valeur);
-      } else {
-        ligne.push('?');
+        valeur = ligne_data[colname];
+      }
+
+      if (transform && transform in window && typeof(window[transform] == "function")) {
+        valeur = window[transform](valeur);
+      }
+
+      ligne[idx] = valeur;
+      idx++;
+    }
+
+    if (rowClassCallback) {
+      className = rowClassCallback(ligne_data);
+      if (className) {
+        ligne.DT_RowClass = className;
       }
     }
+
+    if (rowIdCallback) {
+      id = rowIdCallback(ligne_data);
+      if (id) {
+        ligne.DT_RowId = id;
+      }
+    }
+
     lignes.push(ligne);
   }
 

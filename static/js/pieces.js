@@ -1,3 +1,5 @@
+var showPiecesInactives = false;
+
 function AfficherAjouterPieceAFacture(numeroPiece) {
   $.get("/api/factures?complete=non").done(function (factures, textStatus, jqXHR) {
     if (factures.length == 0) {
@@ -66,8 +68,10 @@ function SubmitAjouterPiece() {
   return false;
 }
 
-function ColonneIcones() {
-  return '<i style="inline-block" class="icon icon-plus icone-ajouter-a-facture"></i>&nbsp;&nbsp;<a href="#"><i class="icon icon-edit icone-modifier-piece"></i></a>';
+function ListePiecesColonneIconesData() {
+  return '<i style="display: inline-block;" class="icon icon-plus icone-ajouter-a-facture"></i>' +
+         '&nbsp;' +
+         '<a href="#"><i class="icon icon-edit icone-modifier-piece"></i></a>';
 }
 
 function InitTableauPieces() {
@@ -82,7 +86,7 @@ function InitTableauPieces() {
        sInfo: "_START_ à _END_ de _TOTAL_ entrées",
        sInfoEmpty: "0 à 0 d'aucune entrée",
        sInfoFiltered: "(filtré de _MAX_ entrées en tout)",
-       sSearch: "rechercher&nbsp;:",
+       sSearch: "rechercher dans toutes les colonnes:",
      },
     'fnCreatedRow': function (nRow, aData, iDataIndex) {
         // Le numero du membre est dans la premiere cellule de la ligne.
@@ -90,11 +94,25 @@ function InitTableauPieces() {
         $(nRow).find('i.icone-ajouter-a-facture').click(AfficherAjouterPieceAFacture.bind(undefined, numero));
         $(nRow).find('i.icone-modifier-piece').parent().attr('href', '/pieces/' + numero);
      },
+     'aoColumnDefs': [
+       {
+         'aTargets': [-1],
+         'sClass': 'liste-pieces-cellule-colonne-icones',
+       },
+     ]
+  });
+
+  $.fn.dataTableExt.afnFiltering.push(function (oSettings, aData, iDataIndex) {
+    if (showPiecesInactives) {
+      return true;
+    }
+
+    return ! $(oSettings.aoData[iDataIndex].nTr).hasClass("inactive");
   });
 }
 
 function RemplirTableauPieces(liste_pieces) {
-  tableau = $('#pieces');
+  var tableau = $('#pieces');
 
   RemplirTableauGenerique(liste_pieces, tableau);
 
@@ -102,6 +120,12 @@ function RemplirTableauPieces(liste_pieces) {
   $('#loading').hide();
   $('#pieces').show();
   $('#pieces_wrapper').show();
+}
+
+function ListePiecesRowClass(ligne_data) {
+  if ('active' in ligne_data && ligne_data.active == false) {
+    return "inactive";
+  }
 }
 
 /**
@@ -120,8 +144,6 @@ function RechargerTableauPieces() {
     InitialiserFiltres();
 
   }).fail(DisplayError);
-
-
 }
 
 function InitialiserFiltres() {
@@ -137,6 +159,11 @@ function InitialiserFiltres() {
 
   $('#filtre-numero input').addClass('input-mini');
   $('#filtre-nom input').addClass('input-small');
+
+  $('#pieces-actives-seulement').change(function() {
+    showPiecesInactives = ! $(this).is(":checked");
+    $('#pieces').dataTable().fnDraw();
+  });
 
   if (window.location.hash) {
     hash = window.location.hash.substring(1);

@@ -66,6 +66,12 @@
            <input class="input-xxlarge" type="text" id="numerobabac" value="{{ piece.numerobabac }}">
          </td>
         </tr>
+        <tr>
+         <td class="cle">Active</td>
+         <td class="valeur">
+           <input type="checkbox" id="active" {% if piece.active %}checked="checked"{% endif %}>
+         </td>
+        </tr>
       </tbody>
     </table>
   </p>

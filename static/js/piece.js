@@ -4,8 +4,13 @@ function Sauvegarder() {
   donnees = {};
 
   $('#detailspiece input').each(function () {
-    var val = $(this).val();
     var key = $(this).attr('id');
+    var val;
+    if ($(this).attr('type') == 'checkbox') {
+      val = $(this).is(':checked') ? 'oui' : 'non';
+    } else {
+      val = $(this).val();
+    }
 
     donnees[key] = val;
   });
