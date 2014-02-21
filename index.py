@@ -999,6 +999,12 @@ def AdminRapport():
 
   return render_template('admin-rapport.html', somme_ventes = somme_ventes)
 
+@app.route('/admin/listediffusion', methods=['GET'])
+def AdminListeDiffusion():
+  membres = db.DBConnection().membres.find({'listedenvoi': 'oui'})
+
+  return render_template('admin-listediffusion.html', membres = list(membres))
+
 # TODO: replace by http://docs.mongodb.org/manual/tutorial/create-an-auto-incrementing-field/
 def ObtenirProchainNumeroDeMembre():
   """Retourne le prochain numero de membre disponible."""

@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<script src="/static/js/admin-listediffusion.js"></script>
+<script>
+  var membres_id = [
+    {% for membre in membres %}
+    {{ membre.numero }},
+    {% endfor %}
+  ];
+</script>
+{% endblock %}
+
+{% block content %}
+  <h1>Liste de diffusion</h1>
+  <p>Membres désirant être inscrits à la liste de diffusion mais pas encore inscrits:</p>
+<pre>{% for membre in membres %}{{ membre.courriel }}
+{% endfor %}</pre>
+
+  <p><button class="btn" id="marquer-faits">Marquer comme "faits"</button></p>
+{% endblock %}
