@@ -165,10 +165,12 @@ validation = {
     }
   },
   'getfactures': {
-    'opt': ['complete', 'membre'],
+    'opt': ['complete', 'membre', 'debut', 'fin'],
     'valid': {
       'complete': api_boolean,
       'membre': ValidationEntierPositif,
+      'debut': ValidationDate,
+      'fin': ValidationDate,
     }
   }
 }
@@ -549,6 +551,18 @@ def GetFactures():
 
   try:
     filters = ParseIncoming(request.args, 'getfactures')
+
+    debut = filters.pop('debut', None)
+    fin = filters.pop('fin', None)
+
+    if debut or fin:
+      filters['date'] = {}
+
+      if debut:
+        filters['date']['$gte'] = debut
+
+      if fin:
+        filters['date']['$lte'] = fin
 
     result = list(db.DBConnection().factures.find(filters).sort('numero', 1))
 
