@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block head_extra %}
+<script src="/static/js/admin-ventes.js"></script>
+{% endblock %}
+
+{% block content %}
+  <h1>Ventes</h1>
+  <form class="form-inline">
+	  De <input type="text" placeholder="début" id="debut" class="input-small">
+	  à <input type="text" placeholder="fin" id="fin" class="input-small">
+	  <button class="btn btn-primary" id="afficher">Afficher</button>
+  </form>
+  <table id="ventes">
+
+  </table>
+{% endblock %}

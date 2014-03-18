@@ -1013,6 +1013,10 @@ def AdminRapport():
 
   return render_template('admin-rapport.html', somme_ventes = somme_ventes)
 
+@app.route('/admin/ventes', methods=['GET'])
+def AdminVentes():
+  return render_template('admin-ventes.html')
+
 @app.route('/admin/listediffusion', methods=['GET'])
 def AdminListeDiffusion():
   membres = db.DBConnection().membres.find({'listedenvoi': 'oui'})
