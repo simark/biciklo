@@ -22,23 +22,17 @@ $(document).ready(function() {
 
 		var url = "/api/factures?";
 
-		if (debut) {
-			if (!first) {
-				url += "&";
-			}
+		var params = [];
 
-			url += "debut=" + debut;
-			first = false;
+		if (debut) {
+			params.push("debut=" + debut);
 		}
 
 		if (fin) {
-			if (!first) {
-				url += "&";
-			}
-
-			url += "fin=" + fin;
-			first = false;
+			params.push("fin=" + fin);
 		}
+
+		url += params.join("&");
 
 		$.get(url).done(function (data, textStatus, jqXHR) {
 			var rows = [];
