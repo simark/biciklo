@@ -151,6 +151,7 @@ function InitialiserFiltres() {
     sPlaceHolder: "head:after",
     aoColumns: [
       {type: 'number', sSelector: '#filtre-numero'},
+      null,
       {type: 'select', sSelector: '#filtre-section'},
       {sSelector: '#filtre-nom'},
       {sSelector: '#filtre-reference'},
