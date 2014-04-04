@@ -74,7 +74,19 @@
           </td>
         </tr>
         <tr>
-          <td class="cle">Expiration</td>
+          <td class="cle">Date d'inscription</td>
+          <td class="valeur" id="inscription">
+            <span>
+              {% if 'inscription' in membre %}
+                {{ membre.inscription.strftime("%Y-%m-%d") }}
+              {% else %}
+                ?
+              {% endif %}
+            </span>
+          </td>
+        </tr>
+        <tr>
+          <td class="cle">Date d'expiration</td>
           <td class="valeur" id="expiration">
             <span>
               {% if 'expiration' in membre %}

@@ -298,6 +298,7 @@ def PostMembres():
       # On attribut automatiquement un # de membre
       membre['numero'] = ObtenirProchainNumeroDeMembre()
 
+    membre['inscription'] = datetime.datetime.now()
     db.DBConnection().membres.insert(membre)
 
     headers['Location'] = url_for('GetMembresNumero', numero = membre['numero'])
