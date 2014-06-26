@@ -75,6 +75,7 @@ function RemplirTableauVentes(data, textStatus, jqXHR) {
 		var nom = piece.nom;
 		var reference = 'reference' in piece ? piece.reference : "";
 		var caracteristique = piece.caracteristique;
+		var quantite_rest = piece.quantite;
 
 		var row = [
 			Mustache.render('<a href="/pieces/{{numero}}">{{numero}}</a>', {numero: numero}),
@@ -83,7 +84,8 @@ function RemplirTableauVentes(data, textStatus, jqXHR) {
 			nom,
 			reference,
 			caracteristique,
-			Math.round(quantites[numero])
+			Math.round(quantites[numero]),
+			quantite_rest,
 		];
 		rows.push(row);
 	}
