@@ -51,7 +51,7 @@ function RemplirTableauGenerique(liste_lignes, tableau) {
     for (col in colonnes) {
       var colname = colonnes[col].source;
       var transform = colonnes[col].transform;
-      var valeur = null;
+      var valeur = "";
 
       if (colname in ligne_data) {
         valeur = ligne_data[colname];
