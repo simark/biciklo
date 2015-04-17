@@ -20,7 +20,7 @@ from flask import request
 from flask import render_template
 from flask import url_for
 
-import db
+from biciklo import db
 
 app = Flask(__name__)
 
@@ -1046,8 +1046,11 @@ def ObtenirProchainNumeroDeFacture():
     return d.factures.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
 
 
-if __name__ == '__main__':
+def main():
   if 'BICIKLO_DEBUG' in os.environ:
     app.debug = True
 
   app.run(host='0.0.0.0', port = 8888)
+
+if __name__ == '__main__':
+  main()
