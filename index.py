@@ -30,6 +30,8 @@ abonnements = {
   100: datetime.timedelta(days = 364),
   # Mensuel
   200: datetime.timedelta(days = 30),
+  # Benevole
+  300: datetime.timedelta(days = 999999),
 }
 
 def jsonify(stuff):
