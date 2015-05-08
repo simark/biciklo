@@ -22,15 +22,15 @@ doit être lancé.
 
 Compiler le CSS :
 
-	$ cd sass
+	$ cd biciklo/sass
 	$ compass compile
-	$ cd ..
+	$ cd ../..
 
 Lancer le site Flask :
 
-	$ BICIKLO_DEBUG=1 python index.py
+	$ BICIKLO_DEBUG=1 python biciklo/biciklo.py
 
-`index.py` imprimera l'URL qui permet l'accès au site Web.
+`biciklo.py` imprimera l'URL qui permet l'accès au site Web.
 
 
 API HTTP
