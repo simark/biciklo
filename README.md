@@ -6,11 +6,10 @@ Système d'inventaire pour l'atelier **Biciklo**.
 dépendances
 -----------
 * Python 2 ou 3
-  * virtualenv
+  * Paquet `virtualenv` recommandé (`pip install virtualenv`)
 * MongoDB
-* [Compass](http://compass-style.org/)
-  * Installer `ruby`, puis `gem install compass`
-  * seulement nécessaire pour regénérer les fichiers css.
+* Ruby
+  * Paquet `compass`, seulement nécessaire pour regénérer les fichiers css
 
 installation pour le développement
 ----------------------------------
