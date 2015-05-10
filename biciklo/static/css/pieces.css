@@ -1,0 +1,42 @@
+/* line 1, ../../sass/sass/pieces.scss */
+table#pieces.dataTable {
+  display: none;
+}
+/* line 4, ../../sass/sass/pieces.scss */
+table#pieces.dataTable tbody tr td {
+  text-align: center;
+}
+
+/* line 9, ../../sass/sass/pieces.scss */
+table#pieces tr.inactive {
+  color: #777;
+}
+
+/* line 13, ../../sass/sass/pieces.scss */
+table#pieces td.liste-pieces-cellule-colonne-icones {
+  white-space: nowrap;
+}
+
+/* line 17, ../../sass/sass/pieces.scss */
+#ajout-a-facture {
+  text-align: center;
+  width: auto;
+}
+/* line 21, ../../sass/sass/pieces.scss */
+#ajout-a-facture #boutons-factures {
+  text-align: left;
+  padding: 5px;
+}
+/* line 24, ../../sass/sass/pieces.scss */
+#ajout-a-facture #boutons-factures button {
+  margin: 4px;
+}
+/* line 29, ../../sass/sass/pieces.scss */
+#ajout-a-facture #controles {
+  padding: 4px;
+}
+
+/* line 34, ../../sass/sass/pieces.scss */
+#ajoutpiece {
+  display: none;
+}

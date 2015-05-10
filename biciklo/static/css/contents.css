@@ -1,0 +1,22 @@
+/* line 3, ../../sass/sass/contents.scss */
+#content {
+  overflow: hidden;
+  padding: 0 20px;
+}
+/* line 6, ../../sass/sass/contents.scss */
+#content h1 {
+  font-family: "Open Sans", sans-serif;
+  font-weight: bold;
+  text-shadow: 0 0 10px #666;
+  font-variant: small-caps;
+}
+
+/* line 14, ../../sass/sass/contents.scss */
+.icon {
+  cursor: pointer;
+  color: #999;
+}
+/* line 17, ../../sass/sass/contents.scss */
+.icon:hover {
+  color: black;
+}

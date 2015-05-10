@@ -1,0 +1,32 @@
+/* line 4, ../../sass/sass/datatable.scss */
+table.dataTable tr.odd {
+  background-color: #8dc73f;
+}
+/* line 8, ../../sass/sass/datatable.scss */
+table.dataTable tr.odd td.sorting_1 {
+  background-color: #a4d366;
+}
+/* line 11, ../../sass/sass/datatable.scss */
+table.dataTable tr.odd td.sorting_2 {
+  background-color: #b0d87a;
+}
+/* line 14, ../../sass/sass/datatable.scss */
+table.dataTable tr.odd td.sorting_3 {
+  background-color: #bcde8e;
+}
+/* line 19, ../../sass/sass/datatable.scss */
+table.dataTable tr.even {
+  background-color: #b0d87a;
+}
+/* line 23, ../../sass/sass/datatable.scss */
+table.dataTable tr.even td.sorting_1 {
+  background-color: #c8e4a2;
+}
+/* line 26, ../../sass/sass/datatable.scss */
+table.dataTable tr.even td.sorting_2 {
+  background-color: #d3eab5;
+}
+/* line 29, ../../sass/sass/datatable.scss */
+table.dataTable tr.even td.sorting_3 {
+  background-color: #dfefc9;
+}

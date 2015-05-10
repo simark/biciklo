@@ -1,0 +1,18 @@
+@font-face {
+  font-family: "Open Sans";
+  src: url(/static/font/OpenSans-Regular.ttf) format('truetype');
+}
+
+/* line 6, ../../sass/sass/base.scss */
+body {
+  background: #eee;
+  width: 100%;
+  font-family: "Open Sans", sans-serif;
+  padding-top: 40px;
+}
+
+/* line 13, ../../sass/sass/base.scss */
+#logo {
+  height: 35px;
+  padding-top: 2px;
+}

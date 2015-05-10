@@ -1,0 +1,15 @@
+/* line 1, ../../sass/sass/reset.scss */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* line 5, ../../sass/sass/reset.scss */
+strong {
+  font-weight: bold;
+}
+
+/* line 8, ../../sass/sass/reset.scss */
+em {
+  font-style: italic;
+}

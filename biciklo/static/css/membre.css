@@ -1,0 +1,17 @@
+/* line 6, ../../sass/sass/membre.scss */
+#detailsmembre td.cle, #detailsmembre td.valeur {
+  border-top: 1px #999999 solid;
+  border-bottom: 1px #999999 solid;
+}
+/* line 10, ../../sass/sass/membre.scss */
+#detailsmembre td.cle {
+  text-align: right;
+  padding: 8px 8px 8px 50px;
+  border-left: 1px #999999 solid;
+}
+/* line 15, ../../sass/sass/membre.scss */
+#detailsmembre td.valeur {
+  font-weight: bold;
+  padding: 8px 50px 8px 8px;
+  border-right: 1px #999999 solid;
+}
