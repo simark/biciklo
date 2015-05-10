@@ -1,14 +1,16 @@
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
-  name = 'Biciklo',
-  version = '1.0',
-  packages = find_packages(),
-  entry_points = {
-    'console_scripts': ['biciklo-inventaire=biciklo.biciklo:main'],
-  },
-  install_requires = [
-    'pymongo',
-    'flask',
-  ]
+    name='Biciklo',
+    version='1.0',
+    packages=['biciklo'],
+    entry_points={
+        'console_scripts': ['biciklo-inventaire=biciklo.biciklo:main'],
+    },
+    install_requires=[
+        'pymongo',
+        'flask',
+    ],
+    zip_safe=False,
+    include_package_data=True,
 )
