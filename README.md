@@ -5,33 +5,42 @@ Système d'inventaire pour l'atelier **Biciklo**.
 
 dépendances
 -----------
-
-* Ruby (pour Compass ci-dessous)
-* Compass (`gem install compass`)
+* Python 2 ou 3
+  * virtualenv
 * MongoDB
-* Python 2 et quelques modules:
- * `flask` (<http://flask.pocoo.org/>)
- * `pymongo` (<http://api.mongodb.org/python/current/>)
- * Si j'en ai oublié, dites moi le.
+* [Compass](http://compass-style.org/)
+  * Installer `ruby`, puis `gem install compass`
+  * seulement nécessaire pour regénérer les fichiers css.
 
-lancement
----------
+installation pour le développement
+----------------------------------
 
-Les dépendances ci-dessus doivent être satisfaites et le serveur MongoDB
-doit être lancé.
+1. Cloner l'entrepôt
 
-Compiler le CSS :
+        $ git clone https://github.com/simark/biciklo.git
+
+2. Créer un environnement Python (virtualenv) et l'activer:
+
+        $ virtualenv -p python3 biciklo-env
+        $ source biciklo-env/bin/activate
+
+3. Installer le module biciklo
+
+        $ cd biciklo
+        $ pip install -e .
+
+4. Lancer l'inventaire:
+
+        $ BICIKLO_DEBUG=1 biciklo-inventaire
+
+Il est alors possible d'accéder à l'inventaire en utilisant l'adresse
+affichée par la commande précédente, typiquement [`http://127.0.0.1:8888`](http://127.0.0.1:8888).
+
+Si des modifications sont faites aux fichiers .sass, les fichiers .css
+doivent être regénérés:
 
 	$ cd sass
 	$ compass compile
-	$ cd ..
-
-Lancer le site Flask :
-
-	$ BICIKLO_DEBUG=1 python index.py
-
-`index.py` imprimera l'URL qui permet l'accès au site Web.
-
 
 API HTTP
 --------
