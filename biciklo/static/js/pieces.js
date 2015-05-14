@@ -78,7 +78,7 @@ function InitTableauPieces() {
   // Initialiser le tableau datatables.
   $('#pieces').dataTable({
     'aaData': null,
-    'bLengthChange': false,
+    'bLengthChange': true,
     'iDisplayLength': 20,
     'oLanguage': {
        sLengthMenu: "afficher _MENU_ entrées par page",
@@ -152,7 +152,7 @@ function InitialiserFiltres() {
     aoColumns: [
       {type: 'number', sSelector: '#filtre-numero'},
       null,
-      {type: 'select', sSelector: '#filtre-section'},
+      {sSelector: '#filtre-section'},
       {sSelector: '#filtre-nom'},
       {sSelector: '#filtre-reference'},
     ]
@@ -216,7 +216,7 @@ $(document).ready(function() {
 
   $('#filtre-reset').click(function () {
     $('#filtre-numero input').val('').keyup();
-    $('#filtre-section select').val('').change();
+    $('#filtre-section input').val('').keyup();
     $('#filtre-nom input').val('').keyup();
     $('#filtre-reference input').val('').keyup();
 
