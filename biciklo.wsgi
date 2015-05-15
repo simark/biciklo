@@ -1,2 +1,2 @@
-from index import app as application
+from biciklo.biciklo import app as application
 
