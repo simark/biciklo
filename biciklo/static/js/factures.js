@@ -58,6 +58,8 @@ function SubmitAjoutFacture() {
       AfficherSucces("Facture ajoutée");
 
       $('#input-nouvelle-facture').val("");
+
+      $('body').animate({ scrollTop: $("#facture-" + facture.numero).offset().top }, 1000);
     }).fail(DisplayError);
   return false;
 }
