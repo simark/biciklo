@@ -26,7 +26,7 @@
     <div class="facture-container" id="facture-template">
       <span class="titre"></span>
       <span class="boutons">
-        <i class="icon icon-folder-close close"></i>&nbsp;&nbsp;<i class="icon icon-trash remove"></i>
+        &nbsp;<i class="icon icon-trash remove"></i>
       </span>
 
       <div class="contenu">
@@ -55,10 +55,21 @@
             </tr>
           </tbody>
         </table>
-        <div style="text-align: right;" class="total"></div>
+
+        <div style="text-align: right;">
+          <a class="btn total" href="javascript:void(0)" >Total</a>
+        </div>
       </div>
     </div>
   </div>
 
-
+  <div class="modal hide fade" id="resume-modal">
+    <div class="modal-body">
+      <p id="resume-body"></p>
+    </div>
+    <div class="modal-footer">
+      <a href="#" class="btn" id="resume-annuler">Annuler</a>
+      <a href="#" class="btn btn-primary" id="resume-fermer">Fermer la facture</a>
+    </div>
+  </div>
 {% endblock %}

@@ -12,19 +12,17 @@
 .facture-container {
   border: 1px solid #a2a2a2;
   margin: 20px;
-  background-color: #eeeeee;
+  background-color: #eee;
 }
 /* line 19, ../../sass/sass/factures.scss */
 .facture-container .titre {
-  -webkit-border-radius: 0px 0px 5px 0px;
   -moz-border-radius: 0px 0px 5px 0px;
-  -ms-border-radius: 0px 0px 5px 0px;
-  -o-border-radius: 0px 0px 5px 0px;
+  -webkit-border-radius: 0px;
   border-radius: 0px 0px 5px 0px;
-  border-right: 1px solid #aaaaaa;
-  border-bottom: 1px solid #aaaaaa;
+  border-right: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
   padding: 5px;
-  background-color: #d4d4d4;
+  background-color: #d5d5d5;
   color: #444;
   float: left;
   font-weight: bold;
@@ -39,15 +37,13 @@
 }
 /* line 40, ../../sass/sass/factures.scss */
 .facture-container .boutons {
-  -webkit-border-radius: 0px 0px 0px 5px;
   -moz-border-radius: 0px 0px 0px 5px;
-  -ms-border-radius: 0px 0px 0px 5px;
-  -o-border-radius: 0px 0px 0px 5px;
+  -webkit-border-radius: 0px;
   border-radius: 0px 0px 0px 5px;
-  border-left: 1px solid #aaaaaa;
-  border-bottom: 1px solid #aaaaaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
   padding: 5px 2px 5px 0px;
-  background-color: #d4d4d4;
+  background-color: #d5d5d5;
   float: right;
 }
 /* line 50, ../../sass/sass/factures.scss */
@@ -63,14 +59,15 @@
   background-color: white;
 }
 /* line 62, ../../sass/sass/factures.scss */
-.facture-container .contenu .total {
-  font-weight: bold;
-}
-/* line 66, ../../sass/sass/factures.scss */
 .facture-container .contenu .form-ajout-piece-facture {
   margin: 0;
 }
-/* line 69, ../../sass/sass/factures.scss */
+/* line 65, ../../sass/sass/factures.scss */
 .facture-container .contenu .form-ajout-piece-facture input {
   margin: 0;
+}
+
+/* line 73, ../../sass/sass/factures.scss */
+body.modal-open {
+  overflow: visible;
 }

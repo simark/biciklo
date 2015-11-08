@@ -29,8 +29,6 @@ function SubmitAjoutPiece() {
         champNumeroPiece.val("");
         champQuantite.val("");
 
-        CalculerPrixTotalFacture(numeroFacture);
-
         AfficherSucces("Fait !");
 
         $.get("/api/membres/" + $('#facture-' + numeroFacture).attr('data-numero-membre')).done(function (membre) {
@@ -77,6 +75,7 @@ function ChargerFacture(facture) {
   divfacture.appendTo( $('#factures-container') );
   divfacture.find('.remove').click(SupprimerFacture);
   divfacture.find('.close').click(FermerFacture);
+  divfacture.find('.total').click(AfficherResumeFacture);
 
   // Requête membre
   var httpRequests = [];
@@ -107,8 +106,6 @@ function ChargerFacture(facture) {
     $.each(pieces, function (k, piece) {
       AjouterLignePiece(facture.numero, piece, facture.pieces[k]);
     });
-
-    CalculerPrixTotalFacture(facture.numero);
 
     // Mettre les infos du membre
     nom = membre.prenom + " " + membre.nom;
@@ -192,7 +189,8 @@ function SupprimerFacture() {
 }
 
 function FermerFacture() {
-  var numeroFacture = CetteFacture(this);
+  var numeroFacture = $('#resume-modal').attr('data-numero-facture');
+
   var data = {'complete': 'oui'};
     $.ajax({
       'url': '/api/factures/' + numeroFacture,
@@ -200,6 +198,7 @@ function FermerFacture() {
       'data': data,
     }).done(function (data, textStatus, jqXHR) {
       AfficherSucces('Facture fermée');
+      $('#resume-modal').modal('hide');
       $('#facture-' + numeroFacture).slideUp('slow', function () { $(this).remove(); });
     }).fail(DisplayError);
 }
@@ -214,7 +213,6 @@ function SupprimerPiece() {
   }).done(function (data, textStatus, jqXHR) {
     AfficherSucces('Pièce supprimée');
     SupprimerLignePiece(numeroFacture, numeroPiece);
-    CalculerPrixTotalFacture(numeroFacture);
 
     $.get("/api/membres/" + $('#facture-' + numeroFacture).attr('data-numero-membre')).done(function (membre) {
           VerifierAbonnement(membre, numeroFacture);
@@ -225,15 +223,24 @@ function SupprimerPiece() {
 
 function CalculerPrixTotalFacture(numeroFacture) {
   facture = $('#facture-' + numeroFacture);
-  var prixtotal = 0; //en cents
+  var prixTotal = 0; //en cents
 
   $.each(facture.find('table').find('tr[data-prixtotal]'), function (k, row) {
-    prixtotal += parseInt($(row).attr('data-prixtotal'));
+    prixTotal += parseInt($(row).attr('data-prixtotal'));
   });
 
-  prixtotal = Math.round(prixtotal/25)*25; //arrondi au 25 cent le plus pres
+  prixTotal = Math.round(prixTotal/25)*25; //arrondi au 25 cent le plus pres
 
-  facture.find('.total').html("Total: " + NombreVersPrix(prixtotal));
+  return prixTotal;
+}
+
+function AfficherResumeFacture() {
+  var numeroFacture = CetteFacture(this);
+  var prixTotal = CalculerPrixTotalFacture(numeroFacture);
+
+  $('#resume-body ').html('Total: ' + NombreVersPrix(prixTotal));
+  $('#resume-modal').attr('data-numero-facture', numeroFacture);
+  $('#resume-modal').modal();
 }
 
 function InstallerTypeaheadPieces() {
@@ -291,4 +298,9 @@ $(document).ready(function () {
 
       $('#loading').hide();
     }).fail(DisplayError);
+
+  $('#resume-annuler').click(function () {
+    $('#resume-modal').modal('hide');
+  });
+  $('#resume-fermer').click(FermerFacture);
 });

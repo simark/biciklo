@@ -18,7 +18,6 @@ em {
   font-family: "Open Sans";
   src: url(/static/font/OpenSans-Regular.ttf) format('truetype');
 }
-
 /* line 6, ../../sass/sass/base.scss */
 body {
   background: #eee;
@@ -47,19 +46,17 @@ body {
 .facture-container {
   border: 1px solid #a2a2a2;
   margin: 20px;
-  background-color: #eeeeee;
+  background-color: #eee;
 }
 /* line 19, ../../sass/sass/factures.scss */
 .facture-container .titre {
-  -webkit-border-radius: 0px 0px 5px 0px;
   -moz-border-radius: 0px 0px 5px 0px;
-  -ms-border-radius: 0px 0px 5px 0px;
-  -o-border-radius: 0px 0px 5px 0px;
+  -webkit-border-radius: 0px;
   border-radius: 0px 0px 5px 0px;
-  border-right: 1px solid #aaaaaa;
-  border-bottom: 1px solid #aaaaaa;
+  border-right: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
   padding: 5px;
-  background-color: #d4d4d4;
+  background-color: #d5d5d5;
   color: #444;
   float: left;
   font-weight: bold;
@@ -74,15 +71,13 @@ body {
 }
 /* line 40, ../../sass/sass/factures.scss */
 .facture-container .boutons {
-  -webkit-border-radius: 0px 0px 0px 5px;
   -moz-border-radius: 0px 0px 0px 5px;
-  -ms-border-radius: 0px 0px 0px 5px;
-  -o-border-radius: 0px 0px 0px 5px;
+  -webkit-border-radius: 0px;
   border-radius: 0px 0px 0px 5px;
-  border-left: 1px solid #aaaaaa;
-  border-bottom: 1px solid #aaaaaa;
+  border-left: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
   padding: 5px 2px 5px 0px;
-  background-color: #d4d4d4;
+  background-color: #d5d5d5;
   float: right;
 }
 /* line 50, ../../sass/sass/factures.scss */
@@ -98,16 +93,17 @@ body {
   background-color: white;
 }
 /* line 62, ../../sass/sass/factures.scss */
-.facture-container .contenu .total {
-  font-weight: bold;
-}
-/* line 66, ../../sass/sass/factures.scss */
 .facture-container .contenu .form-ajout-piece-facture {
   margin: 0;
 }
-/* line 69, ../../sass/sass/factures.scss */
+/* line 65, ../../sass/sass/factures.scss */
 .facture-container .contenu .form-ajout-piece-facture input {
   margin: 0;
+}
+
+/* line 73, ../../sass/sass/factures.scss */
+body.modal-open {
+  overflow: visible;
 }
 
 /* line 5, ../../sass/sass/factures-fermees.scss */
@@ -117,20 +113,20 @@ body {
 
 /* line 6, ../../sass/sass/piece.scss */
 #detailspiece td.cle, #detailspiece td.valeur {
-  border-top: 1px #999999 solid;
-  border-bottom: 1px #999999 solid;
+  border-top: 1px #999 solid;
+  border-bottom: 1px #999 solid;
 }
 /* line 10, ../../sass/sass/piece.scss */
 #detailspiece td.cle {
   text-align: right;
   padding: 8px 8px 8px 50px;
-  border-left: 1px #999999 solid;
+  border-left: 1px #999 solid;
 }
 /* line 15, ../../sass/sass/piece.scss */
 #detailspiece td.valeur {
   font-weight: bold;
   padding: 8px 50px 8px 8px;
-  border-right: 1px #999999 solid;
+  border-right: 1px #999 solid;
 }
 
 /* line 1, ../../sass/sass/pieces.scss */
@@ -178,20 +174,20 @@ table#pieces td.liste-pieces-cellule-colonne-icones {
 
 /* line 6, ../../sass/sass/membre.scss */
 #detailsmembre td.cle, #detailsmembre td.valeur {
-  border-top: 1px #999999 solid;
-  border-bottom: 1px #999999 solid;
+  border-top: 1px #999 solid;
+  border-bottom: 1px #999 solid;
 }
 /* line 10, ../../sass/sass/membre.scss */
 #detailsmembre td.cle {
   text-align: right;
   padding: 8px 8px 8px 50px;
-  border-left: 1px #999999 solid;
+  border-left: 1px #999 solid;
 }
 /* line 15, ../../sass/sass/membre.scss */
 #detailsmembre td.valeur {
   font-weight: bold;
   padding: 8px 50px 8px 8px;
-  border-right: 1px #999999 solid;
+  border-right: 1px #999 solid;
 }
 
 /* line 1, ../../sass/sass/membres.scss */
