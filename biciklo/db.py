@@ -1,6 +1,16 @@
 import pymongo
 
-class DBConnection():
+global_dbcon = None
+
+def DBConnection():
+	global global_dbcon
+
+	if not global_dbcon:
+		global_dbcon = DBConnectionClass()
+
+	return global_dbcon
+
+class DBConnectionClass():
   def __init__(self, dbname='biciklo'):
     self.client = pymongo.MongoClient()
     self.db = self.client[dbname]
