@@ -67,6 +67,18 @@
          </td>
         </tr>
         <tr>
+         <td class="cle">quantite minimum</td>
+         <td class="valeur">
+           <input class="input-xxlarge" type="text" id="quantite_minimum" value="{{ piece.quantite_minimum }}">
+         </td>
+        </tr>
+        <tr>
+         <td class="cle">quantite a avoir</td>
+         <td class="valeur">
+             <input class="input-xxlarge" type="text" id="quantite_a_avoir" value="{{ piece.quantite_a_avoir }}">
+         </td>
+        </tr>
+        <tr>
          <td class="cle">Active</td>
          <td class="valeur">
            <input type="checkbox" id="active" {% if piece.active %}checked="checked"{% endif %}>

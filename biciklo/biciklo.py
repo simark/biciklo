@@ -130,12 +130,14 @@ validation = {
   },
   'pieces': {
     'req': ['numero'],
-    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'prix', 'remarques', 'active'],
+    'opt': ['section', 'nom', 'reference', 'caracteristique', 'numerobabac', 'prixbabac', 'quantite', 'quantite_minimum', 'quantite_a_avoir', 'prix', 'remarques', 'active'],
     'valid': {
       'numero': ValidationEntierPositif,
       'prix': ValidationEntierPositif,
       'prixbabac': ValidationEntierPositif,
       'quantite': ValidationQuantite,
+      'quantite_minimum': ValidationEntierPositif,
+      'quantite_a_avoir': ValidationEntierPositif,
       'active': api_boolean,
     }
   },
