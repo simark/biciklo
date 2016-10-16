@@ -39,7 +39,7 @@ def jsonify(stuff):
   return json.dumps(stuff,
                     default=json_util.default,
                     sort_keys = True,
-                    indent = 2) + '\n'
+                    separators=(',',':')) + '\n'
 
 def RemoveIds(data):
   if isinstance(data, list):
