@@ -15,8 +15,8 @@ then
 	set -x
 
 	tmpdir=$(mktemp -d)
+	cp "$1" "$tmpdir"
 	pushd "$tmpdir"
-	cp "$1" .
 	name=$(basename "$1")
 	tar -xf "$name"
 	name="${name%%.*}"
