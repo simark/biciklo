@@ -57,7 +57,7 @@ function SubmitAjoutFacture() {
 
       $('#input-nouvelle-facture').val("");
 
-      $('body').animate({ scrollTop: $("#facture-" + facture.numero).offset().top }, 1000);
+      $('body,html').animate({ scrollTop: $("#facture-" + facture.numero).offset().top }, 1000);
     }).fail(DisplayError);
   return false;
 }
