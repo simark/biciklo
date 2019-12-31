@@ -71,7 +71,7 @@ def search_item(session, search_text, base_url):
     else:
         search_dict = {}
 
-    result_page = session.get(base_url, params=search_dict )
+    result_page = session.get(base_url, params=search_dict)
 
     if result_page.history:
         single_result = True
@@ -98,7 +98,7 @@ def parse_results(soup_results, single_result, search_text, sku_pattern, text_pa
             search_type = 'single_text'
         else:
             search_type = 'error'
-            list_products = None
+            list_products = []
             # do something to stop the parsing
 
         list_products = parse_single_result(soup_results, search_text, sku_pattern, price_pattern)
@@ -109,7 +109,7 @@ def parse_results(soup_results, single_result, search_text, sku_pattern, text_pa
             list_products = parse_multiple_results(soup_results, search_text, sku_pattern, price_pattern)
         else:
             search_type = 'error'
-            list_products = None
+            list_products = []
             # do something to stop the parsing
 
     return list_products, search_type
