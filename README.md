@@ -28,7 +28,12 @@ installation pour le développement
         $ cd biciklo
         $ pip install -e .
 
-4. Lancer l'inventaire:
+4. Pour pouvoir utiliser le module de recherche sur le site de Cycle Babac, entrer ses informations de connexion au site de Babac dans le fichier `config.example.yml` et en renommant le fichier pour `config.yml`:
+
+        $ nano config.yml
+        $ mv config.example.yml config.yml
+
+5. Lancer l'inventaire:
 
         $ BICIKLO_DEBUG=1 biciklo-inventaire
 
@@ -49,16 +54,16 @@ Exemples d'utilisation de cURL pour déboguer l'API HTTP.
 ### Liste de factures
 
 	$ curl -X GET http://0.0.0.0:8888/api/factures
-	
+
 ### Liste de membres
 
 
 	$ curl -X GET http://0.0.0.0:8888/api/membres
-	
+
 ### Ajout d'un membre
 
 	$ curl -X POST --data "prenom=bob&nom=leponge" http://0.0.0.0:8888/api/membres
-	
+
 ### Suppression d'un membre
 
 	$ curl -X DELETE http://0.0.0.0:8888/api/membres/6

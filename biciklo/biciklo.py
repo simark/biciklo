@@ -19,10 +19,18 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from flask import url_for
+from flask import flash
+
+from wtforms import Form
+from wtforms import TextField
+from wtforms import validators
 
 from biciklo import db
+from biciklo import recherche_babac2 as rb2
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
 
 # numéro de pièce des abonnements et durées
 abonnements = {
@@ -1047,6 +1055,30 @@ def ObtenirProchainNumeroDeFacture():
     return 1
   else:
     return d.factures.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
+
+# api recherche_babac
+class ReusableForm(Form):
+    search_text = TextField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ', validators=[validators.required()])
+
+    @app.route("/recherche_babac", methods=['GET', 'POST'])
+    def RechercheBabac():
+        form = ReusableForm(request.form)
+
+        print(form.errors)
+        if request.method == 'POST':
+            search_text = request.form['search_text']
+            print(search_text)
+
+        if form.validate():
+            flash('Résultats pour ' + search_text)
+            list_products = rb2.do_the_search(search_text)
+            #for product in list_products:
+                #flash('{} {} {} {}'.format(product['sku'], product['name'], product['price'], product['stock']))
+        else:
+            flash('All the form fields are required. ')
+            list_products = []
+
+        return render_template('recherche_babac.html', form=form, list_products=list_products)
 
 
 def main():
