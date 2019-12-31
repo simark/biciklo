@@ -30,8 +30,8 @@ installation pour le développement
 
 4. Pour pouvoir utiliser le module de recherche sur le site de Cycle Babac, entrer ses informations de connexion au site de Babac dans le fichier `config.example.yml` et en renommant le fichier pour `config.yml`:
 
-        $ nano config.yml
         $ mv config.example.yml config.yml
+        $ nano config.yml
 
 5. Lancer l'inventaire:
 
