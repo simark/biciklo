@@ -26,7 +26,8 @@ from wtforms import TextField
 from wtforms import validators
 
 from biciklo import db
-from biciklo import recherche_babac2 as rb2
+from recherche_babac2 import recherche_babac2 as rb2
+
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -1072,8 +1073,6 @@ class ReusableForm(Form):
         if form.validate():
             flash('Résultats pour ' + search_text)
             list_products = rb2.do_the_search(search_text)
-            #for product in list_products:
-                #flash('{} {} {} {}'.format(product['sku'], product['name'], product['price'], product['stock']))
         else:
             flash('All the form fields are required. ')
             list_products = []
