@@ -15,7 +15,7 @@ setup(
         'bs4',
         'pyyaml',
         'lxml',
-        'recherche_babac2',
+        'recherche_babac2==0.0.5',
     ],
     zip_safe=False,
     include_package_data=True,
