@@ -1071,13 +1071,12 @@ class ReusableForm(Form):
             print(search_text)
 
         if form.validate():
-            flash('Résultats pour ' + search_text)
             list_products = rb2.do_the_search(search_text)
         else:
-            flash('All the form fields are required. ')
+            flash('Remplir le champ de recherche.')
             list_products = []
 
-        return render_template('recherche_babac.html', form=form, list_products=list_products)
+        return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
 
 
 def main():

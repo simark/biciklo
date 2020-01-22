@@ -10,6 +10,7 @@ dépendances
 * MongoDB
 * Ruby
   * Paquet `compass`, seulement nécessaire pour regénérer les fichiers css
+* [Recherche Babac2](https://github.com/normcyr/recherche_babac2) pour la recherche dans le catalogue de Babac
 
 installation pour le développement
 ----------------------------------
