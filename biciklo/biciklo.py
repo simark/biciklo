@@ -1059,7 +1059,10 @@ def ObtenirProchainNumeroDeFacture():
 
 # api recherche_babac
 class ReusableForm(Form):
-    search_text = TextField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ', validators=[validators.required()])
+    search_text = TextField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ',
+        validators=[validators.required(),
+                    validators.Regexp('[\w0-9-]+', message='Pas de caractères spéciaux')
+                    ])
 
     @app.route("/recherche_babac", methods=['GET', 'POST'])
     def RechercheBabac():
@@ -1068,15 +1071,13 @@ class ReusableForm(Form):
         print(form.errors)
         if request.method == 'POST':
             search_text = request.form['search_text']
-            print(search_text)
 
         if form.validate():
             list_products = rb2.do_the_search(search_text)
         else:
-            flash('Remplir le champ de recherche.')
             list_products = []
 
-        return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
+        return render_template('recherche_babac.html', form=form, list_products=list_products)
 
 
 def main():

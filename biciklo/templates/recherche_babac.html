@@ -7,11 +7,11 @@
   <h1>Recherche Babac</h1>
 
   <form action="" method="post">
-              {{ form.csrf }}
+        {{ form.csrf }}
   <div class="input text">
-                  {{ form.search_text.label }} {{ form.search_text }}</div>
+        {{ form.search_text.label }} {{ form.search_text }}</div>
   <div class="input submit">
-                  <input type="submit" value="Submit"></div>
+        <input type="submit" value="Submit"></div>
   </form>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -22,30 +22,33 @@
   {% endif %}
   {% endwith %}
 
-  {% if list_products %}
         <div>
-            <table id="resultats" class="dataTable" style="display: table;">
-                <thead>
-                    <tr>
-                        <th data-column="numerobabac" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="# babac: activate to sort column ascending"># Babac</th>
-                        <th data-column="nom" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Nom: activate to sort column ascending">Nom</th>
-                        <th data-column="prix" data-transform="NombreVersPrix" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Prix: activate to sort column ascending">Prix</th>
-                        <th data-column="piece-en-stock" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="En stock: activate to sort column ascending">En stock?</th>
-                    </tr>
-                </thead>
-                {% for product in list_products %}
-                    <tr class="odd", style="text-align: center;">
-                        <td>{{ product['sku'] }}</td>
-                        <td>{{ product['name'] }}</td>
-                        <td>{{ product['price'] }} $</td>
-                        <td>{{ product['stock'] }}</td>
-                    </tr>
-                    {% endfor %}
-                <tbody>
-                </tbody>
-            </table>
-  {% else %}
-            <p style="font-weight: bold">Rien de trouvé pour {{ search_text }}.</p>
-  {% endif %}
+        {% if list_products %}
+            <p>{{ list_products|length }} résultats trouvés sur Cycle Babac.</p>
+            {% if list_products|length > 0 %}
+                <table id="resultats" class="dataTable" style="display: table;">
+                    <thead>
+                        <tr>
+                            <th data-column="numerobabac" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="# babac: activate to sort column ascending"># Babac</th>
+                            <th data-column="nom" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Nom: activate to sort column ascending">Nom</th>
+                            <th data-column="prix" data-transform="NombreVersPrix" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Prix: activate to sort column ascending">Prix</th>
+                            <th data-column="piece-en-stock" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="En stock: activate to sort column ascending">En stock?</th>
+                        </tr>
+                    </thead>
+                    {% for product in list_products %}
+                        <tr class="odd", style="text-align: center;">
+                            <td>{{ product['sku'] }}</td>
+                            <td>{{ product['name'] }}</td>
+                            <td>{{ product['price'] }} $</td>
+                            <td>{{ product['stock'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    <tbody>
+                    </tbody>
+                </table>
+            {% endif %}
+        {% else %}
+            <p style="font-weight: bold">Aucun produit trouvé.</p>
+        {% endif %}
         </div>
 {% endblock %}
