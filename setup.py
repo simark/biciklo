@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='Biciklo',
-    version='1.0',
+    version='1.1',
     packages=['biciklo'],
     entry_points={
         'console_scripts': ['biciklo-inventaire=biciklo.biciklo:main'],
@@ -15,7 +15,7 @@ setup(
         'bs4',
         'pyyaml',
         'lxml',
-        'recherche_babac2==0.1.0',
+        'recherche_babac2==0.1.2',
     ],
     zip_safe=False,
     include_package_data=True,

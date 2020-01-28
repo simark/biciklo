@@ -35,7 +35,7 @@
                 </thead>
                 {% for product in list_products %}
                     <tr class="odd", style="text-align: center;">
-                        <td>{{ product['sku'] }}</td>
+                        <td><a href={{ product['page url']}} target="_blank">{{ product['sku'] }}</a></td>
                         <td>{{ product['name'] }}</td>
                         <td>{{ product['price'] }} $</td>
                         <td>{{ product['stock'] }}</td>
