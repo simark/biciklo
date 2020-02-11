@@ -6,6 +6,7 @@ import datetime
 import json
 import os
 import time
+import re
 
 if python_major == 2:
   import httplib
@@ -22,7 +23,7 @@ from flask import url_for
 from flask import flash
 
 from wtforms import Form
-from wtforms import TextField
+from wtforms import StringField
 from wtforms import validators
 
 from biciklo import db
@@ -1059,24 +1060,29 @@ def ObtenirProchainNumeroDeFacture():
 
 # api recherche_babac
 class ReusableForm(Form):
-    search_text = TextField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ',
-        validators=[validators.required(),
-                    validators.Regexp('[\w0-9 -]+', message='Pas de caractères spéciaux')
-                    ])
+    search_text = StringField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ',
+                              validators=[
+                                          validators.DataRequired(message='Veuillez entrer un mot'),
+                                          validators.Regexp('^[\w0-9 -]+$', message='Veuillez ne pas utiliser de caractères spéciaux.'),
+                                          ]
+                              )
 
     @app.route("/recherche_babac", methods=['GET', 'POST'])
     def RechercheBabac():
         form = ReusableForm(request.form)
 
-        print(form.errors)
+        if request.method == 'GET':
+            return render_template('recherche_babac.html', form=form)
+
         if request.method == 'POST':
             search_text = request.form['search_text']
 
-        if form.validate():
-            list_products = rb2.do_the_search(search_text)
-            return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
-        else:
-            return render_template('recherche_babac.html', form=form)
+            if form.validate():
+                list_products = rb2.do_the_search(search_text)
+                return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
+            else:
+                flash(form.errors['search_text'][0])
+                return render_template('recherche_babac.html', form=form)
 
 
 def main():
