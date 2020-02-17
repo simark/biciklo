@@ -1,6 +1,12 @@
 {% extends "layout.html" %}
-{% block head_extra %}
 
+{% block head_extra %}
+<style>
+  p.error_message {
+    color: red;
+    font-weight: bold;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -15,35 +21,41 @@
   </form>
 
   {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for message in messages %}
-   	<p style="font-weight: bold">{{ message[1] }}</p>
-    {% endfor %}
-  {% endif %}
-  {% endwith %}
-    <div>
-    {% if list_products|length >= 1 %}
-        <p>{{ list_products|length }} résultats trouvés pour <strong>{{ search_text }}</strong> sur Cycle Babac.</p>
-            <table id="resultats" class="dataTable" style="display: table;">
-                <thead>
-                    <tr>
-                        <th data-column="numerobabac" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="# babac: activate to sort column ascending"># Babac</th>
-                        <th data-column="nom" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Nom: activate to sort column ascending">Nom</th>
-                        <th data-column="prix" data-transform="NombreVersPrix" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Prix: activate to sort column ascending">Prix</th>
-                        <th data-column="piece-en-stock" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="En stock: activate to sort column ascending">En stock?</th>
-                    </tr>
-                </thead>
-                {% for product in list_products %}
-                    <tr class="odd", style="text-align: center;">
-                        <td><a href={{ product['page url']}} target="_blank">{{ product['sku'] }}</a></td>
-                        <td>{{ product['name'] }}</td>
-                        <td>{{ product['price'] }} $</td>
-                        <td>{{ product['stock'] }}</td>
-                    </tr>
-                    {% endfor %}
-                <tbody>
-                </tbody>
-            </table>
+    {% if messages %}
+      {% for message in messages %}
+     	<p class="error_message">{{ message[1] }}</p>
+      {% endfor %}
     {% endif %}
-    </div>
+  {% endwith %}
+
+  <div>
+    {% if search_text %}
+      {% if list_products|length >= 1 %}
+        <p>{{ list_products|length }} résultats trouvés pour <strong>{{ search_text }}</strong> sur Cycle Babac.</p>
+        <p>Vous pouvez cliquer sur le numéro de produit pour accéder à la page du produit sur le site de Cycle Babac.</p>
+        <table id="resultats" class="dataTable" style="display: table;">
+          <thead>
+            <tr>
+              <th data-column="numerobabac" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="# babac: activate to sort column ascending"># Babac</th>
+              <th data-column="nom" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Nom: activate to sort column ascending">Nom</th>
+              <th data-column="prix" data-transform="NombreVersPrix" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="Prix: activate to sort column ascending">Prix</th>
+              <th data-column="piece-en-stock" class="sorting" role="columnheader" tabindex="0" aria-controls="pieces" rowspan="1" colspan="1" style="width: 0px;" aria-label="En stock: activate to sort column ascending">En stock?</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for product in list_products %}
+              <tr class="odd", style="text-align: center;">
+                  <td style="font-weight: bold;"><a href={{ product['page url']}} target="_blank">{{ product['sku'] }}</a></td>
+                  <td>{{ product['name'] }}</td>
+                  <td>{{ product['price'] }} $</td>
+                  <td>{{ product['stock'] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="error_message">Aucun produit trouvé.</p>
+      {% endif %}
+    {% endif %}
+  </div>
 {% endblock %}
