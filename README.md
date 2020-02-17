@@ -29,7 +29,10 @@ installation pour le développement
         $ cd biciklo
         $ pip install -e .
 
-4. Pour pouvoir utiliser le module de recherche sur le site de Cycle Babac, entrer ses informations de connexion au site de Babac dans le fichier `.env.example` et en renommant le fichier pour `.env`, puis en éditant le fichier `.env` pour refléter les informations de connexion au site de Babac:
+4. Pour pouvoir utiliser le module de recherche sur le site de Cycle Babac,
+entrer ses informations de connexion au site de Babac dans le fichier
+`.env.example` et en renommant le fichier pour `.env`, puis en éditant le
+fichier `.env` pour refléter les informations de connexion au site de Babac:
 
         $ cd biciklo-env/lib/python3.5/site-packages/recherche_babac2
         $ cp .env.example .env
