@@ -1059,30 +1059,29 @@ def ObtenirProchainNumeroDeFacture():
     return d.factures.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
 
 # api recherche_babac
-class ReusableForm(Form):
+class FormulaireRechercherBabac(Form):
     search_text = StringField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ',
-                              validators=[
-                                          validators.DataRequired(message='Veuillez entrer un mot'),
-                                          validators.Regexp('^[\w0-9 -]+$', message='Veuillez ne pas utiliser de caractères spéciaux.'),
-                                          ]
-                              )
+        validators=[validators.DataRequired(message='Veuillez entrer un mot'),
+                    validators.Regexp('^[\w0-9 -]+$', message='Veuillez ne pas utiliser de caractères spéciaux.')
+                    ])
 
-    @app.route("/recherche_babac", methods=['GET', 'POST'])
-    def RechercheBabac():
-        form = ReusableForm(request.form)
+@app.route("/recherche_babac", methods=['GET', 'POST'])
+def RechercheBabac():
+  """Effectue une recherche sur le site de Cycle Babac."""
+  form = FormulaireRechercherBabac(request.form)
 
-        if request.method == 'GET':
-            return render_template('recherche_babac.html', form=form)
+  if request.method == 'GET':
+    return render_template('recherche_babac.html', form=form)
 
-        if request.method == 'POST':
-            search_text = request.form['search_text']
+  if request.method == 'POST':
+    search_text = request.form['search_text']
 
-            if form.validate():
-                list_products = rb2.do_the_search(search_text)
-                return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
-            else:
-                flash(form.errors['search_text'][0])
-                return render_template('recherche_babac.html', form=form)
+  if form.validate():
+    list_products = rb2.do_the_search(search_text)
+    return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
+  else:
+    flash(form.errors['search_text'][0])
+    return render_template('recherche_babac.html', form=form)
 
 
 def main():

@@ -13,17 +13,17 @@
   <h1>Recherche Babac</h1>
 
   <form action="" method="post">
-        {{ form.csrf }}
-  <div class="input text">
-        {{ form.search_text.label }} {{ form.search_text }}</div>
-  <div class="input submit">
-        <input type="submit" value="Submit"></div>
+    {{ form.csrf }}
+    <div class="input text">
+      {{ form.search_text.label }} {{ form.search_text }}</div>
+    <div class="input submit">
+      <input type="submit" value="Submit"></div>
   </form>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% with messages = get_flashed_messages() %}
     {% if messages %}
       {% for message in messages %}
-     	<p class="error_message">{{ message[1] }}</p>
+     	<p class="error_message">{{ message }}</p>
       {% endfor %}
     {% endif %}
   {% endwith %}
