@@ -2,6 +2,7 @@ from setuptools import setup
 
 setup(
     name='Biciklo',
+    python_requires='>=3',
     version='1.1',
     packages=['biciklo'],
     entry_points={
@@ -11,7 +12,10 @@ setup(
         'pymongo',
         'flask',
         'wtforms',
-        'recherche_babac2==0.1.4',
+        'recherche_babac2',
+    ],
+    data_files=[
+                ('.', ['config.yml.example'])
     ],
     zip_safe=False,
     include_package_data=True,

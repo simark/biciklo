@@ -5,7 +5,7 @@ Système d'inventaire pour l'atelier **Biciklo**.
 
 dépendances
 -----------
-* Python 2 ou 3
+* Python 3
   * Paquet `virtualenv` recommandé (`pip install virtualenv`)
 * MongoDB
 * Ruby
