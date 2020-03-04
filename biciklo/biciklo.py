@@ -6,12 +6,9 @@ import datetime
 import json
 import os
 import time
+import re
 
-if python_major == 2:
-  import httplib
-elif python_major == 3:
-  import http.client as httplib
-
+import http.client as httplib
 import pymongo
 from bson import json_util
 
@@ -19,10 +16,19 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from flask import url_for
+from flask import flash
 
-from biciklo import db
+from wtforms import Form
+from wtforms import StringField
+from wtforms import validators
+
+from biciklo import db, settings
+from recherche_babac2 import recherche_babac2 as rb2
+
 
 app = Flask(__name__)
+app.config.from_object(__name__)
+app.config['SECRET_KEY'] = os.urandom(24)
 
 # numéro de pièce des abonnements et durées
 abonnements = {
@@ -1047,6 +1053,44 @@ def ObtenirProchainNumeroDeFacture():
     return 1
   else:
     return d.factures.find().sort('numero', pymongo.DESCENDING).limit(1)[0]['numero'] + 1
+
+# api recherche_babac
+class FormulaireRechercherBabac(Form):
+  search_text = StringField('Indiquer le nom d\'une pièce pour obtenir son prix chez Cycle Babac: ',
+      validators=[validators.DataRequired(message='Veuillez entrer un mot'),
+                  validators.Regexp('^[\w0-9 -]+$', message='Veuillez ne pas utiliser de caractères spéciaux.')
+                  ])
+
+@app.route("/recherche_babac", methods=['GET', 'POST'])
+def RechercheBabac():
+  """Effectue une recherche sur le site de Cycle Babac."""
+  form = FormulaireRechercherBabac(request.form)
+
+  if request.method == 'GET':
+    return render_template('recherche_babac.html', form=form)
+
+  if request.method == 'POST':
+    search_text = request.form['search_text']
+
+    if form.validate():
+      utilisateur_babac, motdepasse_babac = settings.lire_config()
+
+      if utilisateur_babac != None or motdepasse_babac != None:
+        recherche = rb2.BabacSearch(utilisateur_babac, motdepasse_babac)
+        list_products, loggedin = recherche.do_the_search(search_text)
+
+        if loggedin:
+          return render_template('recherche_babac.html', form=form, list_products=list_products, search_text=search_text)
+        else:
+          flash('Le nom d\'utilisateur et/ou le mot de passe pour le site de Cycle Babac est incorrect. Veuillez vérifier vos information de connexion dans le fichier de configuration de l\'application.')
+          return render_template('recherche_babac.html', form=form)
+
+      else:
+          flash('Veuillez spécifier le nom d\'utilisateur et le mot de passe pour le site de Cycle Babac dans le fichier de configuration de l\'application.')
+          return render_template('recherche_babac.html', form=form)
+    else:
+      flash(form.errors['search_text'][0])
+      return render_template('recherche_babac.html', form=form)
 
 
 def main():

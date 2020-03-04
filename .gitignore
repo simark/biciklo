@@ -29,3 +29,8 @@ pip-log.txt
 # sass
 static/css
 sass/.sass-cache
+
+# virtualenv
+biciklo-env/
+
+config.yml

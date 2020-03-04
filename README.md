@@ -5,11 +5,12 @@ Système d'inventaire pour l'atelier **Biciklo**.
 
 dépendances
 -----------
-* Python 2 ou 3
+* Python 3
   * Paquet `virtualenv` recommandé (`pip install virtualenv`)
 * MongoDB
 * Ruby
   * Paquet `compass`, seulement nécessaire pour regénérer les fichiers css
+* [Recherche Babac2](https://github.com/normcyr/recherche_babac2) pour la recherche dans le catalogue de Babac
 
 installation pour le développement
 ----------------------------------
@@ -28,7 +29,16 @@ installation pour le développement
         $ cd biciklo
         $ pip install -e .
 
-4. Lancer l'inventaire:
+4. Pour pouvoir utiliser le module de recherche sur le site de Cycle Babac,
+entrer ses informations de connexion au site de Babac dans le fichier
+`.env.example` et en renommant le fichier pour `.env`, puis en éditant le
+fichier `.env` pour refléter les informations de connexion au site de Babac:
+
+        $ cd biciklo-env/lib/python3.5/site-packages/recherche_babac2
+        $ cp .env.example .env
+        $ nano .env
+
+5. Lancer l'inventaire:
 
         $ BICIKLO_DEBUG=1 biciklo-inventaire
 
@@ -49,16 +59,16 @@ Exemples d'utilisation de cURL pour déboguer l'API HTTP.
 ### Liste de factures
 
 	$ curl -X GET http://0.0.0.0:8888/api/factures
-	
+
 ### Liste de membres
 
 
 	$ curl -X GET http://0.0.0.0:8888/api/membres
-	
+
 ### Ajout d'un membre
 
 	$ curl -X POST --data "prenom=bob&nom=leponge" http://0.0.0.0:8888/api/membres
-	
+
 ### Suppression d'un membre
 
 	$ curl -X DELETE http://0.0.0.0:8888/api/membres/6
